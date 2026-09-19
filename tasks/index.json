@@ -1,4 +1,10 @@
 {
   "version": 1,
-  "tasks": []
+  "tasks": [
+    {
+      "id": "a89b",
+      "title": "fix: extract haversine function to shared module",
+      "status": "draft"
+    }
+  ]
 }

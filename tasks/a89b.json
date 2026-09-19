@@ -1,0 +1,47 @@
+{
+  "id": "a89b",
+  "title": "fix: extract haversine function to shared module",
+  "status": "draft",
+  "createdAt": "2026-09-19T19:35:52.236Z",
+  "updatedAt": "2026-09-19T19:35:52.236Z",
+  "issue": {
+    "number": 1,
+    "url": "https://github.com/andreich22/ezda/issues/1",
+    "title": "TASK-a89b fix: extract haversine function to shared module"
+  },
+  "description": "## Goal\nFix the Next.js build error caused by exporting a non-route helper function (hav) from an API route file. Next.js auto-generated types reject any exports beyond standard HTTP methods and route config.\n\n## Requirements\n- Extract the haversine distance function (hav) from app/api/route/route.ts into a shared module (lib/geo.ts)\n- Import hav in the route handler and tests from the new shared module\n- Remove the export of hav from the route file\n- Build and tests must pass after the change\n\n## Acceptance Criteria\n- [ ] lib/geo.ts contains the hav function with proper type definitions\n- [ ] app/api/route/route.ts imports hav from lib/geo.ts instead of defining it locally\n- [ ] tests/route.test.ts imports hav from lib/geo.ts instead of from the route file\n- [ ] hav is not exported from app/api/route/route.ts\n- [ ] npm run build passes without TypeScript errors\n- [ ] npm run test:run passes\n\n## Definition of Done\n- [ ] Build compiles successfully\n- [ ] All existing tests pass\n- [ ] No non-route exports from API route files\n- [ ] Code follows existing project conventions",
+  "requirements": [
+    "Extract the haversine distance function (hav) from app/api/route/route.ts into a shared module (lib/geo.ts)",
+    "Import hav in the route handler and tests from the new shared module",
+    "Remove the export of hav from the route file",
+    "Build and tests must pass after the change"
+  ],
+  "definitionOfReady": [
+    "See GitHub Issue #1 for the definitionOfReady definition."
+  ],
+  "acceptanceCriteria": [
+    "lib/geo.ts contains the hav function with proper type definitions",
+    "app/api/route/route.ts imports hav from lib/geo.ts instead of defining it locally",
+    "tests/route.test.ts imports hav from lib/geo.ts instead of from the route file",
+    "hav is not exported from app/api/route/route.ts",
+    "npm run build passes without TypeScript errors",
+    "npm run test:run passes"
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "[ ] Build compiles successfully",
+    "[ ] All existing tests pass",
+    "[ ] No non-route exports from API route files",
+    "[ ] Code follows existing project conventions"
+  ],
+  "history": [
+    {
+      "at": "2026-09-19T19:35:52.236Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #1."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
