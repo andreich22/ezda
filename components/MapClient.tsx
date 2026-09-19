@@ -43,7 +43,7 @@ export default function MapClient() {
       attributionControl: {},
     });
 
-    map.addControl(new NavigationControl({ showCompass: true }), "top-right");
+    map.addControl(new NavigationControl({showCompass: true}), "top-right");
 
     map.on("error", (event) => {
       const message = event?.error?.message || "Map tiles failed to load";
@@ -53,11 +53,7 @@ export default function MapClient() {
     map.on("click", (e) => {
       setError("");
       setRoute(null);
-      setPoints((prev) =>
-        prev.length >= 2
-          ? [[e.lngLat.lng, e.lngLat.lat]]
-          : [...prev, [e.lngLat.lng, e.lngLat.lat]],
-      );
+      setPoints((prev) => [...prev, [e.lngLat.lng, e.lngLat.lat]]);
     });
 
     mapRef.current = map;
@@ -70,20 +66,20 @@ export default function MapClient() {
 
     markers.current.forEach((m) => m.remove());
     markers.current = points.map((p, i) =>
-      new Marker({ color: i === 0 ? "#111" : "#d33" })
+      new Marker({color: i === 0 ? "#111" : i === points.length - 1 ? "#d33" : "#f59e0b"})
         .setLngLat(p)
         .addTo(map),
     );
 
-    if (points.length === 2) buildRoute(points[0], points[1]);
+    if (points.length >= 2) buildRoute(points);
   }, [points]);
 
-  async function buildRoute(a: Point, b: Point) {
+  async function buildRoute(routePoints: Point[]) {
     try {
       const r = await fetch("/api/route", {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ start: a, end: b }),
+        headers: {"content-type": "application/json"},
+        body: JSON.stringify({points: routePoints}),
       });
       const data = await r.json();
       if (!r.ok) throw new Error(data.error || "Routing failed");
@@ -99,7 +95,6 @@ export default function MapClient() {
         ...data.geometry,
         geometry: {
           ...data.geometry.geometry,
-          // MapLibre renders 2D line layers most reliably; elevation stays in API stats.
           coordinates: data.geometry.geometry.coordinates.map(
             (coordinate: number[]) => [coordinate[0], coordinate[1]],
           ),
@@ -117,13 +112,13 @@ export default function MapClient() {
           if (source) {
             source.setData(routeData);
           } else {
-            map.addSource("route", { type: "geojson", data: routeData as any });
+            map.addSource("route", {type: "geojson", data: routeData as any});
 
             map.addLayer({
               id: "route-casing",
               type: "line",
               source: "route",
-              layout: { "line-cap": "round", "line-join": "round" },
+              layout: {"line-cap": "round", "line-join": "round"},
               paint: {
                 "line-color": "#ffffff",
                 "line-width": 10,
@@ -135,7 +130,7 @@ export default function MapClient() {
               id: "route-line",
               type: "line",
               source: "route",
-              layout: { "line-cap": "round", "line-join": "round" },
+              layout: {"line-cap": "round", "line-join": "round"},
               paint: {
                 "line-color": "#e63946",
                 "line-width": 6,
@@ -153,7 +148,7 @@ export default function MapClient() {
               coordinates[0] as [number, number],
             ),
           );
-          map.fitBounds(lngLatBounds, { padding: 80, duration: 700, maxZoom: 15 });
+          map.fitBounds(lngLatBounds, {padding: 80, duration: 700, maxZoom: 15});
         } catch (drawError) {
           setError(
             drawError instanceof Error
@@ -213,8 +208,8 @@ export default function MapClient() {
         {points.length === 0
           ? "Click the map to set a start point."
           : points.length === 1
-            ? "Click the map again to set the destination."
-            : "Route built. Reset to start again."}
+            ? "Click the map to add a destination or waypoint."
+            : `${points.length} points selected. Click to add another waypoint.`}
       </div>
 
       {error && <div className="error">{error}</div>}
