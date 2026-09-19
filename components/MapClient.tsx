@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Map, Marker, NavigationControl } from "maplibre-gl";
+import { LngLatBounds, Map, Marker, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 type Point = [number, number];
@@ -86,38 +86,68 @@ export default function MapClient() {
       });
       const data = await r.json();
       if (!r.ok) throw new Error(data.error || "Routing failed");
+      if (!data.geometry?.geometry?.coordinates?.length) {
+        throw new Error("Routing service returned no route geometry");
+      }
 
       setRoute(data);
       const map = mapRef.current;
-      if (!map || !data.geometry) return;
+      if (!map) return;
+
+      const routeFeature = data.geometry;
+      const routeData = {
+        type: "FeatureCollection",
+        features: [routeFeature],
+      };
 
       const drawRoute = () => {
-        if (map.getSource("route")) {
-          (map.getSource("route") as any).setData(data.geometry);
-          return;
-        }
+        try {
+          const source = map.getSource("route") as any;
 
-        map.addSource("route", { type: "geojson", data: data.geometry });
-        map.addLayer({
-          id: "route-casing",
-          type: "line",
-          source: "route",
-          paint: {
-            "line-color": "#ffffff",
-            "line-width": 9,
-            "line-opacity": 0.9,
-          },
-        });
-        map.addLayer({
-          id: "route-line",
-          type: "line",
-          source: "route",
-          paint: {
-            "line-color": "#e63946",
-            "line-width": 5,
-            "line-opacity": 1,
-          },
-        });
+          if (source) {
+            source.setData(routeData);
+          } else {
+            map.addSource("route", { type: "geojson", data: routeData as any });
+
+            map.addLayer({
+              id: "route-casing",
+              type: "line",
+              source: "route",
+              layout: { "line-cap": "round", "line-join": "round" },
+              paint: {
+                "line-color": "#ffffff",
+                "line-width": 10,
+                "line-opacity": 0.95,
+              },
+            });
+
+            map.addLayer({
+              id: "route-line",
+              type: "line",
+              source: "route",
+              layout: { "line-cap": "round", "line-join": "round" },
+              paint: {
+                "line-color": "#e63946",
+                "line-width": 6,
+                "line-opacity": 1,
+              },
+            });
+          }
+
+          const coordinates = routeFeature.geometry.coordinates as number[][];
+          const lngLatBounds = coordinates.reduce(
+            (bounds: any, coordinate: number[]) =>
+              bounds.extend([coordinate[0], coordinate[1]]),
+            new LngLatBounds(coordinates[0], coordinates[0]),
+          );
+          map.fitBounds(lngLatBounds, { padding: 80, duration: 700, maxZoom: 15 });
+        } catch (drawError) {
+          setError(
+            drawError instanceof Error
+              ? `Route drawing failed: ${drawError.message}`
+              : "Route drawing failed",
+          );
+        }
       };
 
       if (map.isStyleLoaded()) {
