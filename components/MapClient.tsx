@@ -65,11 +65,28 @@ export default function MapClient() {
     if (!map) return;
 
     markers.current.forEach((m) => m.remove());
-    markers.current = points.map((p, i) =>
-      new Marker({color: i === 0 ? "#111" : i === points.length - 1 ? "#d33" : "#f59e0b"})
+
+    markers.current = points.map((p, i) => {
+      const marker = new Marker({
+        color: i === 0 ? "#111" : i === points.length - 1 ? "#d33" : "#f59e0b",
+        draggable: true,
+      })
         .setLngLat(p)
-        .addTo(map),
-    );
+        .addTo(map);
+
+      marker.on("dragend", () => {
+        const lngLat = marker.getLngLat();
+        setError("");
+        setRoute(null);
+        setPoints((prev) => {
+          const next = [...prev];
+          next[i] = [lngLat.lng, lngLat.lat];
+          return next;
+        });
+      });
+
+      return marker;
+    });
 
     if (points.length >= 2) buildRoute(points);
   }, [points]);
@@ -209,7 +226,7 @@ export default function MapClient() {
           ? "Click the map to set a start point."
           : points.length === 1
             ? "Click the map to add a destination or waypoint."
-            : `${points.length} points selected. Click to add another waypoint.`}
+            : "Drag any point to adjust the route, or click to add another waypoint."}
       </div>
 
       {error && <div className="error">{error}</div>}
