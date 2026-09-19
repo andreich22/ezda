@@ -1,0 +1,2 @@
+import MapClient from "../components/MapClient";
+export default function Home(){return <main className="shell"><header className="header"><div className="logo">Ezda</div><span>cycling routes MVP</span></header><div className="content"><aside className="sidebar"><h1>Build a cycling route</h1><p>Click a start point and an end point on the map. The MVP asks the routing service for a bicycle route when configured; otherwise it draws a direct fallback.</p><MapClient/></aside><div className="map-wrap"><div id="map-host" className="map"/></div></div></main>}
