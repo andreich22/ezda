@@ -4,6 +4,7 @@ import {hav} from "../lib/geo";
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.unstubAllEnvs();
 });
 
 const point = (lon: number, lat: number): [number, number] => [lon, lat];
@@ -25,61 +26,74 @@ describe("hav", () => {
 });
 
 describe("POST /api/route", () => {
-  it("rejects requests without two-point start/end coordinates", async () => {
+  it("rejects requests without at least two route points", async () => {
     const response = await POST(
       new Request("http://localhost/api/route", {
         method: "POST",
-        body: JSON.stringify({start: [1], end: [2, 3]}),
+        body: JSON.stringify({points: [[1]]}),
       }),
     );
 
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
-      error: "start and end are required",
+      error: "at least two route points are required",
     });
   });
 
-  it("uses OpenRouteService when configured and returns its route", async () => {
+  it("uses OpenRouteService for multiple ordered waypoints", async () => {
     vi.stubEnv("ORS_API_KEY", "test-key");
     const geo = {
       features: [
         {
           type: "Feature",
-          properties: {summary: {distance: 1234, duration: 321}},
+          properties: {summary: {distance: 3000, duration: 900}},
           geometry: {
             type: "LineString",
             coordinates: [
               [-73.9, 40.6, 10],
-              [-73.8, 40.7, 25],
-              [-73.7, 40.8, 20],
+              [-73.85, 40.65, 20],
+              [-73.8, 40.7, 15],
             ],
           },
         },
       ],
     };
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify(geo), {status: 200}),
     );
 
     const response = await POST(
       new Request("http://localhost/api/route", {
         method: "POST",
-        body: JSON.stringify({start: [-73.9, 40.6], end: [-73.7, 40.8]}),
+        body: JSON.stringify({
+          points: [
+            [-73.9, 40.6],
+            [-73.85, 40.65],
+            [-73.8, 40.7],
+          ],
+        }),
       }),
     );
 
     expect(response.status).toBe(200);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.openrouteservice.org/v2/directions/cycling-regular/geojson",
+      expect.objectContaining({
+        body: expect.stringContaining('"coordinates":[[-73.9,40.6],[-73.85,40.65],[-73.8,40.7]]'),
+      }),
+    );
     await expect(response.json()).resolves.toMatchObject({
-      distanceMeters: 1234,
-      durationSeconds: 321,
-      elevationGainMeters: 15,
+      distanceMeters: 3000,
+      durationSeconds: 900,
+      elevationGainMeters: 10,
       source: "OpenRouteService",
+      pointCount: 3,
     });
   });
 
-  it("falls back to the public bicycle router when ORS fails", async () => {
+  it("falls back to the public bicycle router with all waypoints", async () => {
     vi.stubEnv("ORS_API_KEY", "test-key");
-    vi.spyOn(globalThis, "fetch")
+    const fetchMock = vi.spyOn(globalThis, "fetch")
       .mockResolvedValueOnce(new Response("upstream error", {status: 503}))
       .mockResolvedValueOnce(
         new Response(
@@ -105,11 +119,20 @@ describe("POST /api/route", () => {
     const response = await POST(
       new Request("http://localhost/api/route", {
         method: "POST",
-        body: JSON.stringify({start: [-73.9, 40.6], end: [-73.8, 40.7]}),
+        body: JSON.stringify({
+          points: [
+            [-73.9, 40.6],
+            [-73.85, 40.65],
+            [-73.8, 40.7],
+          ],
+        }),
       }),
     );
 
     expect(response.status).toBe(200);
+    expect(fetchMock.mock.calls[1][0]).toContain(
+      "-73.9,40.6;-73.85,40.65;-73.8,40.7",
+    );
     await expect(response.json()).resolves.toMatchObject({
       distanceMeters: 2500,
       durationSeconds: 600,
@@ -117,7 +140,31 @@ describe("POST /api/route", () => {
     });
   });
 
-  it("returns the straight-line fallback when routing providers are unavailable", async () => {
+  it("returns a fallback route through every selected point", async () => {
+    vi.stubEnv("ORS_API_KEY", "");
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("network unavailable"));
+
+    const points = [
+      point(-73.9, 40.6),
+      point(-73.85, 40.65),
+      point(-73.8, 40.7),
+    ];
+    const response = await POST(
+      new Request("http://localhost/api/route", {
+        method: "POST",
+        body: JSON.stringify({points}),
+      }),
+    );
+
+    const body = await response.json();
+    const expectedDistance = hav(points[0], points[1]) + hav(points[1], points[2]);
+    expect(response.status).toBe(200);
+    expect(body.source).toBe("Straight-line fallback");
+    expect(body.distanceMeters).toBeCloseTo(expectedDistance, 8);
+    expect(body.geometry.geometry.coordinates).toEqual(points);
+  });
+
+  it("keeps the old start/end request format working", async () => {
     vi.stubEnv("ORS_API_KEY", "");
     vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("network unavailable"));
 
@@ -132,8 +179,6 @@ describe("POST /api/route", () => {
 
     const body = await response.json();
     expect(response.status).toBe(200);
-    expect(body.source).toBe("Straight-line fallback");
-    expect(body.distanceMeters).toBeCloseTo(hav(start, end), 8);
     expect(body.geometry.geometry.coordinates).toEqual([start, end]);
   });
 });
