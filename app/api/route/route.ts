@@ -55,6 +55,7 @@ export async function POST(req: Request) {
 
     // Preferred provider when an API key is configured.
     if (key) {
+      console.log("Using OpenRouteService API key for routing.");
       try {
         const response = await fetch(
           "https://api.openrouteservice.org/v2/directions/cycling-regular/geojson",
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
             cache: "no-store",
           },
         );
-
+console.log("response response response", response);
         if (response.ok) {
           const geo = await response.json();
           const feature = geo.features?.[0];

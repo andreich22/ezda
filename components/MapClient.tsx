@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { LngLatBounds, Map, Marker, NavigationControl } from "maplibre-gl";
+import { LngLatBounds, Map, Marker, NavigationControl, setWorkerUrl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 type Point = [number, number];
@@ -34,12 +34,13 @@ export default function MapClient() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
     const map = new Map({
       container: "map-host",
       style: osmStyle as any,
       center: [-74.006, 40.7128],
       zoom: 11,
-      attributionControl: true,
+      attributionControl: {},
     });
 
     map.addControl(new NavigationControl({ showCompass: true }), "top-right");
@@ -147,7 +148,10 @@ export default function MapClient() {
           const lngLatBounds = coordinates.reduce(
             (bounds: any, coordinate: number[]) =>
               bounds.extend([coordinate[0], coordinate[1]]),
-            new LngLatBounds(coordinates[0], coordinates[0]),
+            new LngLatBounds(
+              coordinates[0] as [number, number],
+              coordinates[0] as [number, number],
+            ),
           );
           map.fitBounds(lngLatBounds, { padding: 80, duration: 700, maxZoom: 15 });
         } catch (drawError) {
