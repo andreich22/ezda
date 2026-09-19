@@ -13,7 +13,7 @@ function responseFromLine(
     geometry: {
       type: "Feature",
       properties: {},
-      geometry: { type: "LineString", coordinates },
+      geometry: {type: "LineString", coordinates},
     },
     distanceMeters,
     durationSeconds,
@@ -22,27 +22,39 @@ function responseFromLine(
   });
 }
 
+function isPoint(value: unknown): value is Point {
+  return (
+    Array.isArray(value) &&
+    value.length === 2 &&
+    value.every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate))
+  );
+}
+
+function isPointList(value: unknown): value is Point[] {
+  return Array.isArray(value) && value.length >= 2 && value.every(isPoint);
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const start = body.start as Point;
-    const end = body.end as Point;
+    const points: Point[] = isPointList(body.points)
+      ? body.points
+      : isPoint(body.start) && isPoint(body.end)
+        ? [body.start, body.end]
+        : [];
 
-    if (
-      !Array.isArray(start) ||
-      !Array.isArray(end) ||
-      start.length !== 2 ||
-      end.length !== 2
-    ) {
+    if (points.length < 2) {
       return NextResponse.json(
-        { error: "start and end are required" },
-        { status: 400 },
+        {error: "at least two route points are required"},
+        {status: 400},
       );
     }
 
     const key = process.env.ORS_API_KEY;
 
-    // Preferred provider when an API key is configured.
+    // Preferred provider when an API key is configured. OpenRouteService
+    // accepts an ordered list of coordinates, so intermediate waypoints
+    // are visited in exactly the order selected by the user.
     if (key) {
       console.log("Using OpenRouteService API key for routing.");
       try {
@@ -55,14 +67,14 @@ export async function POST(req: Request) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              coordinates: [start, end],
+              coordinates: points,
               instructions: false,
               elevation: true,
             }),
             cache: "no-store",
           },
         );
-console.log("response response response", response);
+
         if (response.ok) {
           const geo = await response.json();
           const feature = geo.features?.[0];
@@ -84,10 +96,11 @@ console.log("response response response", response);
 
             return NextResponse.json({
               geometry: feature,
-              distanceMeters: summary?.distance ?? hav(start, end),
+              distanceMeters: summary?.distance ?? 0,
               durationSeconds: summary?.duration ?? null,
               elevationGainMeters: elevation,
               source: "OpenRouteService",
+              pointCount: points.length,
             });
           }
         }
@@ -96,13 +109,13 @@ console.log("response response response", response);
       }
     }
 
-    // No API key is required for this public OSM bicycle routing service.
-    // It follows the OSM road network instead of drawing a straight line.
+    // Public OSM bicycle router. It also accepts an ordered list of
+    // coordinates separated by semicolons, preserving all waypoints.
     try {
-      const coordinates = `${start[0]},${start[1]};${end[0]},${end[1]}`;
+      const coordinates = points.map(([lon, lat]) => `${lon},${lat}`).join(";");
       const response = await fetch(
         `https://routing.openstreetmap.de/routed-bike/route/v1/driving/${coordinates}?overview=full&geometries=geojson&steps=false`,
-        { cache: "no-store" },
+        {cache: "no-store"},
       );
 
       if (response.ok) {
@@ -122,15 +135,19 @@ console.log("response response response", response);
       // Continue to the deterministic fallback below.
     }
 
-    // Last-resort fallback when external routing services are unavailable.
-    const distance = hav(start, end);
+    // Last-resort fallback: connect every selected point in order.
+    const coordinates = points as number[][];
+    const distance = points.slice(1).reduce(
+      (sum, point, index) => sum + hav(points[index], point),
+      0,
+    );
     return responseFromLine(
-      [start, end],
+      coordinates,
       distance,
       distance / 5,
       "Straight-line fallback",
     );
   } catch {
-    return NextResponse.json({ error: "Invalid routing request" }, { status: 400 });
+    return NextResponse.json({error: "Invalid routing request"}, {status: 400});
   }
 }
