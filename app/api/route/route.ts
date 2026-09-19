@@ -2,7 +2,7 @@ import {NextResponse} from "next/server";
 
 type Point = [number, number];
 
-function hav(a: Point, b: Point) {
+export function hav(a: Point, b: Point) {
   const R = 6371000;
   const p1 = (a[1] * Math.PI) / 180;
   const p2 = (b[1] * Math.PI) / 180;
