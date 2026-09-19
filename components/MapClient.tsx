@@ -164,6 +164,8 @@ export default function MapClient() {
         Reset route
       </button>
 
+      {route?.source && <div className="hint">Routing: {route.source}</div>}
+
       <div className="hint">
         {points.length === 0
           ? "Click the map to set a start point."
