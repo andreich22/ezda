@@ -1,5 +1,6 @@
 import {describe, expect, it, vi, afterEach} from "vitest";
-import {POST, hav} from "../app/api/route/route";
+import {POST} from "../app/api/route/route";
+import {hav} from "../lib/geo";
 
 afterEach(() => {
   vi.restoreAllMocks();
