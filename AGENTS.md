@@ -201,3 +201,71 @@ Ezda should evolve from a route planner into a platform where cyclists:
 Future directions include route discovery/search, profiles, follows, likes, comments, route copying, photos, points of interest, GPS tracking, ride statistics, and comparison of planned Route versus actual Ride.
 
 New features should not make the core flow unnecessarily complicated.
+
+## Mandatory Task-Driven Development
+
+The development workflow is based on the agent-governance rules adopted from `andreich22/privateAI`, adapted to Ezda's Next.js/TypeScript stack.
+
+**Mandatory rule:** AI MUST NOT modify project code, configuration, tests, or documentation without an associated Task ID. New tasks MUST begin as a GitHub Issue titled `TASK-<4 lowercase hex-id> <title>`. The registration workflow creates the task metadata; AI MUST wait until that registration PR is merged into `main` before creating the implementation branch or implementation PR.
+
+Task IDs are exactly four lowercase hexadecimal characters. Every implementation commit MUST use `<type>: <task-id> | <description>`. All commits for the same task use the same ID. Do not mix unrelated tasks in one commit.
+
+Task relationships are stored in `tasks/relations.json`. Use `depends_on` and `parent` for dependency/structure; use `related`, `duplicates`, `derived_from`, `replaces`, and `implements` for other relationships. Do not duplicate reverse edges. Circular `depends_on`/ `parent` graphs are invalid.
+
+Before marking a task `done`, run `npm run tasks:validate` and the relevant tests/build.
+
+## Protected Git workflow for AI
+
+The repository default branch is `main`. AI agents MUST NOT commit directly to `main`, push directly to `main`, force-push it, rewrite its history, or bypass branch protection.
+
+Required path:
+
+```text
+Issue → automatic task registration PR → registration merge → task/<task-id>-<short-name> → commits → implementation Pull Request → checks → human merge
+```
+
+The registration PR must be merged before the implementation branch/PR is created. AI MUST NOT merge its own implementation PR unless the user explicitly instructs it and repository policy permits it.
+
+If implementation reveals unrelated work, create a separate Issue/task instead of silently expanding scope.
+
+## Development procedure
+
+Before editing:
+1. Load `skills/task-driven-development/SKILL.md` and `skills/git-workflow/SKILL.md`.
+2. Identify the associated GitHub Task Issue.
+3. Verify that task registration has been merged into `main` and the task is ready.
+4. Create/use a task-specific branch: `task/<task-id>-<short-name>`.
+5. Inspect relevant files, tests, existing patterns, lifecycle, persistence, API, database, and browser implications.
+6. Make the smallest reasonable change.
+7. Avoid unrelated refactors.
+8. Use the Task ID in every implementation commit.
+9. Run relevant tests, build, and `npm run tasks:validate`.
+10. Open/update the implementation PR with requirements, acceptance criteria, validation, risks, and the Task ID.
+11. Review the diff for regressions, security issues, data/privacy concerns, and unnecessary dependencies.
+
+## Completion requirements
+
+A task is complete only when requirements and acceptance criteria are satisfied, relevant validation passes, task history/commit metadata are updated, PR checks pass, and the change is merged through the protected PR path.
+
+## Decision priority
+
+When implementation choices conflict, prioritize:
+1. Correctness and reliability.
+2. Core route-planning flow.
+3. Security and privacy.
+4. Simple architecture.
+5. Performance.
+6. UX.
+7. Extensibility.
+8. Additional features.
+
+## Agent reporting
+
+After implementation, report:
+- Task ID and title;
+- branch and PR;
+- changed files;
+- tests/build/validator commands actually run;
+- task relationships created or affected;
+- known limitations and remaining risks.
+
