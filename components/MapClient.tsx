@@ -94,7 +94,16 @@ export default function MapClient() {
       const map = mapRef.current;
       if (!map) return;
 
-      const routeFeature = data.geometry;
+      const routeFeature = {
+        ...data.geometry,
+        geometry: {
+          ...data.geometry.geometry,
+          // MapLibre renders 2D line layers most reliably; elevation stays in API stats.
+          coordinates: data.geometry.geometry.coordinates.map(
+            (coordinate: number[]) => [coordinate[0], coordinate[1]],
+          ),
+        },
+      };
       const routeData = {
         type: "FeatureCollection",
         features: [routeFeature],
@@ -153,7 +162,7 @@ export default function MapClient() {
       if (map.isStyleLoaded()) {
         drawRoute();
       } else {
-        map.once("load", drawRoute);
+        map.once("idle", drawRoute);
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Routing failed");
