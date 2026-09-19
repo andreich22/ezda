@@ -15,8 +15,14 @@ export default function MapClient() {
       style: "https://tiles.openfreemap.org/styles/liberty",
       center: [-74.006, 40.7128],
       zoom: 11,
+      attributionControl: true,
     });
-    map.addControl(new NavigationControl(), "top-right");
+    map.addControl(new NavigationControl({ showCompass: true }), "top-right");
+    map.on("load", () => setError("")); 
+    map.on("error", (event) => {
+      const message = event?.error?.message || "Map tiles failed to load";
+      setError(`Map error: ${message}`);
+    });
     map.on("click", (e) => {
       setError("");
       setRoute(null);
