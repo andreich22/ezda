@@ -1,9 +1,9 @@
 {
   "id": "a89b",
   "title": "fix: extract haversine function to shared module",
-  "status": "draft",
+  "status": "done",
   "createdAt": "2026-09-19T19:35:52.236Z",
-  "updatedAt": "2026-09-19T19:35:52.236Z",
+  "updatedAt": "2026-09-19T19:38:00.000Z",
   "issue": {
     "number": 1,
     "url": "https://github.com/andreich22/ezda/issues/1",
@@ -20,28 +20,44 @@
     "See GitHub Issue #1 for the definitionOfReady definition."
   ],
   "acceptanceCriteria": [
-    "lib/geo.ts contains the hav function with proper type definitions",
-    "app/api/route/route.ts imports hav from lib/geo.ts instead of defining it locally",
-    "tests/route.test.ts imports hav from lib/geo.ts instead of from the route file",
-    "hav is not exported from app/api/route/route.ts",
-    "npm run build passes without TypeScript errors",
-    "npm run test:run passes"
+    "[x] lib/geo.ts contains the hav function with proper type definitions",
+    "[x] app/api/route/route.ts imports hav from lib/geo.ts instead of defining it locally",
+    "[x] tests/route.test.ts imports hav from lib/geo.ts instead of from the route file",
+    "[x] hav is not exported from app/api/route/route.ts",
+    "[x] npm run build passes without TypeScript errors",
+    "[x] npm run test:run passes"
   ],
   "technicalApproach": [],
   "definitionOfDone": [
-    "[ ] Build compiles successfully",
-    "[ ] All existing tests pass",
-    "[ ] No non-route exports from API route files",
-    "[ ] Code follows existing project conventions"
+    "[x] Build compiles successfully",
+    "[x] All existing tests pass",
+    "[x] No non-route exports from API route files",
+    "[x] Code follows existing project conventions"
   ],
   "history": [
     {
       "at": "2026-09-19T19:35:52.236Z",
       "event": "created_from_issue",
       "details": "Automatically registered from GitHub Issue #1."
+    },
+    {
+      "at": "2026-09-19T19:37:00.000Z",
+      "event": "implementation_started",
+      "details": "Created implementation branch task/a89b-fix-haversine-export."
+    },
+    {
+      "at": "2026-09-19T19:38:00.000Z",
+      "event": "implementation_completed",
+      "details": "Extracted hav to lib/geo.ts, updated imports in route.ts and tests. Build and tests pass."
     }
   ],
-  "commits": [],
+  "commits": [
+    {
+      "sha": "e55cf81",
+      "message": "fix: a89b | extract haversine function to shared lib/geo module",
+      "at": "2026-09-19T19:37:00.000Z"
+    }
+  ],
   "decisionLog": [],
   "relations": []
 }
