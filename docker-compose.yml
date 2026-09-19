@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    environment:
+      POSTGRES_DB: ezda
+      POSTGRES_USER: ezda
+      POSTGRES_PASSWORD: ezda
+    ports:
+      - "5432:5432"
+    volumes:
+      - ezda_db:/var/lib/postgresql/data
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://ezda:ezda@db:5432/ezda
+      ORS_API_KEY: ${ORS_API_KEY:-}
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+volumes:
+  ezda_db:
