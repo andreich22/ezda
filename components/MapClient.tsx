@@ -1,7 +1,7 @@
 "use client";
 import {useEffect,useRef,useState} from "react";
-import maplibregl,{Map,Marker} from "@maplibre/maplibre-gl-js";
-import "@maplibre/maplibre-gl-js/dist/maplibre-gl.css";
+import maplibregl,{Map,Marker} from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 type Point=[number,number];
 export default function MapClient(){const mapRef=useRef<Map|null>(null);const markers=useRef<Marker[]>([]);const [points,setPoints]=useState<Point[]>([]);const [route,setRoute]=useState<any>(null);const [error,setError]=useState("");
 useEffect(()=>{const map=new maplibregl.Map({container:"map-host",style:"https://tiles.openfreemap.org/styles/liberty",center:[-74.006,40.7128],zoom:11});map.addControl(new maplibregl.NavigationControl(),"top-right");map.on("click",e=>{setError("");setRoute(null);setPoints(prev=>prev.length>=2?[[e.lngLat.lng,e.lngLat.lat]]:[...prev,[e.lngLat.lng,e.lngLat.lat]]);});mapRef.current=map;return()=>map.remove()},[]);
