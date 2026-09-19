@@ -22,6 +22,26 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run tasks:validate
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+      - name: Upload coverage HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-coverage-report
+          path: coverage/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Check coverage regression
+        if: github.event_name == 'pull_request'
+        run: |
+          git worktree add --detach /tmp/ezda-base origin/main
+          trap 'git worktree remove --force /tmp/ezda-base' EXIT
+          cd /tmp/ezda-base
+          npm ci
+          npm run test:coverage
+          cd -
+          node scripts/check-coverage.mjs coverage/coverage-summary.json /tmp/ezda-base/coverage/coverage-summary.json
       - run: npm run build
       - name: Validate pull request task
         if: github.event_name == 'pull_request'
