@@ -196,23 +196,97 @@ export default function MapClient() {
     if (map.getSource("route")) map.removeSource("route");
   }
 
+
+  const durationMinutes = route?.durationSeconds != null
+    ? Math.round(route.durationSeconds / 60)
+    : null;
+  const elevationCoordinates = route?.geometry?.geometry?.coordinates?.filter(
+    (coordinate: number[]) => typeof coordinate[2] === "number",
+  ) ?? [];
+  const elevations = elevationCoordinates.map((coordinate: number[]) => coordinate[2]);
+  const minElevation = elevations.length ? Math.min(...elevations) : 0;
+  const maxElevation = elevations.length ? Math.max(...elevations) : 0;
+  const elevationRange = Math.max(1, maxElevation - minElevation);
+
   return (
     <>
-      <div className="stat">
-        <div className="card">
-          <div className="label">Distance</div>
-          <div className="value">
-            {route ? `${(route.distanceMeters / 1000).toFixed(1)} km` : "—"}
+      <div className="route-summary">
+        <div className="route-summary-title">Route</div>
+        <div className="stat">
+          <div className="card">
+            <div className="label">Distance</div>
+            <div className="value">
+              {route ? (route.distanceMeters / 1000).toFixed(1) + " km" : "—"}
+            </div>
+          </div>
+          <div className="card">
+            <div className="label">Time</div>
+            <div className="value">
+              {durationMinutes != null
+                ? durationMinutes >= 60
+                  ? Math.floor(durationMinutes / 60) + " h " + (durationMinutes % 60) + " min"
+                  : durationMinutes + " min"
+                : "—"}
+            </div>
+          </div>
+          <div className="card">
+            <div className="label">Elevation gain</div>
+            <div className="value">
+              {route?.elevationGainMeters != null
+                ? "↑ " + Math.round(route.elevationGainMeters) + " m"
+                : "—"}
+            </div>
+          </div>
+          <div className="card">
+            <div className="label">Waypoints</div>
+            <div className="value">{points.length || "—"}</div>
           </div>
         </div>
-        <div className="card">
-          <div className="label">Elevation</div>
-          <div className="value">
-            {route?.elevationGainMeters != null
-              ? `${Math.round(route.elevationGainMeters)} m`
-              : "—"}
+      </div>
+
+      {elevations.length > 1 && (
+        <div className="profile card">
+          <div className="label">Elevation profile</div>
+          <svg viewBox="0 0 300 90" className="profile-chart" role="img" aria-label="Elevation profile">
+            <polyline
+              points={elevations.map((elevation: number, index: number) => {
+                const x = (index / (elevations.length - 1)) * 300;
+                const y = 82 - ((elevation - minElevation) / elevationRange) * 68;
+                return x + "," + y;
+              }).join(" ")}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <div className="profile-scale">
+            <span>{Math.round(minElevation)} m</span>
+            <span>{Math.round(maxElevation)} m</span>
           </div>
         </div>
+      )}
+
+      <div className="waypoints card">
+        <div className="label">Route points</div>
+        {points.length === 0 ? (
+          <div className="empty">No points yet</div>
+        ) : (
+          <ol>
+            {points.map((point, index) => (
+              <li key={point[0] + "-" + point[1] + "-" + index}>
+                <span className={"point-dot " + (index === 0 ? "start" : index === points.length - 1 ? "finish" : "")} />
+                <span>
+                  <strong>
+                    {index === 0 ? "Start" : index === points.length - 1 ? "Finish" : "Waypoint " + index}
+                  </strong>
+                  <small>{point[1].toFixed(5)}, {point[0].toFixed(5)}</small>
+                </span>
+              </li>
+            ))}
+          </ol>
+        )}
       </div>
 
       <button className="button" onClick={reset} disabled={!points.length}>
