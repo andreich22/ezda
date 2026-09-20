@@ -5,6 +5,11 @@
       "id": "a89b",
       "title": "fix: extract haversine function to shared module",
       "status": "draft"
+    },
+    {
+      "id": "c4e7",
+      "title": "адаптация интерфейса для мобильных устройств",
+      "status": "draft"
     }
   ]
 }
