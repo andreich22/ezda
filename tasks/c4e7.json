@@ -1,9 +1,9 @@
 {
   "id": "c4e7",
   "title": "адаптация интерфейса для мобильных устройств",
-  "status": "draft",
+  "status": "ready",
   "createdAt": "2026-09-20T12:10:16.843Z",
-  "updatedAt": "2026-09-20T12:10:16.843Z",
+  "updatedAt": "2026-09-20T13:00:09.100Z",
   "issue": {
     "number": 5,
     "url": "https://github.com/andreich22/ezda/issues/5",
@@ -40,6 +40,11 @@
       "at": "2026-09-20T12:10:16.843Z",
       "event": "created_from_issue",
       "details": "Automatically registered from GitHub Issue #5."
+    },
+    {
+      "at": "2026-09-20T13:00:09.100Z",
+      "event": "registration_pr_created",
+      "details": "Task registration completed; implementation may proceed after registration PR merge."
     }
   ],
   "commits": [],
