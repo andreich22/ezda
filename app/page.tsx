@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MapClient from "../components/MapClient";
 import { parseSidebarCollapsed, SIDEBAR_STORAGE_KEY } from "../lib/sidebar-state";
+import { shouldDismissMobileSidebarSwipe } from "../lib/sidebar-swipe";
 
 export default function Home() {
   const [collapsed, setCollapsed] = useState(false);
+  const swipeStart = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     setCollapsed(parseSidebarCollapsed(window.localStorage.getItem(SIDEBAR_STORAGE_KEY)));
@@ -15,6 +17,28 @@ export default function Home() {
     window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(collapsed));
     window.dispatchEvent(new CustomEvent("ezda:sidebar-change"));
   }, [collapsed]);
+
+  const handleSidebarPointerDown = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType === "mouse" || window.innerWidth > 767) return;
+    swipeStart.current = { x: event.clientX, y: event.clientY };
+  };
+
+  const handleSidebarPointerUp = (event: React.PointerEvent<HTMLElement>) => {
+    const start = swipeStart.current;
+    swipeStart.current = null;
+    if (!start || event.pointerType === "mouse" || window.innerWidth > 767) return;
+
+    const sidebar = event.currentTarget;
+    if (shouldDismissMobileSidebarSwipe({
+      startX: start.x,
+      startY: start.y,
+      endX: event.clientX,
+      endY: event.clientY,
+      scrollTop: sidebar.scrollTop,
+    })) {
+      setCollapsed(true);
+    }
+  };
 
   return (
     <main className="shell">
@@ -28,6 +52,8 @@ export default function Home() {
           className="sidebar"
           aria-hidden={collapsed}
           inert={collapsed ? true : undefined}
+          onPointerDown={handleSidebarPointerDown}
+          onPointerUp={handleSidebarPointerUp}
         >
           <h1>Build a cycling route</h1>
           <p>Click a start point and an end point on the map. The MVP asks the routing service for a bicycle route when configured; otherwise it draws a direct fallback.</p>
