@@ -10,6 +10,11 @@
       "id": "c4e7",
       "title": "адаптация интерфейса для мобильных устройств",
       "status": "ready"
+    },
+    {
+      "id": "7c31",
+      "title": "feat: add collapsible sidebar",
+      "status": "draft"
     }
   ]
 }
