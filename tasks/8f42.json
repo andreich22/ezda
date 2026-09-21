@@ -1,9 +1,9 @@
 {
   "id": "8f42",
   "title": "feat: hide mobile sidebar with swipe gesture",
-  "status": "draft",
+  "status": "in_progress",
   "createdAt": "2026-09-21T15:37:29.633Z",
-  "updatedAt": "2026-09-21T15:37:29.633Z",
+  "updatedAt": "2026-09-21T16:15:00.000Z",
   "issue": {
     "number": 13,
     "url": "https://github.com/andreich22/ezda/issues/13",
@@ -30,7 +30,9 @@
     "Existing open/close control and keyboard accessibility continue to work.",
     "No regression in route creation, editing, or point dragging."
   ],
-  "technicalApproach": [],
+  "technicalApproach": [
+    "Add pointer gesture handling to the mobile bottom sheet with a 72px downward-distance threshold and horizontal-direction guard; dismiss only when the sheet is at scrollTop 0 so normal content scrolling remains intact. Reuse the existing collapsed state and transition, keep desktop behavior unchanged, and disable transitions for reduced-motion users."
+  ],
   "definitionOfDone": [
     "Implementation follows existing UI/component conventions.",
     "Relevant tests are added/updated.",
@@ -42,6 +44,11 @@
       "at": "2026-09-21T15:37:29.633Z",
       "event": "created_from_issue",
       "details": "Automatically registered from GitHub Issue #13."
+    },
+    {
+      "at": "2026-09-21T16:15:00.000Z",
+      "event": "implementation_started",
+      "details": "Created implementation branch task/8f42-mobile-sidebar-swipe."
     }
   ],
   "commits": [],
