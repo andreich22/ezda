@@ -1,0 +1,51 @@
+{
+  "id": "b4e2",
+  "title": "feat: add interactive route summary card",
+  "status": "draft",
+  "createdAt": "2026-09-21T10:56:41.227Z",
+  "updatedAt": "2026-09-21T10:56:41.227Z",
+  "issue": {
+    "number": 9,
+    "url": "https://github.com/andreich22/ezda/issues/9",
+    "title": "TASK-b4e2 feat: add interactive route summary card"
+  },
+  "description": "## Goal\nMake key route information easier to understand and keep it synchronized with route edits.\n\n## Requirements\n- Add a compact route summary card with distance and estimated travel time.\n- Show elevation gain/loss when available.\n- Show the number of route points.\n- Show route difficulty only when a defined calculation is available.\n- Use compact visual indicators.\n- Highlight the relevant route segment when a metric supports segment-level interaction.\n- Adapt the card for mobile layouts.\n- Update values after route creation and after point moves/edits.\n\n## Acceptance Criteria\n- [ ] Card displays current route metrics after route creation.\n- [ ] Metrics update after route points are added, removed, or dragged.\n- [ ] Unavailable metrics are omitted or shown in a neutral state.\n- [ ] Card remains readable and does not block important map interactions.\n- [ ] Mobile presentation is compact and usable.\n- [ ] Existing route editing behavior is preserved.\n\n## Definition of Done\n- [ ] Metric calculation/reuse follows existing project architecture.\n- [ ] Relevant tests are added or updated.\n- [ ] Existing test suite passes.\n- [ ] No regression in route rendering or editing.",
+  "requirements": [
+    "Add a compact route summary card with distance and estimated travel time.",
+    "Show elevation gain/loss when available.",
+    "Show the number of route points.",
+    "Show route difficulty only when a defined calculation is available.",
+    "Use compact visual indicators.",
+    "Highlight the relevant route segment when a metric supports segment-level interaction.",
+    "Adapt the card for mobile layouts.",
+    "Update values after route creation and after point moves/edits."
+  ],
+  "definitionOfReady": [
+    "See GitHub Issue #9 for the definitionOfReady definition."
+  ],
+  "acceptanceCriteria": [
+    "Card displays current route metrics after route creation.",
+    "Metrics update after route points are added, removed, or dragged.",
+    "Unavailable metrics are omitted or shown in a neutral state.",
+    "Card remains readable and does not block important map interactions.",
+    "Mobile presentation is compact and usable.",
+    "Existing route editing behavior is preserved."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "[ ] Metric calculation/reuse follows existing project architecture.",
+    "[ ] Relevant tests are added or updated.",
+    "[ ] Existing test suite passes.",
+    "[ ] No regression in route rendering or editing."
+  ],
+  "history": [
+    {
+      "at": "2026-09-21T10:56:41.227Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #9."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
