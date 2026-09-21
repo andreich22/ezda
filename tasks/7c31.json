@@ -1,9 +1,9 @@
 {
   "id": "7c31",
   "title": "feat: add collapsible sidebar",
-  "status": "draft",
+  "status": "in_progress",
   "createdAt": "2026-09-21T10:56:38.102Z",
-  "updatedAt": "2026-09-21T10:56:38.102Z",
+  "updatedAt": "2026-09-21T15:36:00.000Z",
   "issue": {
     "number": 8,
     "url": "https://github.com/andreich22/ezda/issues/8",
@@ -29,7 +29,9 @@
     "Existing route workflows continue to work without regressions.",
     "Controls are accessible by keyboard and have accessible names."
   ],
-  "technicalApproach": [],
+  "technicalApproach": [
+    "Use a client-side collapsed state persisted in localStorage; keep the map mounted and notify MapLibre to resize after sidebar changes. Use CSS transitions for desktop width and mobile bottom-sheet translation."
+  ],
   "definitionOfDone": [
     "[ ] Implementation follows existing UI/component conventions.",
     "[ ] Relevant tests are added or updated.",
@@ -41,6 +43,11 @@
       "at": "2026-09-21T10:56:38.102Z",
       "event": "created_from_issue",
       "details": "Automatically registered from GitHub Issue #8."
+    },
+    {
+      "at": "2026-09-21T15:36:00.000Z",
+      "event": "implementation_started",
+      "details": "Created implementation branch task/7c31-collapsible-sidebar."
     }
   ],
   "commits": [],
