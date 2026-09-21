@@ -1,0 +1,49 @@
+{
+  "id": "7c31",
+  "title": "feat: add collapsible sidebar",
+  "status": "draft",
+  "createdAt": "2026-09-21T10:56:38.102Z",
+  "updatedAt": "2026-09-21T10:56:38.102Z",
+  "issue": {
+    "number": 8,
+    "url": "https://github.com/andreich22/ezda/issues/8",
+    "title": "TASK-7c31 feat: add collapsible sidebar"
+  },
+  "description": "## Goal\nImprove map workspace usage and mobile responsiveness by making the left sidebar collapsible.\n\n## Requirements\n- Add a control to collapse and expand the left sidebar.\n- Let the map occupy the freed space when the sidebar is collapsed.\n- On mobile, present the sidebar as a bottom sheet.\n- Preserve the sidebar state where appropriate.\n- Support keyboard interaction and accessible labels.\n- Keep route creation, editing, and point dragging functional in both states.\n\n## Acceptance Criteria\n- [ ] Sidebar can be opened and closed with one action.\n- [ ] Map resizes correctly after sidebar state changes.\n- [ ] Mobile layout uses a bottom sheet without permanently covering the map.\n- [ ] State transitions do not cause visible layout jumps.\n- [ ] Existing route workflows continue to work without regressions.\n- [ ] Controls are accessible by keyboard and have accessible names.\n\n## Definition of Done\n- [ ] Implementation follows existing UI/component conventions.\n- [ ] Relevant tests are added or updated.\n- [ ] Existing test suite passes.\n- [ ] No regression in desktop or mobile layouts.",
+  "requirements": [
+    "Add a control to collapse and expand the left sidebar.",
+    "Let the map occupy the freed space when the sidebar is collapsed.",
+    "On mobile, present the sidebar as a bottom sheet.",
+    "Preserve the sidebar state where appropriate.",
+    "Support keyboard interaction and accessible labels.",
+    "Keep route creation, editing, and point dragging functional in both states."
+  ],
+  "definitionOfReady": [
+    "See GitHub Issue #8 for the definitionOfReady definition."
+  ],
+  "acceptanceCriteria": [
+    "Sidebar can be opened and closed with one action.",
+    "Map resizes correctly after sidebar state changes.",
+    "Mobile layout uses a bottom sheet without permanently covering the map.",
+    "State transitions do not cause visible layout jumps.",
+    "Existing route workflows continue to work without regressions.",
+    "Controls are accessible by keyboard and have accessible names."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "[ ] Implementation follows existing UI/component conventions.",
+    "[ ] Relevant tests are added or updated.",
+    "[ ] Existing test suite passes.",
+    "[ ] No regression in desktop or mobile layouts."
+  ],
+  "history": [
+    {
+      "at": "2026-09-21T10:56:38.102Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #8."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
