@@ -57,7 +57,12 @@ export default function MapClient() {
     });
 
     mapRef.current = map;
-    return () => map.remove();
+    const handleSidebarChange = () => map.resize();
+    window.addEventListener("ezda:sidebar-change", handleSidebarChange);
+    return () => {
+      window.removeEventListener("ezda:sidebar-change", handleSidebarChange);
+      map.remove();
+    };
   }, []);
 
   useEffect(() => {
