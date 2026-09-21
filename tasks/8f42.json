@@ -1,0 +1,50 @@
+{
+  "id": "8f42",
+  "title": "feat: hide mobile sidebar with swipe gesture",
+  "status": "draft",
+  "createdAt": "2026-09-21T15:37:29.633Z",
+  "updatedAt": "2026-09-21T15:37:29.633Z",
+  "issue": {
+    "number": 13,
+    "url": "https://github.com/andreich22/ezda/issues/13",
+    "title": "TASK-8f42 feat: hide mobile sidebar with swipe gesture"
+  },
+  "description": "## Goal\nImprove mobile map usability by allowing the route sidebar/bottom sheet to be hidden with a swipe gesture.\n\n## Requirements\n- Support a natural vertical swipe gesture on the mobile sidebar/bottom sheet to dismiss it.\n- Swipe down should collapse/hide the bottom sheet when the gesture passes a sensible threshold.\n- Keep the existing tap/button toggle working.\n- Allow the sheet to be revealed again with the existing control.\n- Do not interfere with scrolling and interacting with controls inside the sidebar.\n- Keep desktop behavior unchanged.\n- Respect reduced-motion preferences where applicable.\n\n## Acceptance criteria\n- On mobile, a downward swipe on the sheet hides/collapses it.\n- Short/accidental drags do not unexpectedly close the sheet.\n- Content inside the sheet remains scrollable and interactive.\n- The map becomes fully usable after the sheet is hidden.\n- Existing open/close control and keyboard accessibility continue to work.\n- No regression in route creation, editing, or point dragging.\n\n## Definition of done\n- Implementation follows existing UI/component conventions.\n- Relevant tests are added/updated.\n- Existing test suite passes.\n- Desktop and mobile behavior are verified.",
+  "requirements": [
+    "Support a natural vertical swipe gesture on the mobile sidebar/bottom sheet to dismiss it.",
+    "Swipe down should collapse/hide the bottom sheet when the gesture passes a sensible threshold.",
+    "Keep the existing tap/button toggle working.",
+    "Allow the sheet to be revealed again with the existing control.",
+    "Do not interfere with scrolling and interacting with controls inside the sidebar.",
+    "Keep desktop behavior unchanged.",
+    "Respect reduced-motion preferences where applicable."
+  ],
+  "definitionOfReady": [
+    "See GitHub Issue #13 for the definitionOfReady definition."
+  ],
+  "acceptanceCriteria": [
+    "On mobile, a downward swipe on the sheet hides/collapses it.",
+    "Short/accidental drags do not unexpectedly close the sheet.",
+    "Content inside the sheet remains scrollable and interactive.",
+    "The map becomes fully usable after the sheet is hidden.",
+    "Existing open/close control and keyboard accessibility continue to work.",
+    "No regression in route creation, editing, or point dragging."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "Implementation follows existing UI/component conventions.",
+    "Relevant tests are added/updated.",
+    "Existing test suite passes.",
+    "Desktop and mobile behavior are verified."
+  ],
+  "history": [
+    {
+      "at": "2026-09-21T15:37:29.633Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #13."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
