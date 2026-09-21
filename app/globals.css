@@ -5,7 +5,7 @@
   .logo{font-size:20px}.header span{font-size:11px}
   .content{display:block;overflow:hidden}
   .map-wrap{position:absolute;inset:0;width:100%;height:100%}
-  .sidebar{position:absolute;left:0;right:0;bottom:0;width:auto;max-height:min(46dvh,520px);padding:12px 12px calc(12px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid #ddd;border-radius:16px 16px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.12);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;transition:transform .25s ease,padding .25s ease;z-index:10}
+  .sidebar{position:absolute;left:0;right:0;bottom:0;width:auto;max-height:min(46dvh,520px);padding:12px 12px calc(12px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid #ddd;border-radius:16px 16px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.12);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;transition:transform .25s ease,padding .25s ease;z-index:10}
   .sidebar-collapsed .sidebar{width:auto;padding-left:12px;padding-right:12px;border-right:0;transform:translateY(calc(100% + 16px));overflow:hidden}
   .sidebar-toggle{left:auto;right:12px;top:auto;bottom:calc(min(46dvh,520px) + 12px);width:44px;height:44px;transition:bottom .25s ease}.sidebar-collapsed .sidebar-toggle{left:auto;right:12px;bottom:12px}
   .sidebar h1{font-size:20px;margin-bottom:6px}.sidebar p{font-size:13px;margin:0 0 8px}
@@ -14,3 +14,5 @@
   .maplibregl-ctrl-top-right{top:10px;right:10px}.maplibregl-ctrl-group button{width:44px;height:44px}
 }
 @media (max-width: 380px){.header span{display:none}.sidebar{max-height:50dvh}.sidebar-collapsed .sidebar{max-height:50dvh}.sidebar-toggle{bottom:calc(50dvh + 12px)}.sidebar-collapsed .sidebar-toggle{bottom:12px}.stat{grid-template-columns:1fr 1fr}.card{padding:9px}.label{font-size:10px}.value{font-size:15px}}
+
+@media (prefers-reduced-motion: reduce){.sidebar,.sidebar-toggle{transition:none}}
