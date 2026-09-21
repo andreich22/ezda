@@ -24,6 +24,7 @@ export default function Home() {
       </header>
       <div className={`content ${collapsed ? "sidebar-collapsed" : ""}`}>
         <aside
+          id="route-sidebar"
           className="sidebar"
           aria-hidden={collapsed}
           inert={collapsed ? true : undefined}
