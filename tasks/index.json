@@ -10,6 +10,11 @@
       "id": "c4e7",
       "title": "адаптация интерфейса для мобильных устройств",
       "status": "ready"
+    },
+    {
+      "id": "d91f",
+      "title": "feat: add map quick actions",
+      "status": "draft"
     }
   ]
 }

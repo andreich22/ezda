@@ -1,0 +1,54 @@
+{
+  "id": "d91f",
+  "title": "feat: add map quick actions",
+  "status": "draft",
+  "createdAt": "2026-09-21T10:56:49.554Z",
+  "updatedAt": "2026-09-21T10:56:49.554Z",
+  "issue": {
+    "number": 10,
+    "url": "https://github.com/andreich22/ezda/issues/10",
+    "title": "TASK-d91f feat: add map quick actions"
+  },
+  "description": "## Goal\nMake frequent map and route actions immediately accessible without searching the main panel.\n\n## Requirements\nAdd a floating quick-actions control with:\n- My location;\n- Fit route to map;\n- Clear route;\n- Undo last action.\n\nAlso:\n- Provide clear enabled/disabled states.\n- Add accessible labels and tooltips where appropriate.\n- Fit the map to the complete route after route creation or changes when appropriate.\n- Show lightweight success/error feedback for user actions.\n- Keep controls clear of important map content and adapt them for mobile.\n\n## Acceptance Criteria\n- [ ] Available actions can be executed directly from the quick-actions control.\n- [ ] Fit-to-route frames the complete current route correctly.\n- [ ] Unavailable actions are visibly disabled and cannot be triggered.\n- [ ] Action feedback is understandable and non-blocking.\n- [ ] Controls work on desktop and mobile without obscuring key map interactions.\n- [ ] Existing route creation and editing flows continue to work.\n\n## Definition of Done\n- [ ] Implementation follows existing UI/component conventions.\n- [ ] Relevant tests are added or updated.\n- [ ] Existing test suite passes.\n- [ ] No regression in map interaction behavior.",
+  "requirements": [
+    "Add a floating quick-actions control with:",
+    "My location;",
+    "Fit route to map;",
+    "Clear route;",
+    "Undo last action.",
+    "Also:",
+    "Provide clear enabled/disabled states.",
+    "Add accessible labels and tooltips where appropriate.",
+    "Fit the map to the complete route after route creation or changes when appropriate.",
+    "Show lightweight success/error feedback for user actions.",
+    "Keep controls clear of important map content and adapt them for mobile."
+  ],
+  "definitionOfReady": [
+    "See GitHub Issue #10 for the definitionOfReady definition."
+  ],
+  "acceptanceCriteria": [
+    "Available actions can be executed directly from the quick-actions control.",
+    "Fit-to-route frames the complete current route correctly.",
+    "Unavailable actions are visibly disabled and cannot be triggered.",
+    "Action feedback is understandable and non-blocking.",
+    "Controls work on desktop and mobile without obscuring key map interactions.",
+    "Existing route creation and editing flows continue to work."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "[ ] Implementation follows existing UI/component conventions.",
+    "[ ] Relevant tests are added or updated.",
+    "[ ] Existing test suite passes.",
+    "[ ] No regression in map interaction behavior."
+  ],
+  "history": [
+    {
+      "at": "2026-09-21T10:56:49.554Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #10."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
