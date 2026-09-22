@@ -12,5 +12,5 @@ export function undoHistory(history: RoutePoint[][]): { history: RoutePoint[][];
   if (!history.length) return {history, points: null};
   const next = [...history];
   const points = next.pop() ?? null;
-  return {history: next, points: points ? snapshotPoints(points) : null};
+  return {history: next, points: points?.length ? snapshotPoints(points) : null};
 }
