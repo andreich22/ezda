@@ -1,0 +1,51 @@
+{
+  "id": "b6e4",
+  "title": "production-ready automatic application versioning",
+  "status": "draft",
+  "createdAt": "2026-09-22T07:15:29.910Z",
+  "updatedAt": "2026-09-22T07:15:29.910Z",
+  "issue": {
+    "number": 17,
+    "url": "https://github.com/andreich22/ezda/issues/17",
+    "title": "TASK-b6e4: production-ready automatic application versioning"
+  },
+  "description": "## Требования\n\nРеализовать автоматическое SemVer-версионирование приложения после merge Pull Request в main.\n\n- package.json — единственный источник версии; package-lock.json должен быть синхронизирован.\n- Добавить проверку версии и ручные patch/minor/major команды без автоматических Git tags.\n- При открытии/обновлении PR автоматически увеличивать PATCH, если версия PR совпадает с base; если разработчик явно изменил версию, ничего не менять.\n- Защититься от циклических запусков.\n- После merge проверять, что версия строго увеличилась.\n- После успешной проверки создавать идемпотентный GitHub Release v<version> с generated release notes.\n- Проверять существующий tag и выявлять конфликт, если он указывает на другой commit.\n- Добавить тесты для SemVer, lockfile consistency, monotonicity и tag consistency.\n\n## Acceptance Criteria\n\n- [ ] package.json и package-lock.json содержат одну валидную SemVer-версию.\n- [ ] CI запускает version:check до тестов/build.\n- [ ] PR без явного version bump получает PATCH bump.\n- [ ] Явный MAJOR/MINOR/PATCH bump не перезаписывается.\n- [ ] Merge с неизменённой или уменьшенной версией блокируется validation workflow.\n- [ ] После успешного merge создаётся v<version> Release, повторный запуск не создаёт дубликат.\n- [ ] Существующий tag на другом commit вызывает ошибку.\n- [ ] Все существующие проверки и новые тесты проходят.\n\n## Definition of Done\n\nПолный CI проходит в Pull Request, включая version validation, unit tests/coverage и build.",
+  "requirements": [
+    "Реализовать автоматическое SemVer-версионирование приложения после merge Pull Request в main.",
+    "package.json — единственный источник версии; package-lock.json должен быть синхронизирован.",
+    "Добавить проверку версии и ручные patch/minor/major команды без автоматических Git tags.",
+    "При открытии/обновлении PR автоматически увеличивать PATCH, если версия PR совпадает с base; если разработчик явно изменил версию, ничего не менять.",
+    "Защититься от циклических запусков.",
+    "После merge проверять, что версия строго увеличилась.",
+    "После успешной проверки создавать идемпотентный GitHub Release v<version> с generated release notes.",
+    "Проверять существующий tag и выявлять конфликт, если он указывает на другой commit.",
+    "Добавить тесты для SemVer, lockfile consistency, monotonicity и tag consistency."
+  ],
+  "definitionOfReady": [
+    "See GitHub Issue #17 for the definitionOfReady definition."
+  ],
+  "acceptanceCriteria": [
+    "package.json и package-lock.json содержат одну валидную SemVer-версию.",
+    "CI запускает version:check до тестов/build.",
+    "PR без явного version bump получает PATCH bump.",
+    "Явный MAJOR/MINOR/PATCH bump не перезаписывается.",
+    "Merge с неизменённой или уменьшенной версией блокируется validation workflow.",
+    "После успешного merge создаётся v<version> Release, повторный запуск не создаёт дубликат.",
+    "Существующий tag на другом commit вызывает ошибку.",
+    "Все существующие проверки и новые тесты проходят."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "Полный CI проходит в Pull Request, включая version validation, unit tests/coverage и build."
+  ],
+  "history": [
+    {
+      "at": "2026-09-22T07:15:29.910Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #17."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
