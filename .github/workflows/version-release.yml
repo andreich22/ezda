@@ -1,0 +1,135 @@
+name: Validate merged version and release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: application-release-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout merged commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate merge version
+        env:
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          if [ -z "$MERGE_SHA" ]; then
+            echo "Missing merge commit SHA."
+            exit 1
+          fi
+
+          MERGE_VERSION="$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")"
+          PARENT_SHA="$(git rev-list --parents -n 1 "$MERGE_SHA" | cut -d' ' -f2)"
+
+          if [ -z "$PARENT_SHA" ]; then
+            echo "Could not determine the pre-merge base commit."
+            exit 1
+          fi
+
+          git show "$PARENT_SHA:package.json" > /tmp/base-package.json
+          BASE_VERSION="$(node -p "JSON.parse(require('fs').readFileSync('/tmp/base-package.json', 'utf8')).version")"
+
+          echo "Pre-merge version: $BASE_VERSION"
+          echo "Merged version:   $MERGE_VERSION"
+
+          npm run version:check
+          node scripts/validate-merge-version.mjs "$BASE_VERSION" "$MERGE_VERSION"
+
+      - name: Check tag and release state
+        id: release_state
+        env:
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")"
+          TAG="v$VERSION"
+
+          git fetch --tags --force
+
+          TAG_EXISTS=false
+          TAG_COMMIT=""
+          if git rev-parse --verify "refs/tags/$TAG^{commit}" >/dev/null 2>&1; then
+            TAG_EXISTS=true
+            TAG_COMMIT="$(git rev-parse "refs/tags/$TAG^{commit}")"
+          fi
+
+          export TAG_EXISTS TAG_COMMIT MERGE_SHA TAG_NAME="$TAG"
+          node --input-type=module - <<'NODE'
+          import {assertTagConsistency} from './scripts/version-utils.mjs';
+
+          const tagExists = process.env.TAG_EXISTS === 'true';
+          const tagCommit = process.env.TAG_COMMIT || undefined;
+          const mergeSha = process.env.MERGE_SHA;
+          const tagName = process.env.TAG_NAME;
+
+          assertTagConsistency({tagExists, tagCommit, mergeSha, tagName});
+          console.log(tagExists
+            ? `Existing tag ${tagName} points to the merge commit.`
+            : `Tag ${tagName} does not exist yet.`);
+          NODE
+
+          if gh release view "$TAG" --json tagName >/dev/null 2>&1; then
+            RELEASE_EXISTS=true
+          else
+            RELEASE_EXISTS=false
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "tag_exists=$TAG_EXISTS" >> "$GITHUB_OUTPUT"
+          echo "tag_commit=$TAG_COMMIT" >> "$GITHUB_OUTPUT"
+          echo "release_exists=$RELEASE_EXISTS" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: steps.release_state.outputs.release_exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.release_state.outputs.tag }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          gh release create "$TAG" --target "$MERGE_SHA" --title "$TAG" --generate-notes
+
+      - name: Verify existing release
+        if: steps.release_state.outputs.release_exists == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.release_state.outputs.tag }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          RELEASE_TAG="$(gh release view "$TAG" --json tagName --jq '.tagName')"
+          [ "$RELEASE_TAG" = "$TAG" ] || {
+            echo "Existing release does not match expected tag $TAG."
+            exit 1
+          }
+
+          git fetch --tags --force
+          TAG_COMMIT="$(git rev-parse "refs/tags/$TAG^{commit}")"
+          [ "$TAG_COMMIT" = "$MERGE_SHA" ] || {
+            echo "Existing release tag $TAG points to $TAG_COMMIT, expected $MERGE_SHA."
+            exit 1
+          }
+
+          echo "Release $TAG already exists and is consistent with the merge commit."

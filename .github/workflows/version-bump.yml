@@ -1,0 +1,70 @@
+name: Automatic application version bump
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: application-version-bump-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    if: >-
+      github.actor != 'github-actions[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.repository }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine version change
+        id: version
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          BASE_VERSION="$(git show "$BASE_SHA:package.json" | node -e 'let s=""; process.stdin.on("data", d => s += d); process.stdin.on("end", () => process.stdout.write(JSON.parse(s).version));')"
+          HEAD_VERSION="$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")"
+
+          echo "Base version: $BASE_VERSION"
+          echo "PR version:   $HEAD_VERSION"
+
+          if [ "$HEAD_VERSION" = "$BASE_VERSION" ]; then
+            echo "needs_bump=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "needs_bump=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Bump patch version
+        if: steps.version.outputs.needs_bump == 'true'
+        run: npm version patch --no-git-tag-version
+
+      - name: Validate application version
+        run: npm run version:check
+
+      - name: Commit automatic version bump
+        if: steps.version.outputs.needs_bump == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "chore: bump application version to $(node -p "require('./package.json').version")"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
