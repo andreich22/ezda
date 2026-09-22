@@ -40,6 +40,11 @@
       "id": "9e4a",
       "title": "Подключить Ezda к Supabase PostgreSQL через Transaction Pooler",
       "status": "in_progress"
+    },
+    {
+      "id": "7d3a",
+      "title": "Автоматически повышать версию приложения после merge в main",
+      "status": "draft"
     }
   ]
 }
