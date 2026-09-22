@@ -1,30 +1,28 @@
 name: Automatic application version bump
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
-  group: application-version-bump-${{ github.event.pull_request.number }}
+  group: application-version-bump-main
   cancel-in-progress: false
 
 jobs:
   bump:
-    if: >-
-      github.actor != 'github-actions[bot]' &&
-      github.event.pull_request.head.repo.full_name == github.repository
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout PR branch
+      - name: Checkout main
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.repository }}
+          ref: main
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -36,35 +34,73 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Determine version change
+      - name: Determine whether merged change already bumped version
         id: version
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BEFORE_SHA: ${{ github.event.before }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          BASE_VERSION="$(git show "$BASE_SHA:package.json" | node -e 'let s=""; process.stdin.on("data", d => s += d); process.stdin.on("end", () => process.stdout.write(JSON.parse(s).version));')"
-          HEAD_VERSION="$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")"
+          CURRENT_VERSION="$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")"
 
-          echo "Base version: $BASE_VERSION"
-          echo "PR version:   $HEAD_VERSION"
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "Manual run: version bump requested."
+            echo "needs_bump=true" >> "$GITHUB_OUTPUT"
+            echo "current_version=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
-          if [ "$HEAD_VERSION" = "$BASE_VERSION" ]; then
+          if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            echo "No previous main commit is available; skipping automatic bump."
+            echo "needs_bump=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if ! git cat-file -e "$BEFORE_SHA:package.json" 2>/dev/null; then
+            echo "Previous main commit has no package.json; skipping automatic bump."
+            echo "needs_bump=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          PREVIOUS_VERSION="$(git show "$BEFORE_SHA:package.json" | node -e 'let s=""; process.stdin.on("data", d => s += d); process.stdin.on("end", () => process.stdout.write(JSON.parse(s).version));')"
+
+          echo "Previous main version: $PREVIOUS_VERSION"
+          echo "Current main version:  $CURRENT_VERSION"
+
+          if [ "$CURRENT_VERSION" = "$PREVIOUS_VERSION" ]; then
+            echo "Merged change did not modify the application version; creating a patch bump."
             echo "needs_bump=true" >> "$GITHUB_OUTPUT"
           else
+            echo "Merged change already modified the application version; no additional bump."
             echo "needs_bump=false" >> "$GITHUB_OUTPUT"
           fi
+
+          echo "current_version=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Bump patch version
         if: steps.version.outputs.needs_bump == 'true'
         run: npm version patch --no-git-tag-version
 
       - name: Validate application version
+        if: steps.version.outputs.needs_bump == 'true'
         run: npm run version:check
 
-      - name: Commit automatic version bump
+      - name: Create version bump pull request
         if: steps.version.outputs.needs_bump == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package.json package-lock.json
-          git commit -m "chore: bump application version to $(node -p "require('./package.json').version")"
-          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: automation/version-bump
+          delete-branch: true
+          commit-message: "chore: 7d3a | bump application version"
+          title: "chore: 7d3a | bump application version"
+          body: |
+            Automatic application version bump after a change reached main without changing the application version.
+
+            Task: TASK-7d3a
+            Bump type: PATCH
+            Source version: ${{ steps.version.outputs.current_version }}
+            Target version: the next PATCH version
+
+            The version change is delivered through a normal pull request; main is never updated directly by this job.
+          labels: automated
