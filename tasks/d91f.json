@@ -1,0 +1,51 @@
+{
+  "id": "d91f",
+  "title": "feat: add map quick actions",
+  "status": "draft",
+  "createdAt": "2026-09-22T08:00:00.000Z",
+  "updatedAt": "2026-09-22T08:00:00.000Z",
+  "issue": {
+    "number": 10,
+    "url": "https://github.com/andreich22/ezda/issues/10",
+    "title": "TASK-d91f feat: add map quick actions"
+  },
+  "description": "Make frequent map and route actions immediately accessible without searching the main panel.",
+  "requirements": [
+    "Add My location, Fit route to map, Clear route, and Undo last action.",
+    "Provide clear enabled/disabled states.",
+    "Add accessible labels and tooltips where appropriate.",
+    "Fit the map to the complete route after route creation or changes when appropriate.",
+    "Show lightweight success/error feedback for user actions.",
+    "Keep controls clear of important map content and adapt them for mobile."
+  ],
+  "definitionOfReady": [
+    "See GitHub Issue #10 for the definitionOfReady definition."
+  ],
+  "acceptanceCriteria": [
+    "Available actions can be executed directly from the quick-actions control.",
+    "Fit-to-route frames the complete current route correctly.",
+    "Unavailable actions are visibly disabled and cannot be triggered.",
+    "Action feedback is understandable and non-blocking.",
+    "Controls work on desktop and mobile without obscuring key map interactions.",
+    "Existing route creation and editing flows continue to work."
+  ],
+  "technicalApproach": [
+    "Implement the floating control inside MapClient so actions share the existing map, route, points, and reset state. Keep a bounded point-history stack for undo, use browser geolocation for My location, reuse route geometry bounds for Fit route, and expose non-blocking status feedback."
+  ],
+  "definitionOfDone": [
+    "Implementation follows existing UI/component conventions.",
+    "Relevant tests are added or updated.",
+    "Existing test suite passes.",
+    "No regression in map interaction behavior."
+  ],
+  "history": [
+    {
+      "at": "2026-09-22T08:00:00.000Z",
+      "event": "created_from_issue",
+      "details": "Registered from GitHub Issue #10 before implementation."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
