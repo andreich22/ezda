@@ -1,9 +1,9 @@
 {
   "id": "d91f",
   "title": "feat: add map quick actions",
-  "status": "in_progress",
+  "status": "done",
   "createdAt": "2026-09-22T08:00:00.000Z",
-  "updatedAt": "2026-09-22T08:02:00.000Z",
+  "updatedAt": "2026-09-22T08:06:00.000Z",
   "issue": {
     "number": 10,
     "url": "https://github.com/andreich22/ezda/issues/10",
@@ -48,6 +48,11 @@
       "at": "2026-09-22T08:02:00.000Z",
       "event": "implementation_started",
       "details": "Started implementation of map quick actions."
+    },
+    {
+      "at": "2026-09-22T08:06:00.000Z",
+      "event": "completed",
+      "details": "Implemented floating map quick actions, route-point undo history, geolocation centering, route fitting, clear action, responsive controls, feedback, tests, and successful CI/build verification."
     }
   ],
   "commits": [],
