@@ -19,6 +19,7 @@ describe("route history", () => {
 
   it("returns null when there is nothing to undo", () => {
     expect(undoHistory([])).toEqual({history: [], points: null});
+    expect(undoHistory([[]])).toEqual({history: [], points: null});
     expect(snapshotPoints([[1, 2]])).toEqual([[1, 2]]);
   });
 });
