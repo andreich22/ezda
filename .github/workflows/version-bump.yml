@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 permissions:
   contents: write
@@ -38,16 +37,8 @@ jobs:
         id: version
         env:
           BEFORE_SHA: ${{ github.event.before }}
-          EVENT_NAME: ${{ github.event_name }}
         run: |
           CURRENT_VERSION="$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")"
-
-          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            echo "Manual run: version bump requested."
-            echo "needs_bump=true" >> "$GITHUB_OUTPUT"
-            echo "current_version=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
 
           if [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
             echo "No previous main commit is available; skipping automatic bump."
@@ -80,6 +71,11 @@ jobs:
         if: steps.version.outputs.needs_bump == 'true'
         run: npm version patch --no-git-tag-version
 
+      - name: Read target version
+        if: steps.version.outputs.needs_bump == 'true'
+        id: target
+        run: echo "version=$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")" >> "$GITHUB_OUTPUT"
+
       - name: Validate application version
         if: steps.version.outputs.needs_bump == 'true'
         run: npm run version:check
@@ -92,15 +88,15 @@ jobs:
           base: main
           branch: automation/version-bump
           delete-branch: true
-          commit-message: "chore: 7d3a | bump application version"
-          title: "chore: 7d3a | bump application version"
+          commit-message: "chore: 7d3a | bump application version to ${{ steps.target.outputs.version }}"
+          title: "chore: 7d3a | bump application version to ${{ steps.target.outputs.version }}"
           body: |
             Automatic application version bump after a change reached main without changing the application version.
 
             Task: TASK-7d3a
             Bump type: PATCH
             Source version: ${{ steps.version.outputs.current_version }}
-            Target version: the next PATCH version
+            Target version: ${{ steps.target.outputs.version }}
 
             The version change is delivered through a normal pull request; main is never updated directly by this job.
           labels: automated
