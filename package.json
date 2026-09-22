@@ -10,6 +10,7 @@
     "start": "next start",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:migrate:sql": "node ./scripts/migrate-supabase.mjs",
     "tasks:validate": "node scripts/validate-tasks.mjs",
     "test": "vitest",
     "test:run": "vitest run",
