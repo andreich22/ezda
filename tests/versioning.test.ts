@@ -88,6 +88,10 @@ describe("semantic version comparisons", () => {
     expect(() => assertVersionIncreased("0.0.18", "1.0.0")).not.toThrow();
   });
 
+  it("accepts the 0.0.9 -> 0.0.10 patch boundary", () => {
+    expect(() => assertVersionIncreased("0.0.9", "0.0.10")).not.toThrow();
+  });
+
   it("rejects equal and decreasing versions", () => {
     expect(() => assertVersionIncreased("0.0.18", "0.0.18")).toThrow();
     expect(() => assertVersionIncreased("0.0.18", "0.0.17")).toThrow();
