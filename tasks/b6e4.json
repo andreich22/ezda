@@ -1,9 +1,9 @@
 {
   "id": "b6e4",
   "title": "production-ready automatic application versioning",
-  "status": "draft",
+  "status": "done",
   "createdAt": "2026-09-22T07:15:29.910Z",
-  "updatedAt": "2026-09-22T07:15:29.910Z",
+  "updatedAt": "2026-09-22T07:20:55.976Z",
   "issue": {
     "number": 17,
     "url": "https://github.com/andreich22/ezda/issues/17",
@@ -43,9 +43,16 @@
       "at": "2026-09-22T07:15:29.910Z",
       "event": "created_from_issue",
       "details": "Automatically registered from GitHub Issue #17."
+    },
+    {
+      "at": "2026-09-22T07:20:55.976Z",
+      "event": "completed",
+      "details": "Implemented and validated in PR #16; merged to main with release v0.1.1."
     }
   ],
-  "commits": [],
+  "commits": [
+    "94538b2b333b2ef7b3906718e343c5d338eb0a45"
+  ],
   "decisionLog": [],
   "relations": []
 }
