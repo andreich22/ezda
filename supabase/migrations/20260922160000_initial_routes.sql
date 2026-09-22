@@ -16,10 +16,6 @@ create table if not exists public.routes (
   created_at timestamptz not null default now()
 );
 
-create index if not exists routes_geometry_gist_idx
-  on public.routes
-  using gist (geometry);
-
 -- The original MVP schema stored GeoJSON in text. If such a table already exists,
 -- convert it in-place without losing route metadata.
 do $$
