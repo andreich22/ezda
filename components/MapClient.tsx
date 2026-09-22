@@ -204,8 +204,8 @@ export default function MapClient() {
     }
   }
 
-  function reset() {
-    if (points.length) historyRef.current = pushHistory(historyRef.current, points);
+  function reset(recordHistory = true) {
+    if (recordHistory && points.length) historyRef.current = pushHistory(historyRef.current, points);
     setPoints([]);
     setRoute(null);
     setError("");
@@ -245,7 +245,7 @@ export default function MapClient() {
   function clearRoute() {
     if (!points.length) return;
     historyRef.current = pushHistory(historyRef.current, points);
-    reset();
+    reset(false);
     showActionFeedback("Route cleared");
   }
 
