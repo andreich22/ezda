@@ -20,6 +20,11 @@
       "id": "8f42",
       "title": "feat: hide mobile sidebar with swipe gesture",
       "status": "in_progress"
+    },
+    {
+      "id": "b6e4",
+      "title": "production-ready automatic application versioning",
+      "status": "draft"
     }
   ]
 }
