@@ -1,9 +1,9 @@
 {
   "id": "b4e2",
   "title": "feat: add interactive route summary card",
-  "status": "draft",
+  "status": "done",
   "createdAt": "2026-09-22T07:58:00.000Z",
-  "updatedAt": "2026-09-22T07:58:00.000Z",
+  "updatedAt": "2026-09-22T08:05:00.000Z",
   "issue": {
     "number": 9,
     "url": "https://github.com/andreich22/ezda/issues/9",
@@ -32,7 +32,7 @@
     "Existing route editing behavior is preserved."
   ],
   "technicalApproach": [
-    "Reuse the existing route response metrics and keep the summary in MapClient so it updates from the same points/route state. Add compact visual metric cards and mobile-safe spacing; omit unsupported difficulty/segment interaction until the routing response exposes those metrics."
+    "Reuse the existing route response metrics in MapClient. The summary is driven directly by the same points/route state used for route creation and point dragging, with compact cards and mobile-safe layout. Difficulty and segment highlighting remain omitted because the current routing response does not expose a defined calculation or segment metric."
   ],
   "definitionOfDone": [
     "Metric calculation/reuse follows existing project architecture.",
@@ -45,6 +45,16 @@
       "at": "2026-09-22T07:58:00.000Z",
       "event": "created_from_issue",
       "details": "Registered from GitHub Issue #9 before implementation."
+    },
+    {
+      "at": "2026-09-22T08:05:00.000Z",
+      "event": "implementation_verified",
+      "details": "Verified existing route summary implementation covers distance, duration, elevation gain, waypoint count, mobile layout, and updates after route edits. Unsupported difficulty/segment metrics are intentionally omitted."
+    },
+    {
+      "at": "2026-09-22T08:05:00.000Z",
+      "event": "completed",
+      "details": "Acceptance criteria satisfied by the current MapClient implementation."
     }
   ],
   "commits": [],
