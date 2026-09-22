@@ -3,7 +3,7 @@
   "title": "Подключить Ezda к Supabase PostgreSQL через Transaction Pooler",
   "status": "in_progress",
   "createdAt": "2026-09-22T15:06:15.553Z",
-  "updatedAt": "2026-09-22T15:58:18Z",
+  "updatedAt": "2026-09-22T16:01:00Z",
   "issue": {
     "number": 26,
     "url": "https://github.com/andreich22/ezda/issues/26",
@@ -57,9 +57,23 @@
       "at": "2026-09-22T15:58:18Z",
       "event": "implementation_started",
       "details": "Registration PR #27 merged; implementation branch created."
+    },
+    {
+      "at": "2026-09-22T16:01:00Z",
+      "event": "validation_passed",
+      "details": "Supabase Preview migration succeeded; project CI passed validator, tests, coverage, build, and PR task validation."
     }
   ],
-  "commits": [],
+  "commits": [
+    "fae13cc507f2dba59f8a6c63dedaff309018e155",
+    "bf3da559f2909b6f8c2bb639080b349172b20cdf",
+    "a318a42420fff0e75561a9e1a5d32f452955d312",
+    "e3aeffd0787dd81bafa4e3c7ff9183b12be87e9f",
+    "7ef5e04a9521cc7139a220e2e2bfa046c69a3c1e",
+    "cd6fbd7a55ba231d71a84a33efa947423e85fb1b",
+    "dd06eb7217ef8acc5f82b4c1af8825045de8de3e",
+    "234840543f1f20e7f57f29764c29e9e306985bc8"
+  ],
   "decisionLog": [],
   "relations": []
 }
