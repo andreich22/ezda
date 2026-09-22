@@ -389,7 +389,7 @@ export default function MapClient() {
         )}
       </div>
 
-      <button className="button" onClick={reset} disabled={!points.length}>
+      <button className="button" onClick={() => reset()} disabled={!points.length}>
         Reset route
       </button>
 
