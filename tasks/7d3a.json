@@ -3,7 +3,7 @@
   "title": "Автоматически повышать версию приложения после merge в main",
   "status": "in_progress",
   "createdAt": "2026-09-22T16:57:38.452Z",
-  "updatedAt": "2026-09-22T18:00:00.000Z",
+  "updatedAt": "2026-09-22T18:05:00.000Z",
   "issue": {
     "number": 29,
     "url": "https://github.com/andreich22/ezda/issues/29",
@@ -56,9 +56,19 @@
       "at": "2026-09-22T18:00:00.000Z",
       "event": "implementation_started",
       "details": "Registration PR #30 was merged; implementation branch task/7d3a-post-merge-version-bump created."
+    },
+    {
+      "at": "2026-09-22T18:05:00.000Z",
+      "event": "implementation_pr_created",
+      "details": "Implementation PR #31 opened for human review."
     }
   ],
-  "commits": [],
+  "commits": [
+    "3dc060c874220ea5ab24d83f51c2a94a0b02b4b0",
+    "f5833ba4c9cc09f572d42946d6c94d6689117caa",
+    "5f51705b4350ea446f8161ec7e1b3b489e6a291e",
+    "cc221b19330e3ef379ae785398649b795bacb2c0"
+  ],
   "decisionLog": [
     {
       "at": "2026-09-22T18:00:00.000Z",
