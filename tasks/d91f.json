@@ -1,9 +1,9 @@
 {
   "id": "d91f",
   "title": "feat: add map quick actions",
-  "status": "draft",
+  "status": "in_progress",
   "createdAt": "2026-09-22T08:00:00.000Z",
-  "updatedAt": "2026-09-22T08:00:00.000Z",
+  "updatedAt": "2026-09-22T08:02:00.000Z",
   "issue": {
     "number": 10,
     "url": "https://github.com/andreich22/ezda/issues/10",
@@ -43,6 +43,11 @@
       "at": "2026-09-22T08:00:00.000Z",
       "event": "created_from_issue",
       "details": "Registered from GitHub Issue #10 before implementation."
+    },
+    {
+      "at": "2026-09-22T08:02:00.000Z",
+      "event": "implementation_started",
+      "details": "Started implementation of map quick actions."
     }
   ],
   "commits": [],
