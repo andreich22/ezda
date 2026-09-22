@@ -5,6 +5,8 @@ import MapClient from "../components/MapClient";
 import { parseSidebarCollapsed, SIDEBAR_STORAGE_KEY } from "../lib/sidebar-state";
 import { shouldDismissMobileSidebarSwipe } from "../lib/sidebar-swipe";
 
+const APP_VERSION = "0.1.1";
+
 export default function Home() {
   const [collapsed, setCollapsed] = useState(false);
   const swipeStart = useRef<{ x: number; y: number } | null>(null);
@@ -44,7 +46,10 @@ export default function Home() {
     <main className="shell">
       <header className="header">
         <div className="logo">Ezda</div>
-        <span>cycling routes MVP</span>
+        <div className="header-title">
+          <span>cycling routes MVP</span>
+          <span className="app-version">v{APP_VERSION}</span>
+        </div>
       </header>
       <div className={`content ${collapsed ? "sidebar-collapsed" : ""}`}>
         <aside
