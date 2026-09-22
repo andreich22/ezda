@@ -41,6 +41,7 @@ begin
 
     alter table public.routes drop column geometry;
     alter table public.routes rename column geometry_geog to geometry;
+    alter table public.routes alter column geometry set not null;
   end if;
 end $$;
 
