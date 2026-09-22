@@ -1,0 +1,49 @@
+{
+  "id": "7d3a",
+  "title": "Автоматически повышать версию приложения после merge в main",
+  "status": "draft",
+  "createdAt": "2026-09-22T16:57:38.452Z",
+  "updatedAt": "2026-09-22T16:57:38.452Z",
+  "issue": {
+    "number": 29,
+    "url": "https://github.com/andreich22/ezda/issues/29",
+    "title": "TASK-7d3a Автоматически повышать версию приложения после merge в main"
+  },
+  "description": "## Goal\nАвтоматически увеличивать версию приложения после каждого Pull Request, который попадает в main.\n\n## Requirements\n- После merge PR в main автоматически выполнять version bump.\n- Использовать SemVer MAJOR.MINOR.PATCH.\n- Не создавать bump, если merge уже содержит самостоятельное изменение версии.\n- Изменение версии должно проходить через GitHub Actions и обычный Git workflow.\n- Не коммитить напрямую в main в обход защиты; автоматизация должна использовать допустимый механизм GitHub Actions.\n\n## Acceptance criteria\n- Merge PR в main запускает workflow.\n- Если версия не была изменена в merged PR, создаётся следующий patch version.\n- Если merged PR уже изменил версию, дополнительный bump не выполняется.\n- Версия остаётся доступной приложению через существующий механизм отображения версии.\n- Workflow не запускается повторно бесконечно из-за собственного commit.\n- Ошибки bump явно видны в Actions.\n\n## Definition of Done\n- Workflow добавлен и проверен.\n- Версия корректно увеличивается после merge.\n- Повторный запуск собственного version commit не приводит к новому bump.\n- npm/build/tests проверены.\n\n_Registration trigger refresh: 2026-09-22._",
+  "requirements": [
+    "После merge PR в main автоматически выполнять version bump.",
+    "Использовать SemVer MAJOR.MINOR.PATCH.",
+    "Не создавать bump, если merge уже содержит самостоятельное изменение версии.",
+    "Изменение версии должно проходить через GitHub Actions и обычный Git workflow.",
+    "Не коммитить напрямую в main в обход защиты; автоматизация должна использовать допустимый механизм GitHub Actions."
+  ],
+  "definitionOfReady": [
+    "See GitHub Issue #29 for the definitionOfReady definition."
+  ],
+  "acceptanceCriteria": [
+    "Merge PR в main запускает workflow.",
+    "Если версия не была изменена в merged PR, создаётся следующий patch version.",
+    "Если merged PR уже изменил версию, дополнительный bump не выполняется.",
+    "Версия остаётся доступной приложению через существующий механизм отображения версии.",
+    "Workflow не запускается повторно бесконечно из-за собственного commit.",
+    "Ошибки bump явно видны в Actions."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "Workflow добавлен и проверен.",
+    "Версия корректно увеличивается после merge.",
+    "Повторный запуск собственного version commit не приводит к новому bump.",
+    "npm/build/tests проверены.",
+    "_Registration trigger refresh: 2026-09-22._"
+  ],
+  "history": [
+    {
+      "at": "2026-09-22T16:57:38.452Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #29."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
