@@ -1,9 +1,9 @@
 {
   "id": "9e4a",
   "title": "Подключить Ezda к Supabase PostgreSQL через Transaction Pooler",
-  "status": "draft",
+  "status": "in_progress",
   "createdAt": "2026-09-22T15:06:15.553Z",
-  "updatedAt": "2026-09-22T15:06:15.553Z",
+  "updatedAt": "2026-09-22T15:58:18Z",
   "issue": {
     "number": 26,
     "url": "https://github.com/andreich22/ezda/issues/26",
@@ -35,7 +35,12 @@
     "`npm run build` проходит.",
     "Секреты отсутствуют в Git diff."
   ],
-  "technicalApproach": [],
+  "technicalApproach": [
+    "Изменить postgres.js client на `prepare: false` для совместимости с Supabase Transaction Pooler.",
+    "Добавить начальную Drizzle migration для существующей таблицы `routes`, поскольку в репозитории миграций не было.",
+    "Не менять локальную Docker-конфигурацию и не добавлять секреты в Git.",
+    "Проверить задачу, тесты и build через GitHub Actions с DATABASE_URL из Preview environment."
+  ],
   "definitionOfDone": [
     "Реализация находится в task branch.",
     "Implementation PR открыт и содержит Task ID.",
@@ -47,6 +52,11 @@
       "at": "2026-09-22T15:06:15.553Z",
       "event": "created_from_issue",
       "details": "Automatically registered from GitHub Issue #26."
+    },
+    {
+      "at": "2026-09-22T15:58:18Z",
+      "event": "implementation_started",
+      "details": "Registration PR #27 merged; implementation branch created."
     }
   ],
   "commits": [],
