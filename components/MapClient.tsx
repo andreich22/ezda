@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { pushHistory, undoHistory } from "../lib/route-history";
 import { LngLatBounds, Map, Marker, NavigationControl, setWorkerUrl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -32,6 +33,9 @@ export default function MapClient() {
   const [points, setPoints] = useState<Point[]>([]);
   const [route, setRoute] = useState<any>(null);
   const [error, setError] = useState("");
+  const [actionFeedback, setActionFeedback] = useState("");
+  const historyRef = useRef<Point[][]>([]);
+  const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
@@ -53,7 +57,10 @@ export default function MapClient() {
     map.on("click", (e) => {
       setError("");
       setRoute(null);
-      setPoints((prev) => [...prev, [e.lngLat.lng, e.lngLat.lat]]);
+      setPoints((prev) => {
+        historyRef.current = pushHistory(historyRef.current, prev);
+        return [...prev, [e.lngLat.lng, e.lngLat.lat]];
+      });
     });
 
     mapRef.current = map;
@@ -62,6 +69,12 @@ export default function MapClient() {
     return () => {
       window.removeEventListener("ezda:sidebar-change", handleSidebarChange);
       map.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
     };
   }, []);
 
@@ -84,6 +97,7 @@ export default function MapClient() {
         setError("");
         setRoute(null);
         setPoints((prev) => {
+          historyRef.current = pushHistory(historyRef.current, prev);
           const next = [...prev];
           next[i] = [lngLat.lng, lngLat.lat];
           return next;
@@ -191,6 +205,7 @@ export default function MapClient() {
   }
 
   function reset() {
+    if (points.length) historyRef.current = pushHistory(historyRef.current, points);
     setPoints([]);
     setRoute(null);
     setError("");
@@ -201,6 +216,70 @@ export default function MapClient() {
     if (map.getSource("route")) map.removeSource("route");
   }
 
+
+  function showActionFeedback(message: string) {
+    setActionFeedback(message);
+    if (feedbackTimerRef.current) clearTimeout(feedbackTimerRef.current);
+    feedbackTimerRef.current = setTimeout(() => setActionFeedback(""), 2400);
+  }
+
+  function fitRoute() {
+    const coordinates = route?.geometry?.geometry?.coordinates as number[][] | undefined;
+    const map = mapRef.current;
+    if (!map || !coordinates?.length) {
+      showActionFeedback("No route to fit");
+      return;
+    }
+
+    const bounds = coordinates.reduce(
+      (result: LngLatBounds, coordinate: number[]) => result.extend([coordinate[0], coordinate[1]]),
+      new LngLatBounds(
+        coordinates[0] as [number, number],
+        coordinates[0] as [number, number],
+      ),
+    );
+    map.fitBounds(bounds, {padding: 80, duration: 500, maxZoom: 15});
+    showActionFeedback("Map fitted to route");
+  }
+
+  function clearRoute() {
+    if (!points.length) return;
+    historyRef.current = pushHistory(historyRef.current, points);
+    reset();
+    showActionFeedback("Route cleared");
+  }
+
+  function undoLastAction() {
+    const result = undoHistory(historyRef.current);
+    if (!result.points) {
+      showActionFeedback("Nothing to undo");
+      return;
+    }
+    historyRef.current = result.history;
+    setError("");
+    setRoute(null);
+    setPoints(result.points);
+    showActionFeedback("Last route change undone");
+  }
+
+  function locateMe() {
+    if (!navigator.geolocation) {
+      showActionFeedback("Location is not available");
+      return;
+    }
+
+    showActionFeedback("Finding your location…");
+    navigator.geolocation.getCurrentPosition(
+      ({coords}) => {
+        const map = mapRef.current;
+        if (!map) return;
+        map.flyTo({center: [coords.longitude, coords.latitude], zoom: Math.max(map.getZoom(), 14), duration: 500});
+        showActionFeedback("Centered on your location");
+      },
+      () => showActionFeedback("Location permission was denied or unavailable"),
+      {enableHighAccuracy: true, timeout: 8000, maximumAge: 30000},
+    );
+  }
 
   const durationMinutes = route?.durationSeconds != null
     ? Math.round(route.durationSeconds / 60)
@@ -215,6 +294,22 @@ export default function MapClient() {
 
   return (
     <>
+      <div className="quick-actions" aria-label="Map quick actions">
+        <button className="quick-action" type="button" onClick={locateMe} aria-label="My location" title="My location">
+          <span aria-hidden="true">⌖</span><span>Location</span>
+        </button>
+        <button className="quick-action" type="button" onClick={fitRoute} disabled={!route} aria-label="Fit route to map" title="Fit route to map">
+          <span aria-hidden="true">⤢</span><span>Fit route</span>
+        </button>
+        <button className="quick-action" type="button" onClick={clearRoute} disabled={!points.length} aria-label="Clear route" title="Clear route">
+          <span aria-hidden="true">×</span><span>Clear</span>
+        </button>
+        <button className="quick-action" type="button" onClick={undoLastAction} disabled={!historyRef.current.length} aria-label="Undo last action" title="Undo last action">
+          <span aria-hidden="true">↶</span><span>Undo</span>
+        </button>
+      </div>
+      {actionFeedback && <div className="action-feedback" role="status" aria-live="polite">{actionFeedback}</div>}
+
       <div className="route-summary">
         <div className="route-summary-title">Route</div>
         <div className="stat">
