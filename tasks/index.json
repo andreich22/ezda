@@ -35,6 +35,11 @@
       "id": "d91f",
       "title": "feat: add map quick actions",
       "status": "done"
+    },
+    {
+      "id": "9e4a",
+      "title": "Подключить Ezda к Supabase PostgreSQL через Transaction Pooler",
+      "status": "draft"
     }
   ]
 }

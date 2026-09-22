@@ -1,0 +1,55 @@
+{
+  "id": "9e4a",
+  "title": "Подключить Ezda к Supabase PostgreSQL через Transaction Pooler",
+  "status": "draft",
+  "createdAt": "2026-09-22T15:06:15.553Z",
+  "updatedAt": "2026-09-22T15:06:15.553Z",
+  "issue": {
+    "number": 26,
+    "url": "https://github.com/andreich22/ezda/issues/26",
+    "title": "TASK-9e4a Подключить Ezda к Supabase PostgreSQL через Transaction Pooler"
+  },
+  "description": "## Goal\nПодключить Ezda к PostgreSQL в Supabase через shared Transaction Pooler и сделать подключение совместимым с текущим Drizzle + postgres.js.\n\n## Requirements\n- Использовать существующий Drizzle ORM.\n- Использовать `DATABASE_URL` из переменных окружения.\n- Поддержать Supabase shared Transaction Pooler (порт 6543, IPv4-only).\n- Для postgres.js отключить prepared statements через `prepare: false`.\n- Не коммитить пароли, API keys или другие секреты.\n- Сохранить локальную воспроизводимость и текущую Docker-конфигурацию.\n- Не менять схему данных без необходимости.\n\n## Acceptance criteria\n- Ezda успешно подключается к Supabase PostgreSQL при заданном `DATABASE_URL`.\n- Drizzle migrations выполняются против целевой БД.\n- Таблица `routes` создаётся/остаётся доступной.\n- Приложение и существующие DB-зависимые API не ломаются.\n- `npm run tasks:validate` проходит.\n- `npm run test:run` проходит.\n- `npm run build` проходит.\n- Секреты отсутствуют в Git diff.\n\n## Definition of Ready\n- Репозиторий и текущая DB-конфигурация изучены.\n- Используется существующий Drizzle/Postgres.js стек.\n- Connection string Supabase Transaction Pooler подтверждён пользователем.\n- Реализация ограничена подключением и совместимостью драйвера.\n\n## Technical approach\n1. Проверить текущий `lib/db/index.ts`, Drizzle config, schema и миграции.\n2. Изменить только необходимые настройки postgres.js для Transaction Pooler.\n3. Выполнить миграции и проверки с реальным `DATABASE_URL`, если секрет доступен локально/в CI.\n4. Обновить документацию/example env только если это действительно требуется.\n\n## Definition of Done\n- Реализация находится в task branch.\n- Implementation PR открыт и содержит Task ID.\n- Validator/tests/build выполнены и зафиксированы.\n- PR проходит проверки и ожидает финального merge человеком.",
+  "requirements": [
+    "Использовать существующий Drizzle ORM.",
+    "Использовать `DATABASE_URL` из переменных окружения.",
+    "Поддержать Supabase shared Transaction Pooler (порт 6543, IPv4-only).",
+    "Для postgres.js отключить prepared statements через `prepare: false`.",
+    "Не коммитить пароли, API keys или другие секреты.",
+    "Сохранить локальную воспроизводимость и текущую Docker-конфигурацию.",
+    "Не менять схему данных без необходимости."
+  ],
+  "definitionOfReady": [
+    "Репозиторий и текущая DB-конфигурация изучены.",
+    "Используется существующий Drizzle/Postgres.js стек.",
+    "Connection string Supabase Transaction Pooler подтверждён пользователем.",
+    "Реализация ограничена подключением и совместимостью драйвера."
+  ],
+  "acceptanceCriteria": [
+    "Ezda успешно подключается к Supabase PostgreSQL при заданном `DATABASE_URL`.",
+    "Drizzle migrations выполняются против целевой БД.",
+    "Таблица `routes` создаётся/остаётся доступной.",
+    "Приложение и существующие DB-зависимые API не ломаются.",
+    "`npm run tasks:validate` проходит.",
+    "`npm run test:run` проходит.",
+    "`npm run build` проходит.",
+    "Секреты отсутствуют в Git diff."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "Реализация находится в task branch.",
+    "Implementation PR открыт и содержит Task ID.",
+    "Validator/tests/build выполнены и зафиксированы.",
+    "PR проходит проверки и ожидает финального merge человеком."
+  ],
+  "history": [
+    {
+      "at": "2026-09-22T15:06:15.553Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #26."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
