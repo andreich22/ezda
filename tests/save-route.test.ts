@@ -10,21 +10,33 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+const request = (body: unknown) =>
+  new Request("http://localhost/api/routes", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+
+const validRoute = {
+  title: "Test route",
+  geometry: {
+    type: "Feature",
+    geometry: {
+      type: "LineString",
+      coordinates: [[-73, 40], [-72.9, 40.1]],
+    },
+  },
+  distanceMeters: 1000,
+};
+
 describe("POST /api/routes", () => {
   it("rejects invalid geometry", async () => {
-    const response = await POST(
-      new Request("http://localhost/api/routes", {
-        method: "POST",
-        body: JSON.stringify({
-          title: "Test route",
-          geometry: {
-            type: "Feature",
-            geometry: {type: "Point", coordinates: [-73, 40]},
-          },
-          distanceMeters: 1000,
-        }),
-      }),
-    );
+    const response = await POST(request({
+      ...validRoute,
+      geometry: {
+        type: "Feature",
+        geometry: {type: "Point", coordinates: [-73, 40]},
+      },
+    }));
 
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
@@ -34,47 +46,123 @@ describe("POST /api/routes", () => {
   });
 
   it("rejects missing title", async () => {
-    const response = await POST(
-      new Request("http://localhost/api/routes", {
-        method: "POST",
-        body: JSON.stringify({
-          geometry: {
-            type: "Feature",
-            geometry: {
-              type: "LineString",
-              coordinates: [[-73, 40], [-72.9, 40.1]],
-            },
-          },
-          distanceMeters: 1000,
-        }),
-      }),
-    );
+    const {title: _, ...body} = validRoute;
+    const response = await POST(request(body));
 
     expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({error: "title is required"});
+  });
+
+  it("rejects malformed JSON", async () => {
+    const response = await POST(new Request("http://localhost/api/routes", {
+      method: "POST",
+      body: "{",
+    }));
+
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({error: "Unable to save route"});
+  });
+
+  it("rejects invalid request values", async () => {
+    const cases = [
+      [{}, "invalid request body"],
+      [{title: "x"}, "geometry is required"],
+      [{...validRoute, geometry: {type: "Point"}}, "geometry must be a GeoJSON Feature"],
+      [{...validRoute, geometry: {type: "Feature"}}, "geometry must contain a LineString"],
+      [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[-73, 40]]}}}, "geometry must contain at least two coordinates"],
+      [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[-181, 40], [-72, 40]]}}}, "geometry contains invalid coordinates"],
+      [{...validRoute, distanceMeters: -1}, "distanceMeters must be a non-negative number"],
+      [{...validRoute, durationSeconds: -1}, "durationSeconds must be a non-negative number"],
+      [{...validRoute, elevationGainMeters: -1}, "elevationGainMeters must be a non-negative number"],
+      [{...validRoute, description: 123}, "description must be a string"],
+      [{...validRoute, title: " ".repeat(121)}, "title is required"],
+      [{...validRoute, title: "x".repeat(121)}, "title must be 120 characters or fewer"],
+    ] as const;
+
+    for (const [body, error] of cases) {
+      const response = await POST(request(body));
+      expect(response.status).toBe(400);
+      await expect(response.json()).resolves.toEqual({error});
+    }
+  });
+
+  it("normalizes optional values and extra coordinate dimensions", async () => {
+    vi.mocked(createRoute).mockResolvedValue({id: "11111111-1111-1111-1111-111111111111"});
+
+    const response = await POST(request({
+      ...validRoute,
+      title: "  Prospect Park Loop  ",
+      description: "  A short ride  ",
+      geometry: {
+        type: "Feature",
+        geometry: {
+          type: "LineString",
+          coordinates: [[-73.97, 40.66, 12], [-73.96, 40.67, 15]],
+        },
+      },
+      durationSeconds: null,
+      elevationGainMeters: null,
+    }));
+
+    expect(response.status).toBe(201);
+    expect(createRoute).toHaveBeenCalledWith(expect.objectContaining({
+      title: "Prospect Park Loop",
+      description: "A short ride",
+      durationSeconds: null,
+      elevationGainMeters: null,
+      geometry: {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "LineString",
+          coordinates: [[-73.97, 40.66], [-73.96, 40.67]],
+        },
+      },
+    }));
+  });
+
+  it("rejects an overlong description", async () => {
+    const response = await POST(request({...validRoute, description: "x".repeat(2001)}));
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      error: "description must be 2000 characters or fewer",
+    });
+  });
+
+  it("rejects non-finite or invalid optional metrics", async () => {
+    const cases = [
+      ["distanceMeters", Number.NaN],
+      ["durationSeconds", Number.POSITIVE_INFINITY],
+      ["elevationGainMeters", Number.NaN],
+    ] as const;
+
+    for (const [field, value] of cases) {
+      const response = await POST(request({...validRoute, [field]: value}));
+      expect(response.status).toBe(400);
+      expect((await response.json()).error).toContain(field);
+    }
+  });
+
+  it("returns 500 when route persistence fails", async () => {
+    vi.mocked(createRoute).mockRejectedValue(new Error("database unavailable"));
+
+    const response = await POST(request(validRoute));
+
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({error: "Unable to save route"});
   });
 
   it("creates a route and returns its public URL", async () => {
     vi.mocked(createRoute).mockResolvedValue({id: "11111111-1111-1111-1111-111111111111"});
 
-    const response = await POST(
-      new Request("http://localhost/api/routes", {
-        method: "POST",
-        body: JSON.stringify({
-          title: "Prospect Park Loop",
-          description: "A short ride",
-          geometry: {
-            type: "Feature",
-            geometry: {
-              type: "LineString",
-              coordinates: [[-73.97, 40.66], [-73.96, 40.67]],
-            },
-          },
-          distanceMeters: 2500,
-          durationSeconds: 600,
-          elevationGainMeters: 30,
-        }),
-      }),
-    );
+    const response = await POST(request({
+      ...validRoute,
+      title: "Prospect Park Loop",
+      description: "A short ride",
+      durationSeconds: 600,
+      elevationGainMeters: 30,
+    }));
 
     expect(response.status).toBe(201);
     await expect(response.json()).resolves.toEqual({
