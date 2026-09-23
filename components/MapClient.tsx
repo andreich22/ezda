@@ -34,6 +34,10 @@ export default function MapClient() {
   const [route, setRoute] = useState<any>(null);
   const [error, setError] = useState("");
   const [actionFeedback, setActionFeedback] = useState("");
+  const [saveTitle, setSaveTitle] = useState("");
+  const [saveDescription, setSaveDescription] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const historyRef = useRef<Point[][]>([]);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -262,6 +266,45 @@ export default function MapClient() {
     showActionFeedback("Last route change undone");
   }
 
+  async function saveRoute() {
+    if (!route?.geometry) return;
+
+    setSaving(true);
+    setSaveError("");
+
+    try {
+      const response = await fetch("/api/routes", {
+        method: "POST",
+        headers: {"content-type": "application/json"},
+        body: JSON.stringify({
+          title: saveTitle,
+          description: saveDescription,
+          geometry: {
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "LineString",
+              coordinates: route.geometry.geometry.coordinates,
+            },
+          },
+          distanceMeters: route.distanceMeters,
+          durationSeconds: route.durationSeconds,
+          elevationGainMeters: route.elevationGainMeters,
+        }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to save route");
+      }
+
+      window.location.assign(data.url);
+    } catch (e) {
+      setSaveError(e instanceof Error ? e.message : "Unable to save route");
+      setSaving(false);
+    }
+  }
+
   function locateMe() {
     if (!navigator.geolocation) {
       showActionFeedback("Location is not available");
@@ -388,6 +431,43 @@ export default function MapClient() {
           </ol>
         )}
       </div>
+
+      {route && (
+        <div className="save-route card">
+          <div className="route-summary-title">Save route</div>
+          <label className="field">
+            <span className="label">Title</span>
+            <input
+              value={saveTitle}
+              onChange={(event) => {
+                setSaveTitle(event.target.value);
+                setSaveError("");
+              }}
+              maxLength={120}
+              placeholder="e.g. Prospect Park Loop"
+              disabled={saving}
+            />
+          </label>
+          <label className="field">
+            <span className="label">Description</span>
+            <textarea
+              value={saveDescription}
+              onChange={(event) => {
+                setSaveDescription(event.target.value);
+                setSaveError("");
+              }}
+              maxLength={2000}
+              rows={3}
+              placeholder="Add a short description (optional)"
+              disabled={saving}
+            />
+          </label>
+          <button className="button" type="button" onClick={saveRoute} disabled={saving || !saveTitle.trim()}>
+            {saving ? "Saving…" : "Save route"}
+          </button>
+          {saveError && <div className="error" role="alert">{saveError}</div>}
+        </div>
+      )}
 
       <button className="button" onClick={() => reset()} disabled={!points.length}>
         Reset route
