@@ -59,7 +59,7 @@ export default async function RoutePage({params}: Props) {
             </div>
           </div>
         </section>
-        <SavedRouteMap geometry={route.geometry} />
+        <SavedRouteMap\n          geometry={{\n            type: "Feature",\n            properties: {},\n            geometry: {\n              type: "LineString",\n              coordinates: route.geometry.coordinates,\n            },\n          }}\n        />
       </div>
     </main>
   );
