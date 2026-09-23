@@ -1,9 +1,9 @@
 {
   "id": "5b7c",
   "title": "Реализовать сохранение и открытие сохранённых маршрутов",
-  "status": "draft",
+  "status": "in_progress",
   "createdAt": "2026-09-23T15:43:20.797Z",
-  "updatedAt": "2026-09-23T15:43:20.797Z",
+  "updatedAt": "2026-09-23T15:51:51.505Z",
   "issue": {
     "number": 33,
     "url": "https://github.com/andreich22/ezda/issues/33",
@@ -22,7 +22,11 @@
     "Обновить документацию при необходимости."
   ],
   "definitionOfReady": [
-    "See GitHub Issue #33 for the definitionOfReady definition."
+    "Issue #33 requirements and acceptance criteria are explicit.",
+    "Task registration PR #34 is merged into main.",
+    "Existing Drizzle/PostGIS route schema and database connection are available.",
+    "Existing MapLibre route-building flow provides geometry and route metrics to the save action.",
+    "The implementation can be delivered without introducing authentication or unrelated product scope."
   ],
   "acceptanceCriteria": [
     "Пользователь может построить маршрут и сохранить его.",
@@ -32,15 +36,31 @@
     "Валидация API не позволяет сохранить некорректный маршрут.",
     "Relevant tests/build и `npm run tasks:validate` проходят."
   ],
-  "technicalApproach": [],
+  "technicalApproach": [
+    "Validate title, description, GeoJSON LineString, and route metrics at the API boundary before loading the database layer.",
+    "Persist public routes through the existing Drizzle/PostgreSQL/PostGIS schema using geography(LineString, 4326).",
+    "Return the created UUID and public `/routes/[id]` URL from the save API.",
+    "Render saved route data on a server page and draw its GeoJSON geometry with a small MapLibre client component.",
+    "Keep route saving unauthenticated for the current MVP because the existing route schema has no author/session model."
+  ],
   "definitionOfDone": [
-    "See GitHub Issue #33 for the definitionOfDone definition."
+    "Save form and button work for a successfully built route.",
+    "Create-route API validates input and persists a public PostGIS route.",
+    "Successful save returns a public route URL and navigates the user there.",
+    "Public route page handles missing records and renders route metadata and geometry.",
+    "Affected tests, build, and npm run tasks:validate pass, or limitations are recorded when infrastructure prevents execution.",
+    "Task history records the implementation commits and validation."
   ],
   "history": [
     {
       "at": "2026-09-23T15:43:20.797Z",
       "event": "created_from_issue",
       "details": "Automatically registered from GitHub Issue #33."
+    },
+    {
+      "at": "2026-09-23T15:51:51.505Z",
+      "event": "ready_for_implementation",
+      "details": "Registration PR #34 is merged; requirements, technical approach, and definition of ready/done are now explicit."
     }
   ],
   "commits": [],
