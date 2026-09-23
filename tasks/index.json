@@ -50,6 +50,11 @@
       "id": "5b7c",
       "title": "Реализовать сохранение и открытие сохранённых маршрутов",
       "status": "in_progress"
+    },
+    {
+      "id": "dbe1",
+      "title": "Auto-apply migrations on Docker startup and fix migration drift",
+      "status": "draft"
     }
   ]
 }
