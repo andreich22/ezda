@@ -55,6 +55,11 @@
       "id": "dbe1",
       "title": "Auto-apply migrations on Docker startup and fix migration drift",
       "status": "draft"
+    },
+    {
+      "id": "c0de",
+      "title": "Покрыть тестами API построения маршрута /api/route",
+      "status": "draft"
     }
   ]
 }
