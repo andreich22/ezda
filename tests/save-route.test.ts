@@ -65,12 +65,23 @@ describe("POST /api/routes", () => {
 
   it("rejects invalid request values", async () => {
     const cases = [
-      [{}, "invalid request body"],
+      [null, "invalid request body"],
+      ["just a string", "invalid request body"],
       [{title: "x"}, "geometry is required"],
+      [{...validRoute, geometry: "LineString"}, "geometry is required"],
       [{...validRoute, geometry: {type: "Point"}}, "geometry must be a GeoJSON Feature"],
       [{...validRoute, geometry: {type: "Feature"}}, "geometry must contain a LineString"],
+      [{...validRoute, geometry: {type: "Feature", geometry: "LineString"}}, "geometry must contain a LineString"],
       [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[-73, 40]]}}}, "geometry must contain at least two coordinates"],
+      [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: "nope"}}}, "geometry must contain at least two coordinates"],
+      [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [1, 2]}}}, "geometry contains invalid coordinates"],
+      [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[-73], [-72, 40]]}}}, "geometry contains invalid coordinates"],
       [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[-181, 40], [-72, 40]]}}}, "geometry contains invalid coordinates"],
+      [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[181, 40], [-72, 40]]}}}, "geometry contains invalid coordinates"],
+      [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[-73, null], [-72, 40]]}}}, "geometry contains invalid coordinates"],
+      [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[null, 40], [-72, 40]]}}}, "geometry contains invalid coordinates"],
+      [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[-73, -91], [-72, 40]]}}}, "geometry contains invalid coordinates"],
+      [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[-73, 91], [-72, 40]]}}}, "geometry contains invalid coordinates"],
       [{...validRoute, distanceMeters: -1}, "distanceMeters must be a non-negative number"],
       [{...validRoute, durationSeconds: -1}, "durationSeconds must be a non-negative number"],
       [{...validRoute, elevationGainMeters: -1}, "elevationGainMeters must be a non-negative number"],
@@ -121,6 +132,15 @@ describe("POST /api/routes", () => {
     }));
   });
 
+  it("treats a whitespace-only description as absent", async () => {
+    vi.mocked(createRoute).mockResolvedValue({id: "11111111-1111-1111-1111-111111111111"});
+
+    const response = await POST(request({...validRoute, description: "   "}));
+
+    expect(response.status).toBe(201);
+    expect(createRoute).toHaveBeenCalledWith(expect.objectContaining({description: null}));
+  });
+
   it("rejects an overlong description", async () => {
     const response = await POST(request({...validRoute, description: "x".repeat(2001)}));
 
@@ -132,9 +152,9 @@ describe("POST /api/routes", () => {
 
   it("rejects non-finite or invalid optional metrics", async () => {
     const cases = [
-      ["distanceMeters", Number.NaN],
-      ["durationSeconds", Number.POSITIVE_INFINITY],
-      ["elevationGainMeters", Number.NaN],
+      ["distanceMeters", "far"],
+      ["durationSeconds", "slow"],
+      ["elevationGainMeters", "high"],
     ] as const;
 
     for (const [field, value] of cases) {
