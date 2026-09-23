@@ -1,0 +1,55 @@
+{
+  "id": "dbe1",
+  "title": "Auto-apply migrations on Docker startup and fix migration drift",
+  "status": "draft",
+  "createdAt": "2026-09-23T20:16:52.986Z",
+  "updatedAt": "2026-09-23T20:16:52.986Z",
+  "issue": {
+    "number": 38,
+    "url": "https://github.com/andreich22/ezda/issues/38",
+    "title": "TASK-dbe1 Auto-apply migrations on Docker startup and fix migration drift"
+  },
+  "description": "## Goal\n\nСделать локальную PostgreSQL/PostGIS воспроизводимой из коробки: `docker compose up` сам применяет миграции (в том числе после `docker compose down -v`), и устранить дрейф между drizzle- и supabase-миграциями.\n\n## Требования\n\n- Docker Compose должен автоматически применять SQL-миграции при старте (для чистой volume и для уже существующей), без ручных команд.\n- Миграция обязана учитывать образ `postgis/postgis`, где PostGIS предустановлен в схему `public`: после миграции должны существовать схема `gis`, тип `gis.geography(LineString,4326)` и функции вида `gis.ST_GeogFromText`. PostGIS не relocatable (`ALTER EXTENSION ... SET SCHEMA` невозможен) — нужен рабочий механизм, например переустановка расширения в `gis` при инициализации.\n- Устранить дрейф миграций: `drizzle/0000_initial_routes.sql` создаёт устаревшую колонку `geometry text`, хотя `lib/db/schema.ts` и код требуют `gis.geography(LineString,4326)`. Привести в соответствие или зафиксировать единый источник миграций.\n- `.github/workflows/supabase-migrate.yml` запускает устаревшую drizzle-миграцию и проверяет только `to_regclass('public.routes')` — исправить на актуальную схему и более осмысленную проверку (наличие схемы `gis` и функций).\n- Согласовать npm-скрипты миграций с README: `db:migrate:sql` требует Supabase CLI и `supabase/config.toml`, которых нет в репозитории — починить или убрать/задокументировать альтернативу.\n- Обновить README (локальный запуск, применение миграций).\n- Не менять публичный API приложения и формат данных маршрутов.\n\n## Definition of Ready\n\n- Диагноз подтверждён на живом Docker: в чистом volume отсутствуют `public.routes` и схема `gis` (ошибка `42P01 relation \"routes\" does not exist` при `POST /api/routes`).\n- Миграции `supabase/migrations/20260922160000_initial_routes.sql` и `drizzle/0000_initial_routes.sql` существуют и доступны для анализа дрейфа.\n- Есть воспроизводимый ручной фикс, применённый локально, — автоматизация должна его заменить.\n- Связанные задачи: `5b7c` (сохранение маршрутов), `9e4a` (подключение к Supabase).\n\n## Acceptance Criteria\n\n- [ ] `docker compose down -v && docker compose up --build` без ручных действий создаёт схему `gis` и таблицу `public.routes`.\n- [ ] Повторный рестарт на существующей volume не ломает БД (миграции идемпотентны).\n- [ ] В локальной БД доступны `gis.ST_GeogFromText` и тип `gis.geography(LineString,4326)`.\n- [ ] `POST /api/routes` возвращает 201, страница `/routes/[id]` открывается на чистом Docker-окружении.\n- [ ] Дрейф drizzle/supabase миграций устранён: либо `drizzle/0000_initial_routes.sql` соответствует `lib/db/schema.ts`, либо единый источник миграций явно зафиксирован и задокументирован.\n- [ ] CI workflow миграций применяет актуальную схему и проверяет не только имя таблицы.\n- [ ] npm-скрипты и README согласованы с реальным процессом миграций.\n- [ ] `npm run tasks:validate`, `npm run test:run` и `npm run build` проходят.\n\n## Definition of Done\n\n- Все acceptance criteria выполнены.\n- Чистый `docker compose down -v && docker compose up --build` воспроизводит рабочую схему, сценарий «построить → сохранить → открыть» работает.\n- README и package.json согласованы с фактическим процессом миграций.\n- Implementation PR прошёл CI и смержен через защищённый путь; история задачи обновлена, `npm run tasks:validate` проходит.",
+  "requirements": [
+    "Docker Compose должен автоматически применять SQL-миграции при старте (для чистой volume и для уже существующей), без ручных команд.",
+    "Миграция обязана учитывать образ `postgis/postgis`, где PostGIS предустановлен в схему `public`: после миграции должны существовать схема `gis`, тип `gis.geography(LineString,4326)` и функции вида `gis.ST_GeogFromText`. PostGIS не relocatable (`ALTER EXTENSION ... SET SCHEMA` невозможен) — нужен рабочий механизм, например переустановка расширения в `gis` при инициализации.",
+    "Устранить дрейф миграций: `drizzle/0000_initial_routes.sql` создаёт устаревшую колонку `geometry text`, хотя `lib/db/schema.ts` и код требуют `gis.geography(LineString,4326)`. Привести в соответствие или зафиксировать единый источник миграций.",
+    "`.github/workflows/supabase-migrate.yml` запускает устаревшую drizzle-миграцию и проверяет только `to_regclass('public.routes')` — исправить на актуальную схему и более осмысленную проверку (наличие схемы `gis` и функций).",
+    "Согласовать npm-скрипты миграций с README: `db:migrate:sql` требует Supabase CLI и `supabase/config.toml`, которых нет в репозитории — починить или убрать/задокументировать альтернативу.",
+    "Обновить README (локальный запуск, применение миграций).",
+    "Не менять публичный API приложения и формат данных маршрутов."
+  ],
+  "definitionOfReady": [
+    "Диагноз подтверждён на живом Docker: в чистом volume отсутствуют `public.routes` и схема `gis` (ошибка `42P01 relation \"routes\" does not exist` при `POST /api/routes`).",
+    "Миграции `supabase/migrations/20260922160000_initial_routes.sql` и `drizzle/0000_initial_routes.sql` существуют и доступны для анализа дрейфа.",
+    "Есть воспроизводимый ручной фикс, применённый локально, — автоматизация должна его заменить.",
+    "Связанные задачи: `5b7c` (сохранение маршрутов), `9e4a` (подключение к Supabase)."
+  ],
+  "acceptanceCriteria": [
+    "`docker compose down -v && docker compose up --build` без ручных действий создаёт схему `gis` и таблицу `public.routes`.",
+    "Повторный рестарт на существующей volume не ломает БД (миграции идемпотентны).",
+    "В локальной БД доступны `gis.ST_GeogFromText` и тип `gis.geography(LineString,4326)`.",
+    "`POST /api/routes` возвращает 201, страница `/routes/[id]` открывается на чистом Docker-окружении.",
+    "Дрейф drizzle/supabase миграций устранён: либо `drizzle/0000_initial_routes.sql` соответствует `lib/db/schema.ts`, либо единый источник миграций явно зафиксирован и задокументирован.",
+    "CI workflow миграций применяет актуальную схему и проверяет не только имя таблицы.",
+    "npm-скрипты и README согласованы с реальным процессом миграций.",
+    "`npm run tasks:validate`, `npm run test:run` и `npm run build` проходят."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "Все acceptance criteria выполнены.",
+    "Чистый `docker compose down -v && docker compose up --build` воспроизводит рабочую схему, сценарий «построить → сохранить → открыть» работает.",
+    "README и package.json согласованы с фактическим процессом миграций.",
+    "Implementation PR прошёл CI и смержен через защищённый путь; история задачи обновлена, `npm run tasks:validate` проходит."
+  ],
+  "history": [
+    {
+      "at": "2026-09-23T20:16:52.986Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #38."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
