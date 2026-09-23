@@ -8,7 +8,7 @@ export default defineConfig({
       provider: "v8",
       enabled: true,
       include: ["app/api/**/*.ts", "lib/**/*.ts"],
-      exclude: ["**/*.d.ts", "**/node_modules/**"],
+      exclude: ["**/*.d.ts", "**/node_modules/**", "lib/db/**"],
       reporter: ["text", "json-summary", "html"],
       reportsDirectory: "./coverage",
       reportOnFailure: true,
