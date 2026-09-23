@@ -1,5 +1,4 @@
 import {sql} from "drizzle-orm";
-import {db} from "./index";
 import {routes} from "./schema";
 import type {CreateRouteInput} from "../route-validation";
 
@@ -8,6 +7,7 @@ function toWkt(coordinates: number[][]) {
 }
 
 export async function createRoute(input: CreateRouteInput) {
+  const {db} = await import("./index");
   const [row] = await db
     .insert(routes)
     .values({
@@ -26,6 +26,7 @@ export async function createRoute(input: CreateRouteInput) {
 }
 
 export async function getPublicRoute(id: string) {
+  const {db} = await import("./index");
   const result = await db.execute(sql`
     select
       id,
