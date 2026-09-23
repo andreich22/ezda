@@ -65,7 +65,7 @@ export default async function RoutePage({params}: Props) {
             properties: {},
             geometry: {
               type: "LineString",
-              coordinates: route.geometry.coordinates,
+              coordinates: route.geometry.geometry.coordinates as number[][],
             },
           }}
         />
