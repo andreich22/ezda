@@ -3,7 +3,7 @@
   "title": "Auto-apply migrations on Docker startup and fix migration drift",
   "status": "in_progress",
   "createdAt": "2026-09-23T20:16:52.986Z",
-  "updatedAt": "2026-09-24T07:24:14.000Z",
+  "updatedAt": "2026-09-24T09:13:00.000Z",
   "issue": {
     "number": 38,
     "url": "https://github.com/andreich22/ezda/issues/38",
@@ -52,9 +52,25 @@
       "at": "2026-09-24T07:24:14.000Z",
       "event": "implementation_started",
       "details": "Registration PR #39 merged; implementation branch task/dbe1-docker-migrations created. Definition of Ready satisfied."
+    },
+    {
+      "at": "2026-09-24T09:11:00.000Z",
+      "event": "implementation_pr_created",
+      "details": "Implementation PR #40 opened for human review: https://github.com/andreich22/ezda/pull/40"
+    },
+    {
+      "at": "2026-09-24T09:13:00.000Z",
+      "event": "validation_passed",
+      "details": "tasks:validate (12/2), version:check (0.1.4), test:run (45 tests), build passed; clean docker compose down -v && up --build applied both migrations, POST 201, page 200, idempotent re-run; PR CI green including supabase-migrate workflow against Preview DATABASE_URL."
     }
   ],
-  "commits": [],
+  "commits": [
+    "a424a67 chore: dbe1 | mark task in progress and relate save and supabase tasks",
+    "e5f516b feat: dbe1 | add sql migration runner and postgis gis setup",
+    "0c0b4c1 feat: dbe1 | run migrations automatically on docker compose startup",
+    "eccd0b8 fix: dbe1 | verify full postgis schema in migrate workflow",
+    "e06ac62 docs: dbe1 | document automatic migrations"
+  ],
   "decisionLog": [
     {
       "at": "2026-09-24T07:24:14.000Z",
