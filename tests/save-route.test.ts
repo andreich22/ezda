@@ -59,8 +59,8 @@ describe("POST /api/routes", () => {
       body: "{",
     }));
 
-    expect(response.status).toBe(500);
-    await expect(response.json()).resolves.toEqual({error: "Unable to save route"});
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({error: "invalid JSON body"});
   });
 
   it("rejects invalid request values", async () => {
@@ -82,9 +82,9 @@ describe("POST /api/routes", () => {
       [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[null, 40], [-72, 40]]}}}, "geometry contains invalid coordinates"],
       [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[-73, -91], [-72, 40]]}}}, "geometry contains invalid coordinates"],
       [{...validRoute, geometry: {type: "Feature", geometry: {type: "LineString", coordinates: [[-73, 91], [-72, 40]]}}}, "geometry contains invalid coordinates"],
-      [{...validRoute, distanceMeters: -1}, "distanceMeters must be a non-negative number"],
-      [{...validRoute, durationSeconds: -1}, "durationSeconds must be a non-negative number"],
-      [{...validRoute, elevationGainMeters: -1}, "elevationGainMeters must be a non-negative number"],
+      [{...validRoute, distanceMeters: -1}, "distanceMeters must be between 0 and 100000000"],
+      [{...validRoute, durationSeconds: -1}, "durationSeconds must be between 0 and 31536000"],
+      [{...validRoute, elevationGainMeters: -1}, "elevationGainMeters must be between 0 and 10000000"],
       [{...validRoute, description: 123}, "description must be a string"],
       [{...validRoute, title: " ".repeat(121)}, "title is required"],
       [{...validRoute, title: "x".repeat(121)}, "title must be 120 characters or fewer"],
@@ -95,6 +95,26 @@ describe("POST /api/routes", () => {
       expect(response.status).toBe(400);
       await expect(response.json()).resolves.toEqual({error});
     }
+  });
+
+  it("rejects an oversized request body before parsing or persistence", async () => {
+    const response = await POST(new Request("http://localhost/api/routes", {
+      method: "POST",
+      body: "x".repeat(256 * 1024 + 1),
+    }));
+
+    expect(response.status).toBe(413);
+    await expect(response.json()).resolves.toEqual({error: "request body is too large"});
+    expect(createRoute).not.toHaveBeenCalled();
+  });
+
+  it("validates and persists explicit private visibility", async () => {
+    vi.mocked(createRoute).mockResolvedValue({id: "11111111-1111-1111-1111-111111111111"});
+
+    const response = await POST(request({...validRoute, visibility: "private"}));
+
+    expect(response.status).toBe(201);
+    expect(createRoute).toHaveBeenCalledWith(expect.objectContaining({isPublic: false}));
   });
 
   it("normalizes optional values and extra coordinate dimensions", async () => {
