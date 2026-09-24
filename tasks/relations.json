@@ -24,6 +24,11 @@
       "from": "d5e6",
       "type": "related",
       "to": "5b7c"
+    },
+    {
+      "from": "b3c4",
+      "type": "depends_on",
+      "to": "f1a2"
     }
   ]
 }
