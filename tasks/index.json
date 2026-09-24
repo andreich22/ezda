@@ -70,6 +70,11 @@
       "id": "9a7c",
       "title": "Упростить Task-Driven workflow: Task и реализация в одном PR",
       "status": "review"
+    },
+    {
+      "id": "d5e6",
+      "title": "Валидация и безопасный API сохранения маршрута",
+      "status": "in_progress"
     }
   ]
 }
