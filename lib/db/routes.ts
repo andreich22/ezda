@@ -67,3 +67,35 @@ export async function getPublicRoute(id: string) {
     },
   };
 }
+
+export type PublicRouteListItem = {
+  id: string;
+  title: string;
+  description: string | null;
+  distanceMeters: number;
+  durationSeconds: number | null;
+  elevationGainMeters: number | null;
+  createdAt: string;
+};
+
+export async function getPublicRoutes(limit = 50): Promise<PublicRouteListItem[]> {
+  const {db} = await import("./index");
+  const safeLimit = Math.min(Math.max(Math.trunc(limit) || 50, 1), 100);
+  const result = await db.execute(sql`
+    select
+      id,
+      title,
+      description,
+      distance_meters as "distanceMeters",
+      duration_seconds as "durationSeconds",
+      elevation_gain_meters as "elevationGainMeters",
+      created_at as "createdAt"
+    from public.routes
+    where is_public = true
+    order by created_at desc
+    limit ${safeLimit}
+  `);
+
+  return result as unknown as PublicRouteListItem[];
+}
+
