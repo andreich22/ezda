@@ -1,6 +1,7 @@
 import {notFound} from "next/navigation";
 import SavedRouteMap from "../../../components/SavedRouteMap";
 import {getPublicRoute} from "../../../lib/db/routes";
+import {isValidRouteId} from "../../../lib/route-id";
 
 type Props = {
   params: Promise<{id: string}>;
@@ -9,7 +10,7 @@ type Props = {
 export default async function RoutePage({params}: Props) {
   const {id} = await params;
 
-  if (!/^[0-9a-fA-F-]{36}$/.test(id)) notFound();
+  if (!isValidRouteId(id)) notFound();
 
   let route;
   try {
