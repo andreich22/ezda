@@ -1,9 +1,9 @@
 {
   "id": "f1a2",
   "title": "Публичная страница маршрута",
-  "status": "in_progress",
+  "status": "review",
   "createdAt": "2026-09-24T18:00:00Z",
-  "updatedAt": "2026-09-24T18:00:00Z",
+  "updatedAt": "2026-09-24T18:40:00Z",
   "issue": {
     "number": 46,
     "url": "https://github.com/andreich22/ezda/issues/46",
@@ -46,9 +46,25 @@
       "at": "2026-09-24T18:00:00Z",
       "event": "implementation_started",
       "details": "Created implementation branch task/f1a2-public-route-page; Task metadata is part of the implementation PR."
+    },
+    {
+      "at": "2026-09-24T18:40:00Z",
+      "event": "implementation_complete",
+      "details": "Public route detail page was verified on main as part of the existing save flow; implementation hardens canonical UUID validation before database access and adds regression coverage."
+    },
+    {
+      "at": "2026-09-24T18:40:00Z",
+      "event": "review_ready",
+      "details": "Implementation PR will contain Task metadata and the public route page validation/test changes; no direct main-branch changes were made."
     }
   ],
-  "commits": [],
+  "commits": [
+    "a04c3f361f490f86449976f76a953a3a204dc64d",
+    "5f206cb38d9d0fc6bd26c267e36abd6213fd6410",
+    "e20724b8aab8eabeed3eaa684ed4b4c6968fe2f6",
+    "5f241bc6a630e7fc616b36d3a98a9dc21511dee0",
+    "dd324546ba76261be4ae6ac8c8886b2e6c499559"
+  ],
   "decisionLog": [],
   "relations": []
 }
