@@ -1,0 +1,64 @@
+{
+  "id": "e6b1",
+  "title": "feat: add hamburger menu with routes catalog link",
+  "status": "in_progress",
+  "createdAt": "2026-09-24T18:54:00Z",
+  "updatedAt": "2026-09-24T18:54:00Z",
+  "issue": {
+    "number": 59,
+    "url": "https://github.com/andreich22/ezda/issues/59",
+    "title": "TASK-e6b1 feat: add hamburger menu with routes catalog link"
+  },
+  "description": "Добавить сендвич-меню в основной интерфейс Ezda с пунктом Routes, ведущим в каталог публичных маршрутов.",
+  "requirements": [
+    "Добавить доступное hamburger menu в основной интерфейс.",
+    "Меню должно открываться и закрываться по нажатию.",
+    "Добавить пункт Routes.",
+    "Пункт Routes должен вести на /routes.",
+    "Не ломать существующую боковую панель и мобильное поведение."
+  ],
+  "definitionOfReady": [
+    "GitHub Issue #59 содержит требования и acceptance criteria.",
+    "Существующая боковая панель, мобильный swipe и каталог /routes проверены."
+  ],
+  "acceptanceCriteria": [
+    "На главном экране видна кнопка hamburger menu.",
+    "При открытии отображается пункт Routes.",
+    "Нажатие Routes открывает /routes.",
+    "Меню доступно с клавиатуры и имеет корректные aria-атрибуты.",
+    "Существующее построение маршрута и sidebar toggle продолжают работать."
+  ],
+  "technicalApproach": [
+    "Сделать небольшой клиентский HamburgerMenu без новой UI-библиотеки.",
+    "Использовать next/link для навигации в /routes.",
+    "Разместить кнопку в существующем header, не меняя layout карты и sidebar.",
+    "Закрывать меню после перехода и по Escape/клику вне меню."
+  ],
+  "definitionOfDone": [
+    "Hamburger menu и Routes link реализованы.",
+    "Добавлен focused unit test для пункта меню.",
+    "npm run tasks:validate, relevant tests и npm run build проходят, либо ограничения явно зафиксированы.",
+    "Task metadata и commit metadata обновлены.",
+    "Изменения доставлены через implementation PR."
+  ],
+  "history": [
+    {
+      "at": "2026-09-24T18:54:00Z",
+      "event": "created_from_issue",
+      "details": "Created from GitHub Issue #59; Task metadata is part of the implementation PR."
+    },
+    {
+      "at": "2026-09-24T18:54:00Z",
+      "event": "implementation_started",
+      "details": "Created implementation branch task/e6b1-hamburger-menu."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": [
+    {
+      "type": "depends_on",
+      "to": "b3c4"
+    }
+  ]
+}
