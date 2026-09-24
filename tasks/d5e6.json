@@ -1,0 +1,53 @@
+{
+  "id": "d5e6",
+  "title": "Валидация и безопасный API сохранения маршрута",
+  "status": "in_progress",
+  "createdAt": "2026-09-24T15:55:13Z",
+  "updatedAt": "2026-09-24T15:58:17.140Z",
+  "issue": {
+    "number": 48,
+    "url": "https://github.com/andreich22/ezda/issues/48",
+    "title": "TASK-d5e6 Валидация и безопасный API сохранения маршрута"
+  },
+  "description": "Усилить API сохранения маршрутов до production-ready уровня: строгая валидация публичного payload, ограничение размеров и безопасные ответы.",
+  "requirements": [
+    "Строго валидировать title, description, visibility, geometry и числовые метрики.",
+    "Проверять GeoJSON LineString и координаты в допустимых диапазонах.",
+    "Ограничить размеры строк и payload.",
+    "Возвращать предсказуемые 4xx/5xx ответы.",
+    "Не писать в БД при невалидном запросе.",
+    "Добавить regression/unit tests для негативных случаев."
+  ],
+  "definitionOfReady": [
+    "GitHub Issue #48 содержит требования и acceptance criteria.",
+    "Текущий API POST /api/routes и DB createRoute проверены."
+  ],
+  "acceptanceCriteria": [
+    "Невалидные geometry/метрики отклоняются.",
+    "Слишком большие значения отклоняются.",
+    "Некорректная visibility отклоняется и не позволяет неявно изменить политику публикации.",
+    "Серверные ошибки не раскрывают connection strings или внутренние stack traces.",
+    "Валидный текущий сценарий сохранения продолжает работать."
+  ],
+  "technicalApproach": [
+    "Усилить parseCreateRouteInput едиными ограничениями payload.",
+    "Валидировать visibility/isPublic явно, сохраняя обратную совместимость с текущим isPublic default.",
+    "Добавить негативные тесты для validation boundary и API.",
+    "Не менять схему БД в рамках этой задачи."
+  ],
+  "definitionOfDone": [
+    "Relevant tests, npm run tasks:validate и npm run build проходят.",
+    "Task history и commit metadata обновлены.",
+    "Изменения доставлены через implementation PR."
+  ],
+  "history": [
+    {
+      "at": "2026-09-24T15:58:17.145Z",
+      "event": "implementation_started",
+      "details": "Created implementation branch task/d5e6-secure-route-save-api; Task metadata is part of the implementation PR."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
