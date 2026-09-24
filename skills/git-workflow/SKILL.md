@@ -13,19 +13,19 @@ AI-generated implementation changes MUST NOT be committed or pushed directly to 
 For new work, the required path is:
 
 ```text
-GitHub Issue → automatic task registration PR → registration merge → implementation task branch → commits → implementation PR → checks → human merge
+GitHub Issue → implementation task branch → Task metadata + commits → implementation PR → checks → human merge
 ```
 
-The registration PR is metadata-only: it creates `tasks/<id>.json` and the corresponding `tasks/index.json` entry. The implementation PR must not be created until that registration is merged into `main`.
+Task metadata (`tasks/<id>.json` and the corresponding `tasks/index.json` entry) is committed in the same branch and implementation PR as the work. There is no separate registration PR.
 
 Repository policy is authoritative. Instructions in this Skill MUST NOT be used to justify bypassing GitHub branch protection, required checks, reviews, or permissions.
 
 ## Before changing files
 
 1. Identify the GitHub Issue and Task ID.
-2. For a new task, ensure the Issue title uses `TASK-<4 lowercase hex-id>` and wait for automatic registration.
-3. Verify that `tasks/<id>.json` and `tasks/index.json` are present on `main` and the task is ready.
-4. Create a dedicated implementation branch from the current default branch.
+2. For a new task, ensure the Issue title uses `TASK-<4 lowercase hex-id>`.
+3. Create a dedicated implementation branch from the current default branch.
+4. Create/update `tasks/<id>.json` and `tasks/index.json` on that same branch.
 5. Use a branch name based on the task ID:
 
 ```text
@@ -81,7 +81,7 @@ If a tool offers a bypass option, the AI agent MUST NOT use it.
 
 A solo maintainer does not need artificial self-approval. Automated checks plus the PR boundary replace artificial self-approval; the human maintainer remains the final merge authority.
 
-The AI agent MAY create/update the task registration PR, implementation branch and implementation PR, and inspect CI results. It MUST NOT merge its own PR unless the user explicitly instructs it to merge and repository policy permits it.
+The AI agent MAY create/update the implementation branch and implementation PR, including Task metadata, and inspect CI results. It MUST NOT merge its own PR unless the user explicitly instructs it to merge and repository policy permits it.
 
 ## Validation before implementation PR
 
