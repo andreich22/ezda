@@ -11,16 +11,15 @@ Repository contract:
 - `tasks/<id>.json` is the source of truth for an individual task.
 - `tasks/relations.json` is the source of truth for task relationships.
 - `scripts/validate-tasks.mjs` enforces structural integrity.
-- `scripts/register-task-from-issue.mjs` defines the deterministic Issue → task metadata transformation.
-- `.github/workflows/register-task-issue.yml` automates registration from GitHub Issues.
+- GitHub Issues define requested work; Task metadata is created on the implementation branch.
 - Git history records implementation changes.
 
 ## Non-negotiable rules
 
 1. Do not modify project code, configuration, tests, or documentation without an associated Task ID.
 2. New tasks MUST start as a GitHub Issue titled `TASK-<4 lowercase hex-id> <title>` (the registration script also accepts `TASK-<id>: <title>` and `TASK-<id>-<title>`).
-3. The Issue registration workflow MUST register `tasks/<id>.json` and `tasks/index.json` before an AI agent creates the implementation PR.
-4. If the registration PR is not merged into `main`, do not create the implementation branch or implementation PR.
+3. The implementation branch MUST contain `tasks/<id>.json` and the corresponding `tasks/index.json` entry together with the implementation changes.
+4. There is no separate task registration PR or registration merge gate.
 5. Task IDs are exactly four lowercase hexadecimal characters and must be unique.
 6. Do not silently expand the scope of an existing task. Create another task and relate it instead.
 7. Every commit must use `<type>: <task-id> | <description>`.
