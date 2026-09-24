@@ -206,7 +206,7 @@ New features should not make the core flow unnecessarily complicated.
 
 The development workflow is based on the agent-governance rules adopted from `andreich22/privateAI`, adapted to Ezda's Next.js/TypeScript stack.
 
-**Mandatory rule:** AI MUST NOT modify project code, configuration, tests, or documentation without an associated Task ID. New tasks MUST begin as a GitHub Issue titled `TASK-<4 lowercase hex-id> <title>`. The registration workflow creates the task metadata; AI MUST wait until that registration PR is merged into `main` before creating the implementation branch or implementation PR.
+**Mandatory rule:** AI MUST NOT modify project code, configuration, tests, or documentation without an associated Task ID. New tasks MUST begin as a GitHub Issue titled `TASK-<4 lowercase hex-id> <title>`. The Task metadata (`tasks/<id>.json` and `tasks/index.json`) is part of the same implementation branch and Pull Request as the change; there is no separate registration PR.
 
 Task IDs are exactly four lowercase hexadecimal characters. Every implementation commit MUST use `<type>: <task-id> | <description>`. All commits for the same task use the same ID. Do not mix unrelated tasks in one commit.
 
@@ -221,10 +221,10 @@ The repository default branch is `main`. AI agents MUST NOT commit directly to `
 Required path:
 
 ```text
-Issue → automatic task registration PR → registration merge → task/<task-id>-<short-name> → commits → implementation Pull Request → checks → human merge
+Issue → task/<task-id>-<short-name> → Task metadata + implementation commits → Pull Request → checks → human merge
 ```
 
-The registration PR must be merged before the implementation branch/PR is created. AI MUST NOT merge its own implementation PR unless the user explicitly instructs it and repository policy permits it.
+The implementation PR contains both the Task metadata and the implementation. AI MUST NOT commit directly to `main` or bypass branch protection. AI MUST NOT merge its own implementation PR unless the user explicitly instructs it and repository policy permits it.
 
 If implementation reveals unrelated work, create a separate Issue/task instead of silently expanding scope.
 
@@ -233,8 +233,8 @@ If implementation reveals unrelated work, create a separate Issue/task instead o
 Before editing:
 1. Load `skills/task-driven-development/SKILL.md` and `skills/git-workflow/SKILL.md`.
 2. Identify the associated GitHub Task Issue.
-3. Verify that task registration has been merged into `main` and the task is ready.
-4. Create/use a task-specific branch: `task/<task-id>-<short-name>`.
+3. Create/use a task-specific branch: `task/<task-id>-<short-name>`, and add the Task metadata to that branch before or alongside implementation.
+4. Verify the Task metadata is complete enough for implementation.
 5. Inspect relevant files, tests, existing patterns, lifecycle, persistence, API, database, and browser implications.
 6. Make the smallest reasonable change.
 7. Avoid unrelated refactors.
