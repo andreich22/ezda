@@ -85,6 +85,11 @@
       "id": "b3c4",
       "title": "Каталог публичных маршрутов",
       "status": "review"
+    },
+    {
+      "id": "e6b1",
+      "title": "feat: add hamburger menu with routes catalog link",
+      "status": "in_progress"
     }
   ]
 }
