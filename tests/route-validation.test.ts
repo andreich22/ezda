@@ -37,6 +37,9 @@ describe("parseCreateRouteInput", () => {
     expect(parseCreateRouteInput({...valid, visibility: "private", isPublic: true})).toEqual({
       error: "visibility and isPublic must agree",
     });
+    expect(parseCreateRouteInput({...valid, isPublic: "private"})).toEqual({
+      error: "isPublic must be a boolean",
+    });
   });
 
   it("rejects coordinates outside longitude/latitude bounds", () => {
