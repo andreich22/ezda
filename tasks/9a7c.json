@@ -1,0 +1,50 @@
+{
+  "id": "9a7c",
+  "title": "Упростить Task-Driven workflow: Task и реализация в одном PR",
+  "status": "in_progress",
+  "createdAt": "2026-09-24T15:08:25.376Z",
+  "updatedAt": "2026-09-24T15:08:25.376Z",
+  "issue": {
+    "number": 44,
+    "url": "https://github.com/andreich22/ezda/issues/44",
+    "title": "TASK-9a7c Упростить Task-Driven workflow: Task и реализация в одном PR"
+  },
+  "description": "Изменить governance workflow Ezda так, чтобы Task не требовал отдельного registration PR перед реализацией.",
+  "requirements": [
+    "GitHub Issue остаётся обязательной точкой постановки задачи.",
+    "Task metadata (`tasks/<id>.json`, `tasks/index.json`) должна попадать в тот же implementation PR, что и код/тесты/документация задачи.",
+    "Отдельный registration PR и ожидание его merge должны быть удалены из обязательного workflow.",
+    "Сохранить protected main: AI не коммитит напрямую в main и не обходит branch protection.",
+    "Сохранить Task ID traceability и conventional commit format."
+  ],
+  "definitionOfReady": [
+    "Требования и acceptance criteria зафиксированы в GitHub Issue #44.",
+    "Изменение ограничено governance workflow и связанными документами/automation."
+  ],
+  "acceptanceCriteria": [
+    "Документация описывает путь Issue → task branch → implementation PR → checks → human merge.",
+    "Registration PR больше не является обязательным этапом.",
+    "Task registry metadata создаётся/обновляется в implementation PR.",
+    "Валидация задач продолжает работать.",
+    "Нет противоречивых правил в AGENTS.md и skills."
+  ],
+  "technicalApproach": [
+    "Удалить обязательный Issue-triggered registration PR workflow.",
+    "Перенести создание Task metadata в implementation branch/PR.",
+    "Обновить AGENTS.md и task/git workflow skills.",
+    "Удалить устаревшую registration automation."
+  ],
+  "definitionOfDone": [
+    "Изменения прошли релевантные проверки и доставлены через обычный PR в main."
+  ],
+  "history": [
+    {
+      "at": "2026-09-24T15:08:25.376Z",
+      "event": "created_from_issue",
+      "details": "Task created from GitHub Issue #44; metadata intentionally included in implementation PR per TASK-9a7c."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
