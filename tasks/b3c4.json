@@ -1,9 +1,9 @@
 {
   "id": "b3c4",
   "title": "Каталог публичных маршрутов",
-  "status": "in_progress",
+  "status": "review",
   "createdAt": "2026-09-24T21:42:00Z",
-  "updatedAt": "2026-09-24T21:42:00Z",
+  "updatedAt": "2026-09-24T21:50:00Z",
   "issue": {
     "number": 47,
     "url": "https://github.com/andreich22/ezda/issues/47",
@@ -46,9 +46,26 @@
       "at": "2026-09-24T21:42:00Z",
       "event": "implementation_started",
       "details": "Created implementation branch task/b3c4-public-routes-catalog; Task metadata is part of the implementation PR."
+    },
+    {
+      "at": "2026-09-24T21:50:00Z",
+      "event": "implementation_complete",
+      "details": "Implemented /routes public catalog with server-side filtering, empty/error states, and links to public route detail pages."
+    },
+    {
+      "at": "2026-09-24T21:50:00Z",
+      "event": "review_ready",
+      "details": "Implementation PR contains Task metadata and catalog changes; local command execution was unavailable because the environment could not reach GitHub."
     }
   ],
-  "commits": [],
+  "commits": [
+    "0a6ef0cf0e5c620372b9210069dadfadf6c42210",
+    "ee3a2a77a26204a6cd3c9b4e48fa60f83b51ba91",
+    "2218819e137db8c07877cf08a6b34f94059ca1f4",
+    "f621dab4893e5b7648dfd9a3880855125820b6f4",
+    "3fca2edf77847109114e14c5e47f9552b4d0b823",
+    "5681a91ae3b18134a77289d708258a502f36d2f3"
+  ],
   "decisionLog": [],
   "relations": []
 }
