@@ -33,8 +33,8 @@ begin
 
     update public.routes
     set geometry_geog =
-      st_setsrid(
-        st_geomfromgeojson((geometry::jsonb -> 'geometry')::text),
+      gis.st_setsrid(
+        gis.st_geomfromgeojson((geometry::jsonb -> 'geometry')::text),
         4326
       )::gis.geography
     where geometry is not null;
