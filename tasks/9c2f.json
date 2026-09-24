@@ -1,9 +1,9 @@
 {
   "id": "9c2f",
   "title": "APP_VERSION должен отображать текущую версию приложения",
-  "status": "ready",
+  "status": "in_progress",
   "createdAt": "2026-09-24T00:00:00.000Z",
-  "updatedAt": "2026-09-24T00:00:00.000Z",
+  "updatedAt": "2026-09-24T11:54:00.000Z",
   "issue": {
     "number": 41,
     "url": "https://github.com/andreich22/ezda/issues/41",
@@ -39,9 +39,23 @@
       "at": "2026-09-24T00:00:00.000Z",
       "event": "created_from_issue",
       "details": "Registered from GitHub Issue #41."
+    },
+    {
+      "at": "2026-09-24T11:54:00.000Z",
+      "event": "implementation_started",
+      "details": "Implementation PR #43 created after registration PR #42 merged."
+    },
+    {
+      "at": "2026-09-24T11:54:00.000Z",
+      "event": "implementation_pr_opened",
+      "details": "PR #43 opened with version source, header integration, and regression tests. Local validation blocked by unavailable outbound DNS; CI/Vercel validation pending."
     }
   ],
-  "commits": [],
+  "commits": [
+    "48dcb8a3480db2e7cac50f3924a510efeb4f991b",
+    "2a8790027da2e96df3f8582af6b9cec0978732a6",
+    "c0c8a281f9259df599b79334ba8d1f25af231364"
+  ],
   "decisionLog": [],
   "relations": []
 }
