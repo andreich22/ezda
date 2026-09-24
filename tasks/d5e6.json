@@ -3,7 +3,7 @@
   "title": "Валидация и безопасный API сохранения маршрута",
   "status": "review",
   "createdAt": "2026-09-24T15:55:13Z",
-  "updatedAt": "2026-09-24T15:59:15.238Z",
+  "updatedAt": "2026-09-24T16:04:02.747Z",
   "issue": {
     "number": 48,
     "url": "https://github.com/andreich22/ezda/issues/48",
@@ -50,6 +50,16 @@
       "at": "2026-09-24T15:59:15.238Z",
       "event": "implementation_complete",
       "details": "Hardened POST /api/routes validation, request-size handling, visibility validation/persistence, and added regression tests."
+    },
+    {
+      "at": "2026-09-24T16:04:02.747Z",
+      "event": "validation",
+      "details": "CI run #116 passed npm run tasks:validate, unit tests with coverage, coverage regression check, npm run build, and PR task validation."
+    },
+    {
+      "at": "2026-09-24T16:04:02.747Z",
+      "event": "review_ready",
+      "details": "Implementation PR #56 is ready for human review; no direct main-branch changes were made."
     }
   ],
   "commits": [
@@ -59,7 +69,9 @@
     "b4b00525d3c5b2726b17a30076617425c74e10b7",
     "dbeb7880798c04115d34b83bbecd3e392433137e",
     "899e3b0b907ce7900d98804a0b0024682d0850bf",
-    "03bcfe0d2ef472f58787661c5650cdd3687a91c4"
+    "03bcfe0d2ef472f58787661c5650cdd3687a91c4",
+    "ba857a2fdd9abd9d990777d7b3777eaac915067a",
+    "22b94419660f5cc27f3d89c5321b82bb274773fb"
   ],
   "decisionLog": [
     {
