@@ -1,9 +1,9 @@
 {
   "id": "e6b1",
   "title": "feat: add hamburger menu with routes catalog link",
-  "status": "in_progress",
+  "status": "review",
   "createdAt": "2026-09-24T18:54:00Z",
-  "updatedAt": "2026-09-24T18:54:00Z",
+  "updatedAt": "2026-09-24T19:05:00Z",
   "issue": {
     "number": 59,
     "url": "https://github.com/andreich22/ezda/issues/59",
@@ -51,9 +51,29 @@
       "at": "2026-09-24T18:54:00Z",
       "event": "implementation_started",
       "details": "Created implementation branch task/e6b1-hamburger-menu."
+    },
+    {
+      "at": "2026-09-24T19:05:00Z",
+      "event": "implementation_complete",
+      "details": "Added reusable hamburger menu with Routes navigation, outside-click/Escape dismissal, responsive styling, and focused menu-link coverage."
+    },
+    {
+      "at": "2026-09-24T19:05:00Z",
+      "event": "review_ready",
+      "details": "Implementation branch is ready for PR; local command execution is unavailable in this environment, so CI validation is required."
     }
   ],
-  "commits": [],
+  "commits": [
+    "77d25f10a4067016eccd3c3866441811c839d830",
+    "8841ac7026b9cc337397e73fdb0fe85b8898cfdc",
+    "0cb07e5603039df41753e65047a588e593206cda",
+    "2ee2ba486dcd770f94e4605618451030ef0df8d6",
+    "3e40b786f3dc9dee204942b9a787bad4c1873395",
+    "13461460539ca0d0e25c04ce0e3193ca72bef445",
+    "4ba646229ec8877facaf508a364e89b730150419",
+    "08e4f68f6e18c708365be89e139b6b14e7be9675",
+    "2da2f9d0b984871ccd7933e8d5b9b5982af69746"
+  ],
   "decisionLog": [],
   "relations": [
     {
