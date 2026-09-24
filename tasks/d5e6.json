@@ -1,9 +1,9 @@
 {
   "id": "d5e6",
   "title": "Валидация и безопасный API сохранения маршрута",
-  "status": "in_progress",
+  "status": "review",
   "createdAt": "2026-09-24T15:55:13Z",
-  "updatedAt": "2026-09-24T15:58:17.140Z",
+  "updatedAt": "2026-09-24T15:59:15.238Z",
   "issue": {
     "number": 48,
     "url": "https://github.com/andreich22/ezda/issues/48",
@@ -45,9 +45,28 @@
       "at": "2026-09-24T15:58:17.145Z",
       "event": "implementation_started",
       "details": "Created implementation branch task/d5e6-secure-route-save-api; Task metadata is part of the implementation PR."
+    },
+    {
+      "at": "2026-09-24T15:59:15.238Z",
+      "event": "implementation_complete",
+      "details": "Hardened POST /api/routes validation, request-size handling, visibility validation/persistence, and added regression tests."
     }
   ],
-  "commits": [],
-  "decisionLog": [],
+  "commits": [
+    "720b48c32a5098c6c6d50d689f9f72759fc3951c",
+    "7d311c12f3be399055df89245a855bc1b5a0413a",
+    "5c47b06c488ee943d179507088967d0e05efd1d9",
+    "b4b00525d3c5b2726b17a30076617425c74e10b7",
+    "dbeb7880798c04115d34b83bbecd3e392433137e",
+    "899e3b0b907ce7900d98804a0b0024682d0850bf",
+    "03bcfe0d2ef472f58787661c5650cdd3687a91c4"
+  ],
+  "decisionLog": [
+    {
+      "at": "2026-09-24T15:59:15.238Z",
+      "decision": "Accept both visibility ('public'|'private') and legacy isPublic boolean, defaulting to public when omitted.",
+      "reason": "Preserve the existing save flow while making publication policy explicit and validated."
+    }
+  ],
   "relations": []
 }
