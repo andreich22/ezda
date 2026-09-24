@@ -29,6 +29,11 @@
       "from": "b3c4",
       "type": "depends_on",
       "to": "f1a2"
+    },
+    {
+      "from": "e6b1",
+      "type": "depends_on",
+      "to": "b3c4"
     }
   ]
 }
