@@ -1,0 +1,45 @@
+{
+  "id": "9a7c",
+  "title": "Упростить Task-Driven workflow: Task и реализация в одном PR",
+  "status": "draft",
+  "createdAt": "2026-09-24T15:03:35.327Z",
+  "updatedAt": "2026-09-24T15:03:35.327Z",
+  "issue": {
+    "number": 44,
+    "url": "https://github.com/andreich22/ezda/issues/44",
+    "title": "TASK-9a7c Упростить Task-Driven workflow: Task и реализация в одном PR"
+  },
+  "description": "## Goal\nИзменить governance workflow Ezda так, чтобы Task не требовал отдельного registration PR перед реализацией.\n\n## Requirements\n- GitHub Issue остаётся обязательной точкой постановки задачи.\n- Task metadata (`tasks/<id>.json`, `tasks/index.json`) должна попадать в тот же implementation PR, что и код/тесты/документация задачи.\n- Отдельный registration PR и ожидание его merge должны быть удалены из обязательного workflow.\n- Сохранить protected main: AI не коммитит напрямую в main и не обходит branch protection.\n- Сохранить Task ID traceability и conventional commit format.\n- Обновить AGENTS.md и skills/task-driven-development/SKILL.md и skills/git-workflow/SKILL.md; при необходимости связанные workflow/scripts/docs.\n\n## Acceptance criteria\n1. Документация описывает путь Issue → task branch → implementation PR → checks → human merge.\n2. Registration PR больше не является обязательным этапом.\n3. Task registry metadata создаётся/обновляется в implementation PR.\n4. Валидация задач продолжает работать.\n5. Нет противоречивых правил в AGENTS.md и skills.\n\n## Definition of Done\nИзменения прошли релевантные проверки и доставлены через обычный PR в main.",
+  "requirements": [
+    "GitHub Issue остаётся обязательной точкой постановки задачи.",
+    "Task metadata (`tasks/<id>.json`, `tasks/index.json`) должна попадать в тот же implementation PR, что и код/тесты/документация задачи.",
+    "Отдельный registration PR и ожидание его merge должны быть удалены из обязательного workflow.",
+    "Сохранить protected main: AI не коммитит напрямую в main и не обходит branch protection.",
+    "Сохранить Task ID traceability и conventional commit format.",
+    "Обновить AGENTS.md и skills/task-driven-development/SKILL.md и skills/git-workflow/SKILL.md; при необходимости связанные workflow/scripts/docs."
+  ],
+  "definitionOfReady": [
+    "See GitHub Issue #44 for the definitionOfReady definition."
+  ],
+  "acceptanceCriteria": [
+    "1. Документация описывает путь Issue → task branch → implementation PR → checks → human merge.",
+    "2. Registration PR больше не является обязательным этапом.",
+    "3. Task registry metadata создаётся/обновляется в implementation PR.",
+    "4. Валидация задач продолжает работать.",
+    "5. Нет противоречивых правил в AGENTS.md и skills."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "Изменения прошли релевантные проверки и доставлены через обычный PR в main."
+  ],
+  "history": [
+    {
+      "at": "2026-09-24T15:03:35.327Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #44."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
