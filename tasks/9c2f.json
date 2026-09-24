@@ -1,0 +1,47 @@
+{
+  "id": "9c2f",
+  "title": "APP_VERSION должен отображать текущую версию приложения",
+  "status": "ready",
+  "createdAt": "2026-09-24T00:00:00.000Z",
+  "updatedAt": "2026-09-24T00:00:00.000Z",
+  "issue": {
+    "number": 41,
+    "url": "https://github.com/andreich22/ezda/issues/41",
+    "title": "TASK-9c2f APP_VERSION должен отображать текущую версию приложения"
+  },
+  "description": "Устранить расхождение между версией приложения в package.json и отображаемым APP_VERSION. package.json должен оставаться единственным источником версии, а UI — автоматически показывать актуальную версию рядом с cycling routes MVP.",
+  "requirements": [
+    "Удалить hardcoded значение APP_VERSION из app/page.tsx.",
+    "Использовать package.json как единственный источник версии приложения.",
+    "Сохранить отображение версии рядом с cycling routes MVP.",
+    "Добавить regression test, подтверждающий соответствие APP_VERSION версии из package.json."
+  ],
+  "definitionOfReady": [
+    "Registration PR для этой задачи должен быть слит в main.",
+    "Текущая версия package.json и отображение версии в app/page.tsx доступны для анализа."
+  ],
+  "acceptanceCriteria": [
+    "APP_VERSION соответствует package.json.version.",
+    "UI показывает актуальную версию приложения, например v0.1.4.",
+    "В production-коде нет hardcoded номера версии.",
+    "Regression test покрывает связь APP_VERSION с package.json.",
+    "npm run test:run, npm run version:check и npm run build проходят."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "Создана task/9c2f-<short-name> ветка от main после merge registration PR.",
+    "Все implementation commits используют формат <type>: 9c2f | <description>.",
+    "Implementation PR открыт с requirements, acceptance criteria, validation и risks.",
+    "Task history обновлена; PR проходит CI и готов к merge через защищённый путь."
+  ],
+  "history": [
+    {
+      "at": "2026-09-24T00:00:00.000Z",
+      "event": "created_from_issue",
+      "details": "Registered from GitHub Issue #41."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
