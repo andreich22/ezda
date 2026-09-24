@@ -65,6 +65,11 @@
       "id": "9c2f",
       "title": "APP_VERSION должен отображать текущую версию приложения",
       "status": "in_progress"
+    },
+    {
+      "id": "9a7c",
+      "title": "Упростить Task-Driven workflow: Task и реализация в одном PR",
+      "status": "in_progress"
     }
   ]
 }
