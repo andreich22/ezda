@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   migrate:
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'task/9e4a-')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'task/9e4a-') || startsWith(github.head_ref, 'task/dbe1-')
     runs-on: ubuntu-latest
     environment: Preview
     steps:
@@ -20,11 +20,11 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Run Drizzle migrations
+      - name: Run database migrations
         run: npm run db:migrate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      - name: Verify routes table
-        run: node -e "const postgres = require('postgres'); const sql = postgres(process.env.DATABASE_URL, { prepare: false }); sql.unsafe("SELECT to_regclass('public.routes') AS table_name").then(r => { if (r[0]?.table_name !== 'routes') process.exit(1); console.log('routes table verified'); }).finally(() => sql.end());"
+      - name: Verify database schema
+        run: node scripts/verify-migrations.mjs
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
