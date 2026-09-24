@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-export const APP_MENU_ITEMS = [
-  { label: "Routes", href: "/routes" },
-] as const;
+import { APP_MENU_ITEMS } from "../lib/app-menu";
 
 export default function HamburgerMenu() {
   const [open, setOpen] = useState(false);
