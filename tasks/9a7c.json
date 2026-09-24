@@ -3,7 +3,7 @@
   "title": "Упростить Task-Driven workflow: Task и реализация в одном PR",
   "status": "in_progress",
   "createdAt": "2026-09-24T15:08:25.376Z",
-  "updatedAt": "2026-09-24T15:08:25.376Z",
+  "updatedAt": "2026-09-24T15:08:53.196Z",
   "issue": {
     "number": 44,
     "url": "https://github.com/andreich22/ezda/issues/44",
@@ -42,9 +42,25 @@
       "at": "2026-09-24T15:08:25.376Z",
       "event": "created_from_issue",
       "details": "Task created from GitHub Issue #44; metadata intentionally included in implementation PR per TASK-9a7c."
+    },
+    {
+      "at": "2026-09-24T15:08:53.196Z",
+      "event": "implementation",
+      "details": "Updated AGENTS.md and workflow skills; added Task metadata to implementation branch; removed automatic registration workflow and obsolete registration script."
     }
   ],
-  "commits": [],
-  "decisionLog": [],
+  "commits": [
+    "a7340764c3aff7bdc0a9763b41c5312991dfc8c8",
+    "42375133058fe70f8270cfb98c801741fd910083",
+    "b96a1a8fe407f0b104b678af12b10c69d72b3dab",
+    "85ccc3a77cfe150b96cb13bb425adae0b71f61ab"
+  ],
+  "decisionLog": [
+    {
+      "at": "2026-09-24T15:08:53.196Z",
+      "decision": "Task registration is part of the implementation PR rather than a separate registration PR.",
+      "reason": "Reduce workflow overhead while preserving Task traceability and protected main."
+    }
+  ],
   "relations": []
 }
