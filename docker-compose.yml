@@ -9,10 +9,32 @@ services:
       - "5432:5432"
     volumes:
       - ezda_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U ezda -d ezda"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+  migrate:
+    build: .
+    image: ezda-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://ezda:ezda@db:5432/ezda
+    command: node scripts/migrate.mjs
+    volumes:
+      - .:/app
+      - /app/node_modules
   app:
     build: .
+    image: ezda-app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     environment:
       DATABASE_URL: postgres://ezda:ezda@db:5432/ezda
       ORS_API_KEY: ${ORS_API_KEY:-}
