@@ -1,9 +1,9 @@
 {
   "id": "9a7c",
   "title": "Упростить Task-Driven workflow: Task и реализация в одном PR",
-  "status": "in_progress",
+  "status": "review",
   "createdAt": "2026-09-24T15:08:25.376Z",
-  "updatedAt": "2026-09-24T15:08:53.196Z",
+  "updatedAt": "2026-09-24T15:09:00.040Z",
   "issue": {
     "number": 44,
     "url": "https://github.com/andreich22/ezda/issues/44",
@@ -47,6 +47,11 @@
       "at": "2026-09-24T15:08:53.196Z",
       "event": "implementation",
       "details": "Updated AGENTS.md and workflow skills; added Task metadata to implementation branch; removed automatic registration workflow and obsolete registration script."
+    },
+    {
+      "at": "2026-09-24T15:09:00.040Z",
+      "event": "review_ready",
+      "details": "Implementation branch prepared for Pull Request validation."
     }
   ],
   "commits": [
