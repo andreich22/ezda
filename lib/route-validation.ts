@@ -3,10 +3,7 @@ export type Point = [number, number];
 export type RouteFeature = {
   type: "Feature";
   properties?: Record<string, unknown>;
-  geometry: {
-    type: "LineString";
-    coordinates: number[][];
-  };
+  geometry: {type: "LineString"; coordinates: number[][]};
 };
 
 export type CreateRouteInput = {
@@ -16,12 +13,20 @@ export type CreateRouteInput = {
   distanceMeters: number;
   durationSeconds: number | null;
   elevationGainMeters: number | null;
+  isPublic: boolean;
 };
+
+const MAX_TITLE_LENGTH = 120;
+const MAX_DESCRIPTION_LENGTH = 2000;
+const MAX_COORDINATES = 10_000;
+const MAX_DISTANCE_METERS = 100_000_000;
+const MAX_DURATION_SECONDS = 31_536_000;
+const MAX_ELEVATION_GAIN_METERS = 10_000_000;
 
 const isFiniteNumber = (value: unknown): value is number =>
   typeof value === "number" && Number.isFinite(value);
 
-export function parseCreateRouteInput(body: unknown): CreateRouteInput | { error: string } {
+export function parseCreateRouteInput(body: unknown): CreateRouteInput | {error: string} {
   if (!body || typeof body !== "object") return {error: "invalid request body"};
 
   const value = body as Record<string, unknown>;
@@ -29,15 +34,32 @@ export function parseCreateRouteInput(body: unknown): CreateRouteInput | { error
 
   const title = value.title.trim();
   if (!title) return {error: "title is required"};
-  if (title.length > 120) return {error: "title must be 120 characters or fewer"};
+  if (title.length > MAX_TITLE_LENGTH) {
+    return {error: "title must be 120 characters or fewer"};
+  }
 
   let description: string | null = null;
   if (value.description != null) {
     if (typeof value.description !== "string") return {error: "description must be a string"};
     description = value.description.trim() || null;
-    if (description && description.length > 2000) {
+    if (description && description.length > MAX_DESCRIPTION_LENGTH) {
       return {error: "description must be 2000 characters or fewer"};
     }
+  }
+
+  let isPublic = true;
+  if (value.visibility != null) {
+    if (value.visibility !== "public" && value.visibility !== "private") {
+      return {error: "visibility must be public or private"};
+    }
+    isPublic = value.visibility === "public";
+  }
+  if (value.isPublic != null) {
+    if (typeof value.isPublic !== "boolean") return {error: "isPublic must be a boolean"};
+    if (value.visibility != null && value.isPublic !== isPublic) {
+      return {error: "visibility and isPublic must agree"};
+    }
+    isPublic = value.isPublic;
   }
 
   const geometry = value.geometry;
@@ -57,12 +79,16 @@ export function parseCreateRouteInput(body: unknown): CreateRouteInput | { error
   if (!Array.isArray(line.coordinates) || line.coordinates.length < 2) {
     return {error: "geometry must contain at least two coordinates"};
   }
+  if (line.coordinates.length > MAX_COORDINATES) {
+    return {error: "geometry must contain 10000 coordinates or fewer"};
+  }
 
   const coordinates: number[][] = [];
   for (const coordinate of line.coordinates) {
     if (
       !Array.isArray(coordinate) ||
       coordinate.length < 2 ||
+      coordinate.length > 3 ||
       !isFiniteNumber(coordinate[0]) ||
       !isFiniteNumber(coordinate[1]) ||
       coordinate[0] < -180 ||
@@ -72,25 +98,33 @@ export function parseCreateRouteInput(body: unknown): CreateRouteInput | { error
     ) {
       return {error: "geometry contains invalid coordinates"};
     }
+    if (coordinate.length === 3 && !isFiniteNumber(coordinate[2])) {
+      return {error: "geometry contains invalid elevation coordinates"};
+    }
     coordinates.push([coordinate[0], coordinate[1]]);
   }
 
   const distanceMeters = value.distanceMeters;
-  if (!isFiniteNumber(distanceMeters) || distanceMeters < 0) {
-    return {error: "distanceMeters must be a non-negative number"};
+  if (!isFiniteNumber(distanceMeters) || distanceMeters < 0 || distanceMeters > MAX_DISTANCE_METERS) {
+    return {error: "distanceMeters must be between 0 and 100000000"};
   }
 
   const durationSeconds = value.durationSeconds;
-  if (durationSeconds != null && (!isFiniteNumber(durationSeconds) || durationSeconds < 0)) {
-    return {error: "durationSeconds must be a non-negative number"};
+  if (
+    durationSeconds != null &&
+    (!isFiniteNumber(durationSeconds) || durationSeconds < 0 || durationSeconds > MAX_DURATION_SECONDS)
+  ) {
+    return {error: "durationSeconds must be between 0 and 31536000"};
   }
 
   const elevationGainMeters = value.elevationGainMeters;
   if (
     elevationGainMeters != null &&
-    (!isFiniteNumber(elevationGainMeters) || elevationGainMeters < 0)
+    (!isFiniteNumber(elevationGainMeters) ||
+      elevationGainMeters < 0 ||
+      elevationGainMeters > MAX_ELEVATION_GAIN_METERS)
   ) {
-    return {error: "elevationGainMeters must be a non-negative number"};
+    return {error: "elevationGainMeters must be between 0 and 10000000"};
   }
 
   return {
@@ -104,5 +138,6 @@ export function parseCreateRouteInput(body: unknown): CreateRouteInput | { error
     distanceMeters,
     durationSeconds: durationSeconds ?? null,
     elevationGainMeters: elevationGainMeters ?? null,
+    isPublic,
   };
 }
