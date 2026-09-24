@@ -5,6 +5,7 @@ import MapClient from "../components/MapClient";
 import { parseSidebarCollapsed, SIDEBAR_STORAGE_KEY } from "../lib/sidebar-state";
 import { shouldDismissMobileSidebarSwipe } from "../lib/sidebar-swipe";
 import { APP_VERSION } from "../lib/app-version";
+import HamburgerMenu from "../components/HamburgerMenu";
 
 export default function Home() {
   const [collapsed, setCollapsed] = useState(false);
@@ -44,6 +45,7 @@ export default function Home() {
   return (
     <main className="shell">
       <header className="header">
+        <HamburgerMenu />
         <div className="logo">Ezda</div>
         <div className="header-title">
           <span>cycling routes MVP</span>
