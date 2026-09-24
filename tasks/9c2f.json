@@ -1,0 +1,43 @@
+{
+  "id": "9c2f",
+  "title": "APP_VERSION должен отображать текущую версию приложения",
+  "status": "draft",
+  "createdAt": "2026-09-24T11:45:38.603Z",
+  "updatedAt": "2026-09-24T11:45:38.603Z",
+  "issue": {
+    "number": 41,
+    "url": "https://github.com/andreich22/ezda/issues/41",
+    "title": "TASK-9c2f APP_VERSION должен отображать текущую версию приложения"
+  },
+  "description": "## Требования\n\n- Убрать хардкод версии приложения из `app/page.tsx`.\n- `APP_VERSION` должен получать текущую версию из единственного источника истины — `package.json`.\n- При изменении версии через существующий автоматический version bump UI должен показывать новую версию без ручного изменения исходников.\n- Сохранить отображение версии рядом с `cycling routes MVP`.\n\n## Acceptance Criteria\n\n- [ ] `APP_VERSION` равен версии из `package.json`.\n- [ ] В UI отображается актуальная версия приложения.\n- [ ] Нет отдельного захардкоженного номера версии в компоненте.\n- [ ] Добавлен regression test для соответствия источнику версии.\n- [ ] Существующие проверки проходят.",
+  "requirements": [
+    "Убрать хардкод версии приложения из `app/page.tsx`.",
+    "`APP_VERSION` должен получать текущую версию из единственного источника истины — `package.json`.",
+    "При изменении версии через существующий автоматический version bump UI должен показывать новую версию без ручного изменения исходников.",
+    "Сохранить отображение версии рядом с `cycling routes MVP`."
+  ],
+  "definitionOfReady": [
+    "See GitHub Issue #41 for the definitionOfReady definition."
+  ],
+  "acceptanceCriteria": [
+    "`APP_VERSION` равен версии из `package.json`.",
+    "В UI отображается актуальная версия приложения.",
+    "Нет отдельного захардкоженного номера версии в компоненте.",
+    "Добавлен regression test для соответствия источнику версии.",
+    "Существующие проверки проходят."
+  ],
+  "technicalApproach": [],
+  "definitionOfDone": [
+    "See GitHub Issue #41 for the definitionOfDone definition."
+  ],
+  "history": [
+    {
+      "at": "2026-09-24T11:45:38.603Z",
+      "event": "created_from_issue",
+      "details": "Automatically registered from GitHub Issue #41."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}

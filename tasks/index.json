@@ -60,6 +60,11 @@
       "id": "c0de",
       "title": "Покрыть тестами API построения маршрута /api/route",
       "status": "draft"
+    },
+    {
+      "id": "9c2f",
+      "title": "APP_VERSION должен отображать текущую версию приложения",
+      "status": "draft"
     }
   ]
 }
