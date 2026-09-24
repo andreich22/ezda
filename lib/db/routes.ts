@@ -17,7 +17,7 @@ export async function createRoute(input: CreateRouteInput) {
       distanceMeters: input.distanceMeters,
       durationSeconds: input.durationSeconds,
       elevationGainMeters: input.elevationGainMeters,
-      isPublic: true,
+      isPublic: input.isPublic,
     })
     .returning({id: routes.id});
 
