@@ -3,7 +3,7 @@
   "title": "User profiles",
   "status": "in_progress",
   "createdAt": "2026-09-25T09:20:24Z",
-  "updatedAt": "2026-09-25T12:15:00Z",
+  "updatedAt": "2026-09-25T12:30:00Z",
   "issue": {
     "number": 63,
     "url": "https://github.com/andreich22/ezda/issues/63",
@@ -42,6 +42,11 @@
       "at": "2026-09-25T12:15:00Z",
       "event": "implementation_started",
       "details": "Created task/52c3-user-profiles from the updated umbrella branch after TASK-41b2 merge."
+    },
+    {
+      "at": "2026-09-25T12:30:00Z",
+      "event": "validation_refresh",
+      "details": "Synced the umbrella coverage baseline and auth adapter fix before rerunning PR validation."
     }
   ],
   "commits": [],
