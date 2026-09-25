@@ -1,25 +1,110 @@
 {
   "version": 1,
   "tasks": [
-    {"id":"a89b","title":"fix: extract haversine function to shared module","status":"draft"},
-    {"id":"c4e7","title":"адаптация интерфейса для мобильных устройств","status":"ready"},
-    {"id":"7c31","title":"feat: add collapsible sidebar","status":"in_progress"},
-    {"id":"8f42","title":"feat: hide mobile sidebar with swipe gesture","status":"in_progress"},
-    {"id":"b6e4","title":"production-ready automatic application versioning","status":"done"},
-    {"id":"b4e2","title":"feat: add interactive route summary card","status":"done"},
-    {"id":"d91f","title":"feat: add map quick actions","status":"done"},
-    {"id":"9e4a","title":"Подключить Ezda к Supabase PostgreSQL через Transaction Pooler","status":"in_progress"},
-    {"id":"7d3a","title":"Автоматически повышать версию приложения после merge в main","status":"in_progress"},
-    {"id":"5b7c","title":"Реализовать сохранение и открытие сохранённых маршрутов","status":"in_progress"},
-    {"id":"dbe1","title":"Auto-apply migrations on Docker startup and fix migration drift","status":"in_progress"},
-    {"id":"c0de","title":"Покрыть тестами API построения маршрута /api/route","status":"draft"},
-    {"id":"9c2f","title":"APP_VERSION должен отображать текущую версию приложения","status":"in_progress"},
-    {"id":"9a7c","title":"Упростить Task-Driven workflow: Task и реализация в одном PR","status":"review"},
-    {"id":"d5e6","title":"Валидация и безопасный API сохранения маршрута","status":"review"},
-    {"id":"f1a2","title":"Публичная страница маршрута","status":"review"},
-    {"id":"b3c4","title":"Каталог публичных маршрутов","status":"review"},
-    {"id":"e6b1","title":"feat: add hamburger menu with routes catalog link","status":"review"},
-    {"id":"b7c8","title":"Иерархический workflow для зонтичных задач","status":"in_progress"},
-    {"id":"5d2a","title":"Сделать проверку покрытия CI неблокирующей","status":"review"}
+    {
+      "id": "a89b",
+      "title": "fix: extract haversine function to shared module",
+      "status": "draft"
+    },
+    {
+      "id": "c4e7",
+      "title": "адаптация интерфейса для мобильных устройств",
+      "status": "ready"
+    },
+    {
+      "id": "7c31",
+      "title": "feat: add collapsible sidebar",
+      "status": "in_progress"
+    },
+    {
+      "id": "8f42",
+      "title": "feat: hide mobile sidebar with swipe gesture",
+      "status": "in_progress"
+    },
+    {
+      "id": "b6e4",
+      "title": "production-ready automatic application versioning",
+      "status": "done"
+    },
+    {
+      "id": "b4e2",
+      "title": "feat: add interactive route summary card",
+      "status": "done"
+    },
+    {
+      "id": "d91f",
+      "title": "feat: add map quick actions",
+      "status": "done"
+    },
+    {
+      "id": "9e4a",
+      "title": "Подключить Ezda к Supabase PostgreSQL через Transaction Pooler",
+      "status": "in_progress"
+    },
+    {
+      "id": "7d3a",
+      "title": "Автоматически повышать версию приложения после merge в main",
+      "status": "in_progress"
+    },
+    {
+      "id": "5b7c",
+      "title": "Реализовать сохранение и открытие сохранённых маршрутов",
+      "status": "in_progress"
+    },
+    {
+      "id": "dbe1",
+      "title": "Auto-apply migrations on Docker startup and fix migration drift",
+      "status": "in_progress"
+    },
+    {
+      "id": "c0de",
+      "title": "Покрыть тестами API построения маршрута /api/route",
+      "status": "draft"
+    },
+    {
+      "id": "9c2f",
+      "title": "APP_VERSION должен отображать текущую версию приложения",
+      "status": "in_progress"
+    },
+    {
+      "id": "9a7c",
+      "title": "Упростить Task-Driven workflow: Task и реализация в одном PR",
+      "status": "review"
+    },
+    {
+      "id": "d5e6",
+      "title": "Валидация и безопасный API сохранения маршрута",
+      "status": "review"
+    },
+    {
+      "id": "f1a2",
+      "title": "Публичная страница маршрута",
+      "status": "review"
+    },
+    {
+      "id": "b3c4",
+      "title": "Каталог публичных маршрутов",
+      "status": "review"
+    },
+    {
+      "id": "e6b1",
+      "title": "feat: add hamburger menu with routes catalog link",
+      "status": "review"
+    },
+    {
+      "id": "b7c8",
+      "title": "Иерархический workflow для зонтичных задач",
+      "status": "in_progress"
+    },
+    {
+      "id": "5d2a",
+      "title": "Сделать проверку покрытия CI неблокирующей",
+      "status": "review"
+    },
+    {
+      "id": "a11a",
+      "title": "Авторизация и поддержка пользователей",
+      "status": "in_progress"
+    }
   ]
 }
