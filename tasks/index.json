@@ -95,6 +95,11 @@
       "id": "b7c8",
       "title": "Иерархический workflow для зонтичных задач",
       "status": "in_progress"
+    },
+    {
+      "id": "a11a",
+      "title": "Авторизация и поддержка пользователей",
+      "status": "in_progress"
     }
   ]
 }
