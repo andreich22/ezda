@@ -90,6 +90,11 @@
       "id": "e6b1",
       "title": "feat: add hamburger menu with routes catalog link",
       "status": "review"
+    },
+    {
+      "id": "b7c8",
+      "title": "Иерархический workflow для зонтичных задач",
+      "status": "in_progress"
     }
   ]
 }
