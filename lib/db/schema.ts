@@ -18,6 +18,15 @@ const geography = customType<{
   },
 });
 
+export const profiles = pgTable("profiles", {
+  id: uuid("id").primaryKey(),
+  username: text("username").notNull().unique(),
+  displayName: text("display_name"),
+  avatarUrl: text("avatar_url"),
+  createdAt: timestamp("created_at", {withTimezone: true}).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", {withTimezone: true}).defaultNow().notNull(),
+});
+
 export const routes = pgTable(
   "routes",
   {
