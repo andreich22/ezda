@@ -16,7 +16,7 @@ export type AuthSession = {
 };
 
 function getConfig() {
-  const url = process.env.SUPABASE_URL?.replace(/\\/$/, "");
+  const url = process.env.SUPABASE_URL?.replace(/\/$/, "");
   const key = process.env.SUPABASE_ANON_KEY;
 
   if (!url || !key) {
