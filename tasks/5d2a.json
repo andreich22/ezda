@@ -1,0 +1,42 @@
+{
+  "id": "5d2a",
+  "title": "Сделать проверку покрытия CI неблокирующей",
+  "status": "in_progress",
+  "createdAt": "2026-09-25T12:22:40Z",
+  "updatedAt": "2026-09-25T12:22:40Z",
+  "issue": {
+    "number": 74,
+    "url": "https://github.com/andreich22/ezda/issues/74",
+    "title": "TASK-5d2a Сделать проверку покрытия CI неблокирующей"
+  },
+  "description": "Изменить CI так, чтобы регрессия покрытия сообщалась как предупреждение, но не блокировала PR или последующие шаги сборки/deploy.",
+  "requirements": [
+    "Сохранить запуск проверки покрытия.",
+    "При обнаружении регрессии покрытия выводить предупреждение в GitHub Actions.",
+    "Шаг проверки должен завершаться успешно и не блокировать последующие шаги.",
+    "Не менять остальные обязательные CI-проверки."
+  ],
+  "definitionOfReady": [
+    "Требования и acceptance criteria зафиксированы в GitHub Issue #74.",
+    "Изменение ограничено CI workflow и Task metadata."
+  ],
+  "acceptanceCriteria": [
+    "`Check coverage regression` не переводит job в failed при регрессии покрытия.",
+    "В логах CI явно виден warning о регрессии.",
+    "Build и остальные проверки продолжают выполняться.",
+    "Workflow YAML остаётся валидным."
+  ],
+  "definitionOfDone": [
+    "Изменение прошло релевантные проверки и доставлено через implementation PR в main."
+  ],
+  "history": [
+    {
+      "at": "2026-09-25T12:22:40Z",
+      "event": "created_from_issue",
+      "details": "Task created from GitHub Issue #74; metadata is included in the same implementation PR as the CI change."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
