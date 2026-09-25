@@ -110,6 +110,11 @@
       "id": "41b2",
       "title": "Авторизация пользователей",
       "status": "in_progress"
+    },
+    {
+      "id": "52c3",
+      "title": "User profiles",
+      "status": "in_progress"
     }
   ]
 }
