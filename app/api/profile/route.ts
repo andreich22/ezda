@@ -1,6 +1,6 @@
 import {NextResponse} from "next/server";
-import {getCurrentUser} from "../../../../lib/current-user";
-import {ensureProfile, updateProfile} from "../../../../lib/db/profiles";
+import {getCurrentUser} from "../../../lib/current-user";
+import {ensureProfile, updateProfile} from "../../../lib/db/profiles";
 
 export function parseProfileInput(body: unknown) {
   if (!body || typeof body !== "object") return {error: "invalid JSON body"} as const;
