@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {parseProfileInput} from "../app/api/profile/route";
+import {parseProfileInput} from "../lib/profile-validation";
 
 describe("profile input", () => {
   it("normalizes valid profile fields", () => {
