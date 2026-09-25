@@ -39,56 +39,6 @@
       "from": "a11a",
       "type": "parent",
       "to": "41b2"
-    },
-    {
-      "from": "a11a",
-      "type": "parent",
-      "to": "52c3"
-    },
-    {
-      "from": "a11a",
-      "type": "parent",
-      "to": "63d4"
-    },
-    {
-      "from": "a11a",
-      "type": "parent",
-      "to": "74e5"
-    },
-    {
-      "from": "a11a",
-      "type": "parent",
-      "to": "85f6"
-    },
-    {
-      "from": "a11a",
-      "type": "parent",
-      "to": "96a7"
-    },
-    {
-      "from": "52c3",
-      "type": "depends_on",
-      "to": "41b2"
-    },
-    {
-      "from": "63d4",
-      "type": "depends_on",
-      "to": "52c3"
-    },
-    {
-      "from": "74e5",
-      "type": "depends_on",
-      "to": "63d4"
-    },
-    {
-      "from": "85f6",
-      "type": "depends_on",
-      "to": "74e5"
-    },
-    {
-      "from": "96a7",
-      "type": "depends_on",
-      "to": "85f6"
     }
   ]
 }
