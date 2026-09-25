@@ -95,6 +95,11 @@
       "id": "b7c8",
       "title": "Иерархический workflow для зонтичных задач",
       "status": "in_progress"
+    },
+    {
+      "id": "5d2a",
+      "title": "Сделать проверку покрытия CI неблокирующей",
+      "status": "in_progress"
     }
   ]
 }
