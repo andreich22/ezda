@@ -218,13 +218,61 @@ Before marking a task `done`, run `npm run tasks:validate` and the relevant test
 
 The repository default branch is `main`. AI agents MUST NOT commit directly to `main`, push directly to `main`, force-push it, rewrite its history, or bypass branch protection.
 
-Required path:
+### Ordinary task
+
+For a task that is not a child of an umbrella task, use:
 
 ```text
-Issue → task/<task-id>-<short-name> → Task metadata + implementation commits → Pull Request → checks → human merge
+Issue → task/<task-id>-<short-name> → Task metadata + implementation commits → PR → main → checks → human merge
 ```
 
-The implementation PR contains both the Task metadata and the implementation. AI MUST NOT commit directly to `main` or bypass branch protection. AI MUST NOT merge its own implementation PR unless the user explicitly instructs it and repository policy permits it.
+The implementation PR targets `main).
+
+### Umbrella task
+
+An umbrella task is a parent task that has one or more child/subtasks in its task relationships.
+
+For an umbrella task:
+
+1. Create a dedicated umbrella branch from `main`:
+   `task/<umbrella-task-id>-<short-name>`.
+2. The umbrella branch is the integration branch for all child tasks.
+3. Every child task MUST have its own task branch.
+4. A child-task PR MUST target the umbrella branch, never `main`.
+5. Child-task PRs may be merged only into the umbrella branch.
+6. A child task MUST NOT create or merge a PR directly into `main`.
+7. The umbrella branch MUST NOT be merged into `main` until every child task is either:
+   - completed and its PR merged into the umbrella branch; or
+   - explicitly closed/cancelled according to the task's lifecycle.
+8. Only after all child tasks are resolved is the umbrella branch considered ready for the umbrella PR.
+9. The umbrella PR targets `main`.
+10. The umbrella PR is the only PR that delivers the umbrella task's integrated child work into `main`.
+
+The required umbrella lifecycle is:
+
+```text
+Umbrella Issue
+  ↓
+task/<umbrella-id>-<short-name>
+  ↓
+Child Task Issues
+  ↓
+task/<child-id>-<short-name>
+  ↓
+Child PR → umbrella branch
+  ↓
+merge child PR into umbrella branch
+  ↓
+repeat until all children are resolved
+  ↓
+Umbrella PR → main
+  ↓
+checks → human merge
+```
+
+When an umbrella task has unresolved child tasks, its branch MUST be treated as not ready for merge into `main`. The child-task PRs are integration PRs only; they are not release-to-`main` PRs.
+
+AI MUST NOT merge its own implementation PR unless the user explicitly instructs it and repository policy permits it.
 
 If implementation reveals unrelated work, create a separate Issue/task instead of silently expanding scope.
 
