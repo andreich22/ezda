@@ -1,9 +1,9 @@
 {
   "id": "5d2a",
   "title": "Сделать проверку покрытия CI неблокирующей",
-  "status": "in_progress",
+  "status": "review",
   "createdAt": "2026-09-25T12:22:40Z",
-  "updatedAt": "2026-09-25T12:22:40Z",
+  "updatedAt": "2026-09-25T12:30:00Z",
   "issue": {
     "number": 74,
     "url": "https://github.com/andreich22/ezda/issues/74",
@@ -34,9 +34,29 @@
       "at": "2026-09-25T12:22:40Z",
       "event": "created_from_issue",
       "details": "Task created from GitHub Issue #74; metadata is included in the same implementation PR as the CI change."
+    },
+    {
+      "at": "2026-09-25T12:30:00Z",
+      "event": "implementation",
+      "details": "Changed .github/workflows/ci.yml so coverage regression emits a GitHub Actions warning and exits successfully."
+    },
+    {
+      "at": "2026-09-25T12:30:00Z",
+      "event": "review_ready",
+      "details": "Implementation branch prepared for Pull Request validation."
     }
   ],
-  "commits": [],
-  "decisionLog": [],
+  "commits": [
+    "a0be3612afa799d95fe997d622e4407f3123683f",
+    "df0f095b1d37abf2c84b7a5cf7fefeffa6bd22d1",
+    "bcb145fc8cd4d2fea34df822a60c7a9549c3f766"
+  ],
+  "decisionLog": [
+    {
+      "at": "2026-09-25T12:30:00Z",
+      "decision": "Treat coverage regression as informational in CI rather than a blocking quality gate.",
+      "reason": "The user requested that coverage checks warn without blocking increment/deploy."
+    }
+  ],
   "relations": []
 }
