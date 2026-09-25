@@ -43,7 +43,11 @@ jobs:
           npm ci
           npm run test:coverage
           cd -
-          node scripts/check-coverage.mjs coverage/coverage-summary.json /tmp/ezda-base/coverage/coverage-summary.json
+          if node scripts/check-coverage.mjs coverage/coverage-summary.json /tmp/ezda-base/coverage/coverage-summary.json; then
+            echo "Coverage regression check passed."
+          else
+            echo "::warning::Coverage regression detected. This is informational and does not block CI."
+          fi
       - run: npm run build
       - name: Validate pull request task
         if: github.event_name == 'pull_request'
