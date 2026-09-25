@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {signIn} from "../../../../lib/auth";
 import {setSessionCookies} from "../../../../lib/auth-cookies";
+import {ensureProfile} from "../../../../lib/db/profiles";
 
 export async function POST(request: Request) {
   try {
@@ -13,6 +14,7 @@ export async function POST(request: Request) {
     }
 
     const session = await signIn(email, password);
+    await ensureProfile(session.user.id, session.user.email);
     const response = NextResponse.json({user: session.user});
     setSessionCookies(response, session);
     return response;
