@@ -78,6 +78,13 @@ export async function sendPasswordReset(email: string, redirectTo: string) {
   );
 }
 
+export async function refreshSession(refreshToken: string) {
+  return authRequest<AuthSession>(
+    "token?grant_type=refresh_token",
+    {method: "POST", body: JSON.stringify({refresh_token: refreshToken})},
+  );
+}
+
 export async function signOut(accessToken: string) {
   return authRequest<void>("logout?scope=local", {method: "POST"}, accessToken);
 }
