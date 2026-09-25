@@ -2,7 +2,7 @@ import {NextResponse} from "next/server";
 import {getCurrentUser} from "../../../../lib/current-user";
 import {ensureProfile, updateProfile} from "../../../../lib/db/profiles";
 
-function parseProfileInput(body: unknown) {
+export function parseProfileInput(body: unknown) {
   if (!body || typeof body !== "object") return {error: "invalid JSON body"} as const;
   const value = body as Record<string, unknown>;
   const username = typeof value.username === "string" ? value.username.trim().toLowerCase() : "";
