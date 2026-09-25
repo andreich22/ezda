@@ -1,0 +1,50 @@
+{
+  "id": "52c3",
+  "title": "User profiles",
+  "status": "in_progress",
+  "createdAt": "2026-09-25T09:20:24Z",
+  "updatedAt": "2026-09-25T12:15:00Z",
+  "issue": {
+    "number": 63,
+    "url": "https://github.com/andreich22/ezda/issues/63",
+    "title": "TASK-52c3 User profiles"
+  },
+  "description": "Добавить профиль пользователя, связанный с auth.users: username, display name, avatar и даты создания/изменения. Подготовить основу для публичного профиля.",
+  "requirements": [
+    "Создать public.profiles с id пользователя, username, display name, avatar URL и timestamps.",
+    "Связать профиль с auth.users в Supabase, не ломая локальную PostgreSQL среду без auth schema.",
+    "Автоматически обеспечивать наличие профиля после аутентификации."
+  ],
+  "definitionOfReady": [
+    "TASK-41b2 merged into umbrella branch.",
+    "Supabase Auth session is available server-side."
+  ],
+  "acceptanceCriteria": [
+    "Профиль пользователя можно получить по текущей auth user id.",
+    "Профиль можно создать/update только для текущего пользователя.",
+    "Username уникален.",
+    "Supabase production schema references auth.users when auth schema is available.",
+    "Local migration remains reproducible."
+  ],
+  "technicalApproach": [
+    "Добавить Drizzle profiles schema and SQL migration.",
+    "Use conditional SQL for auth.users FK/trigger so local Docker without Supabase Auth remains migratable.",
+    "Use server-side auth cookie to resolve the current user.",
+    "Provide /settings profile form and API."
+  ],
+  "definitionOfDone": [
+    "Profile schema, migration, server data access and settings UI implemented.",
+    "Relevant tests plus tasks validator/build pass or limitations are documented.",
+    "Task metadata and implementation are in the same child PR to umbrella."
+  ],
+  "history": [
+    {
+      "at": "2026-09-25T12:15:00Z",
+      "event": "implementation_started",
+      "details": "Created task/52c3-user-profiles from the updated umbrella branch after TASK-41b2 merge."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
