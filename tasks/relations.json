@@ -39,6 +39,16 @@
       "from": "a11a",
       "type": "parent",
       "to": "41b2"
+    },
+    {
+      "from": "a11a",
+      "type": "parent",
+      "to": "52c3"
+    },
+    {
+      "from": "52c3",
+      "type": "depends_on",
+      "to": "41b2"
     }
   ]
 }
