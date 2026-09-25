@@ -3,12 +3,8 @@
   "title": "Сделать проверку покрытия CI неблокирующей",
   "status": "review",
   "createdAt": "2026-09-25T12:22:40Z",
-  "updatedAt": "2026-09-25T12:30:00Z",
-  "issue": {
-    "number": 74,
-    "url": "https://github.com/andreich22/ezda/issues/74",
-    "title": "TASK-5d2a Сделать проверку покрытия CI неблокирующей"
-  },
+  "updatedAt": "2026-09-25T12:34:00Z",
+  "issue": {"number": 74, "url": "https://github.com/andreich22/ezda/issues/74", "title": "TASK-5d2a Сделать проверку покрытия CI неблокирующей"},
   "description": "Изменить CI так, чтобы регрессия покрытия сообщалась как предупреждение, но не блокировала PR или последующие шаги сборки/deploy.",
   "requirements": [
     "Сохранить запуск проверки покрытия.",
@@ -20,31 +16,22 @@
     "Требования и acceptance criteria зафиксированы в GitHub Issue #74.",
     "Изменение ограничено CI workflow и Task metadata."
   ],
+  "technicalApproach": [
+    "Оставить запуск scripts/check-coverage.mjs в pull request CI.",
+    "Обернуть проверку результата в условие shell, которое при регрессии выводит GitHub Actions warning и возвращает успешный код.",
+    "Не менять обязательные тесты, build и остальные CI-проверки."
+  ],
   "acceptanceCriteria": [
-    "`Check coverage regression` не переводит job в failed при регрессии покрытия.",
+    "Check coverage regression не переводит job в failed при регрессии покрытия.",
     "В логах CI явно виден warning о регрессии.",
     "Build и остальные проверки продолжают выполняться.",
     "Workflow YAML остаётся валидным."
   ],
-  "definitionOfDone": [
-    "Изменение прошло релевантные проверки и доставлено через implementation PR в main."
-  ],
+  "definitionOfDone": ["Изменение прошло релевантные проверки и доставлено через implementation PR в main."],
   "history": [
-    {
-      "at": "2026-09-25T12:22:40Z",
-      "event": "created_from_issue",
-      "details": "Task created from GitHub Issue #74; metadata is included in the same implementation PR as the CI change."
-    },
-    {
-      "at": "2026-09-25T12:30:00Z",
-      "event": "implementation",
-      "details": "Changed .github/workflows/ci.yml so coverage regression emits a GitHub Actions warning and exits successfully."
-    },
-    {
-      "at": "2026-09-25T12:30:00Z",
-      "event": "review_ready",
-      "details": "Implementation branch prepared for Pull Request validation."
-    }
+    {"at": "2026-09-25T12:22:40Z", "event": "created_from_issue", "details": "Task created from GitHub Issue #74; metadata is included in the same implementation PR as the CI change."},
+    {"at": "2026-09-25T12:30:00Z", "event": "implementation", "details": "Changed .github/workflows/ci.yml so coverage regression emits a GitHub Actions warning and exits successfully."},
+    {"at": "2026-09-25T12:34:00Z", "event": "review_ready", "details": "Added required technicalApproach metadata after task validation reported the missing field."}
   ],
   "commits": [
     "a0be3612afa799d95fe997d622e4407f3123683f",
@@ -52,11 +39,7 @@
     "bcb145fc8cd4d2fea34df822a60c7a9549c3f766"
   ],
   "decisionLog": [
-    {
-      "at": "2026-09-25T12:30:00Z",
-      "decision": "Treat coverage regression as informational in CI rather than a blocking quality gate.",
-      "reason": "The user requested that coverage checks warn without blocking increment/deploy."
-    }
+    {"at": "2026-09-25T12:30:00Z", "decision": "Treat coverage regression as informational in CI rather than a blocking quality gate.", "reason": "The user requested that coverage checks warn without blocking increment/deploy."}
   ],
   "relations": []
 }
