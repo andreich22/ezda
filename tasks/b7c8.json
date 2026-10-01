@@ -1,9 +1,9 @@
 {
   "id": "b7c8",
   "title": "Иерархический workflow для зонтичных задач",
-  "status": "in_progress",
+  "status": "done",
   "createdAt": "2026-09-25T09:49:46Z",
-  "updatedAt": "2026-09-25T09:49:46Z",
+  "updatedAt": "2026-10-01T14:54:44.191Z",
   "issue": {
     "number": 68,
     "url": "https://github.com/andreich22/ezda/issues/68",
@@ -53,6 +53,11 @@
       "at": "2026-09-25T09:49:46Z",
       "event": "implementation_started",
       "details": "Created implementation branch task/b7c8-umbrella-workflow."
+    },
+    {
+      "at": "2026-10-01T14:54:44.191Z",
+      "event": "completed",
+      "details": "Implementation is merged into main; task metadata synchronized."
     }
   ],
   "commits": [],
