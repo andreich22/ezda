@@ -2,13 +2,12 @@
 
 import {FormEvent, useEffect, useState} from "react";
 import Link from "next/link";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useRouter} from "next/navigation";
 
 type Mode = "login" | "signup" | "recover";
 
 export default function AuthPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
