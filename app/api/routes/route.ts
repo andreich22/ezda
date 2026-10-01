@@ -1,10 +1,16 @@
 import {NextResponse} from "next/server";
 import {parseCreateRouteInput} from "../../../lib/route-validation";
+import {getCurrentUser} from "../../../lib/current-user";
 
 const MAX_BODY_BYTES = 256 * 1024;
 
 export async function POST(req: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({error: "authentication required"}, {status: 401});
+    }
+
     const rawBody = await req.text();
     if (new TextEncoder().encode(rawBody).byteLength > MAX_BODY_BYTES) {
       return NextResponse.json({error: "request body is too large"}, {status: 413});
@@ -23,7 +29,7 @@ export async function POST(req: Request) {
     }
 
     const {createRoute} = await import("../../../lib/db/routes");
-    const route = await createRoute(input);
+    const route = await createRoute(input, user.id);
 
     return NextResponse.json(
       {id: route.id, url: `/routes/${route.id}`},

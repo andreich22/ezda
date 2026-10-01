@@ -1,4 +1,5 @@
 import {sql} from "drizzle-orm";
+import {eq} from "drizzle-orm";
 import {routes} from "./schema";
 import type {CreateRouteInput} from "../route-validation";
 
@@ -6,11 +7,12 @@ function toWkt(coordinates: number[][]) {
   return `SRID=4326;LINESTRING(${coordinates.map(([lon, lat]) => `${lon} ${lat}`).join(", ")})`;
 }
 
-export async function createRoute(input: CreateRouteInput) {
+export async function createRoute(input: CreateRouteInput, authorId: string) {
   const {db} = await import("./index");
   const [row] = await db
     .insert(routes)
     .values({
+      authorId,
       title: input.title,
       description: input.description,
       geometry: sql`gis.ST_GeogFromText(${toWkt(input.geometry.geometry.coordinates)})`,

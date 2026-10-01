@@ -1,13 +1,19 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
 import {POST} from "../app/api/routes/route";
 import {createRoute} from "../lib/db/routes";
+import {getCurrentUser} from "../lib/current-user";
 
 vi.mock("../lib/db/routes", () => ({
   createRoute: vi.fn(),
 }));
 
+vi.mock("../lib/current-user", () => ({
+  getCurrentUser: vi.fn(),
+}));
+
 afterEach(() => {
   vi.clearAllMocks();
+  vi.mocked(getCurrentUser).mockResolvedValue({id: "user-1", email: "user@example.com"});
 });
 
 const request = (body: unknown) =>
@@ -29,6 +35,25 @@ const validRoute = {
 };
 
 describe("POST /api/routes", () => {
+  it("requires an authenticated user before saving", async () => {
+    vi.mocked(getCurrentUser).mockResolvedValue(null);
+
+    const response = await POST(request(validRoute));
+
+    expect(response.status).toBe(401);
+    await expect(response.json()).resolves.toEqual({error: "authentication required"});
+    expect(createRoute).not.toHaveBeenCalled();
+  });
+
+  it("uses the server-side authenticated user as route owner", async () => {
+    vi.mocked(createRoute).mockResolvedValue({id: "11111111-1111-1111-1111-111111111111"});
+
+    const response = await POST(request({...validRoute, author_id: "attacker-user"}));
+
+    expect(response.status).toBe(201);
+    expect(createRoute).toHaveBeenCalledWith(expect.objectContaining({title: "Test route"}), "user-1");
+    expect(vi.mocked(createRoute).mock.calls[0][0]).not.toHaveProperty("author_id");
+  });
   it("rejects invalid geometry", async () => {
     const response = await POST(request({
       ...validRoute,
