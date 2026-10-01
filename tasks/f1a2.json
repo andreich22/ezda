@@ -1,9 +1,9 @@
 {
   "id": "f1a2",
   "title": "Публичная страница маршрута",
-  "status": "review",
+  "status": "done",
   "createdAt": "2026-09-24T18:00:00Z",
-  "updatedAt": "2026-09-24T18:40:00Z",
+  "updatedAt": "2026-10-01T14:54:36.282Z",
   "issue": {
     "number": 46,
     "url": "https://github.com/andreich22/ezda/issues/46",
@@ -56,6 +56,11 @@
       "at": "2026-09-24T18:40:00Z",
       "event": "review_ready",
       "details": "Implementation PR will contain Task metadata and the public route page validation/test changes; no direct main-branch changes were made."
+    },
+    {
+      "at": "2026-10-01T14:54:36.282Z",
+      "event": "completed",
+      "details": "Implementation is merged into main; task metadata synchronized."
     }
   ],
   "commits": [
