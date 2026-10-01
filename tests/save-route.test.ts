@@ -139,7 +139,7 @@ describe("POST /api/routes", () => {
     const response = await POST(request({...validRoute, visibility: "private"}));
 
     expect(response.status).toBe(201);
-    expect(createRoute).toHaveBeenCalledWith(expect.objectContaining({isPublic: false}));
+    expect(createRoute).toHaveBeenCalledWith(expect.objectContaining({isPublic: false}), "user-1");
   });
 
   it("normalizes optional values and extra coordinate dimensions", async () => {
@@ -183,7 +183,7 @@ describe("POST /api/routes", () => {
     const response = await POST(request({...validRoute, description: "   "}));
 
     expect(response.status).toBe(201);
-    expect(createRoute).toHaveBeenCalledWith(expect.objectContaining({description: null}));
+    expect(createRoute).toHaveBeenCalledWith(expect.objectContaining({description: null}), "user-1");
   });
 
   it("rejects an overlong description", async () => {
