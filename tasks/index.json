@@ -44,7 +44,7 @@
     {
       "id": "7d3a",
       "title": "Автоматически повышать версию приложения после merge в main",
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": "5b7c",
@@ -64,7 +64,7 @@
     {
       "id": "9c2f",
       "title": "APP_VERSION должен отображать текущую версию приложения",
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": "9a7c",
@@ -74,32 +74,32 @@
     {
       "id": "d5e6",
       "title": "Валидация и безопасный API сохранения маршрута",
-      "status": "review"
+      "status": "done"
     },
     {
       "id": "f1a2",
       "title": "Публичная страница маршрута",
-      "status": "review"
+      "status": "done"
     },
     {
       "id": "b3c4",
       "title": "Каталог публичных маршрутов",
-      "status": "review"
+      "status": "done"
     },
     {
       "id": "e6b1",
       "title": "feat: add hamburger menu with routes catalog link",
-      "status": "review"
+      "status": "done"
     },
     {
       "id": "b7c8",
       "title": "Иерархический workflow для зонтичных задач",
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": "5d2a",
       "title": "Сделать проверку покрытия CI неблокирующей",
-      "status": "review"
+      "status": "done"
     },
     {
       "id": "a11a",
@@ -109,12 +109,12 @@
     {
       "id": "41b2",
       "title": "Авторизация пользователей",
-      "status": "in_progress"
+      "status": "done"
     },
     {
       "id": "52c3",
       "title": "User profiles",
-      "status": "in_progress"
+      "status": "done"
     }
   ]
 }
