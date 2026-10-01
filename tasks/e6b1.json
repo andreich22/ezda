@@ -1,9 +1,9 @@
 {
   "id": "e6b1",
   "title": "feat: add hamburger menu with routes catalog link",
-  "status": "review",
+  "status": "done",
   "createdAt": "2026-09-24T18:54:00Z",
-  "updatedAt": "2026-09-24T18:56:00Z",
+  "updatedAt": "2026-10-01T14:54:41.699Z",
   "issue": {
     "number": 59,
     "url": "https://github.com/andreich22/ezda/issues/59",
@@ -66,6 +66,11 @@
       "at": "2026-09-24T18:56:00Z",
       "event": "pull_request_opened",
       "details": "Opened implementation PR #60 against protected main."
+    },
+    {
+      "at": "2026-10-01T14:54:41.699Z",
+      "event": "completed",
+      "details": "Implementation is merged into main; task metadata synchronized."
     }
   ],
   "commits": [

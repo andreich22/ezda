@@ -1,9 +1,9 @@
 {
   "id": "41b2",
   "title": "Авторизация пользователей",
-  "status": "in_progress",
+  "status": "done",
   "createdAt": "2026-09-25T09:20:22Z",
-  "updatedAt": "2026-09-25T12:05:00Z",
+  "updatedAt": "2026-10-01T14:54:53.603Z",
   "issue": {
     "number": 62,
     "url": "https://github.com/andreich22/ezda/issues/62",
@@ -46,6 +46,11 @@
       "at": "2026-09-25T12:05:00Z",
       "event": "implementation_started",
       "details": "Created task/41b2-authentication from umbrella branch; task metadata and implementation are delivered in the same child PR."
+    },
+    {
+      "at": "2026-10-01T14:54:53.603Z",
+      "event": "completed",
+      "details": "Implementation is merged into main; task metadata synchronized."
     }
   ],
   "commits": [],

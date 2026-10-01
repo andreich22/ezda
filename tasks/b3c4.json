@@ -1,9 +1,9 @@
 {
   "id": "b3c4",
   "title": "Каталог публичных маршрутов",
-  "status": "review",
+  "status": "done",
   "createdAt": "2026-09-24T21:42:00Z",
-  "updatedAt": "2026-09-24T21:50:00Z",
+  "updatedAt": "2026-10-01T14:54:38.994Z",
   "issue": {
     "number": 47,
     "url": "https://github.com/andreich22/ezda/issues/47",
@@ -56,6 +56,11 @@
       "at": "2026-09-24T21:50:00Z",
       "event": "review_ready",
       "details": "Implementation PR contains Task metadata and catalog changes; local command execution was unavailable because the environment could not reach GitHub."
+    },
+    {
+      "at": "2026-10-01T14:54:38.994Z",
+      "event": "completed",
+      "details": "Implementation is merged into main; task metadata synchronized."
     }
   ],
   "commits": [

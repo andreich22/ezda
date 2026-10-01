@@ -1,9 +1,9 @@
 {
   "id": "7d3a",
   "title": "Автоматически повышать версию приложения после merge в main",
-  "status": "in_progress",
+  "status": "done",
   "createdAt": "2026-09-22T16:57:38.452Z",
-  "updatedAt": "2026-09-22T18:05:00.000Z",
+  "updatedAt": "2026-10-01T14:54:51.064Z",
   "issue": {
     "number": 29,
     "url": "https://github.com/andreich22/ezda/issues/29",
@@ -61,6 +61,11 @@
       "at": "2026-09-22T18:05:00.000Z",
       "event": "implementation_pr_created",
       "details": "Implementation PR #31 opened for human review."
+    },
+    {
+      "at": "2026-10-01T14:54:51.064Z",
+      "event": "completed",
+      "details": "Implementation is merged into main; task metadata synchronized."
     }
   ],
   "commits": [

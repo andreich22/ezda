@@ -1,9 +1,9 @@
 {
   "id": "d5e6",
   "title": "Валидация и безопасный API сохранения маршрута",
-  "status": "review",
+  "status": "done",
   "createdAt": "2026-09-24T15:55:13Z",
-  "updatedAt": "2026-09-24T16:04:02.747Z",
+  "updatedAt": "2026-10-01T14:54:32.597Z",
   "issue": {
     "number": 48,
     "url": "https://github.com/andreich22/ezda/issues/48",
@@ -60,6 +60,11 @@
       "at": "2026-09-24T16:04:02.747Z",
       "event": "review_ready",
       "details": "Implementation PR #56 is ready for human review; no direct main-branch changes were made."
+    },
+    {
+      "at": "2026-10-01T14:54:32.597Z",
+      "event": "completed",
+      "details": "Implementation is merged into main; task metadata synchronized."
     }
   ],
   "commits": [
