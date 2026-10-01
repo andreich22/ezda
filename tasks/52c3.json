@@ -1,9 +1,9 @@
 {
   "id": "52c3",
   "title": "User profiles",
-  "status": "in_progress",
+  "status": "done",
   "createdAt": "2026-09-25T09:20:24Z",
-  "updatedAt": "2026-09-25T12:30:00Z",
+  "updatedAt": "2026-10-01T14:54:56.700Z",
   "issue": {
     "number": 63,
     "url": "https://github.com/andreich22/ezda/issues/63",
@@ -47,6 +47,11 @@
       "at": "2026-09-25T12:30:00Z",
       "event": "validation_refresh",
       "details": "Synced the umbrella coverage baseline and auth adapter fix before rerunning PR validation."
+    },
+    {
+      "at": "2026-10-01T14:54:56.700Z",
+      "event": "completed",
+      "details": "Implementation is merged into main; task metadata synchronized."
     }
   ],
   "commits": [],
