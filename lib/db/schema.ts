@@ -31,6 +31,7 @@ export const routes = pgTable(
   "routes",
   {
     id: uuid("id").defaultRandom().primaryKey(),
+    authorId: uuid("author_id"),
     title: text("title").notNull(),
     description: text("description"),
     geometry: geography("geometry").notNull(),
