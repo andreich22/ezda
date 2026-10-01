@@ -1,5 +1,4 @@
 import {sql} from "drizzle-orm";
-import {eq} from "drizzle-orm";
 import {routes} from "./schema";
 import type {CreateRouteInput} from "../route-validation";
 
