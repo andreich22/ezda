@@ -3,7 +3,7 @@
   "title": "Привязка routes к пользователям",
   "status": "in_progress",
   "createdAt": "2026-10-01T17:58:00Z",
-  "updatedAt": "2026-10-01T17:58:00Z",
+  "updatedAt": "2026-10-01T15:04:00Z",
   "issue": {
     "number": 64,
     "url": "https://github.com/andreich22/ezda/issues/64",
@@ -48,9 +48,37 @@
       "at": "2026-10-01T17:58:00Z",
       "event": "implementation_started",
       "details": "Created task/63d4-route-ownership from main after TASK-52c3 dependency was completed."
+    },
+    {
+      "at": "2026-10-01T15:04:00Z",
+      "status": "in_progress",
+      "action": "validation_passed: npm run tasks:validate, npm run test:coverage, npm run build, and PR task validation passed in GitHub Actions."
     }
   ],
-  "commits": [],
-  "decisionLog": [],
+  "commits": [
+    {
+      "sha": "e75b712b0838fb4f1ad35675e03e9f6316a48dcc",
+      "message": "feat: 63d4 | bind routes to authenticated users"
+    },
+    {
+      "sha": "456a137348fddc22a098de6245f8857d0fb56f26",
+      "message": "fix: 63d4 | remove unused route persistence import"
+    },
+    {
+      "sha": "8727073128080f752c34cc82af29edfabade9fba",
+      "message": "test: 63d4 | update route ownership assertions"
+    },
+    {
+      "sha": "5e22e7f62a483c162d76a42a8c7b76e3122690b4",
+      "message": "test: 63d4 | fix normalized route ownership assertion"
+    }
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-01T15:04:00Z",
+      "decision": "Keep routes.author_id nullable for legacy rows while requiring author_id for every new route save.",
+      "reason": "Existing routes may predate authentication; making the migration immediately NOT NULL would make existing production data unmigratable. New ownership is enforced by the server auth boundary."
+    }
+  ],
   "relations": []
 }
