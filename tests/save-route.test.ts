@@ -174,7 +174,7 @@ describe("POST /api/routes", () => {
           coordinates: [[-73.97, 40.66], [-73.96, 40.67]],
         },
       },
-    }));
+    }), "user-1");
   });
 
   it("treats a whitespace-only description as absent", async () => {
