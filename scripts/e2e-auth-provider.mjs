@@ -71,7 +71,7 @@ const server = http.createServer(async (req, res) => {
     const token = [...tokens.entries()].find(([, value]) => value === email)?.[0];
     if (!token) return json(res, 404, {error: "No confirmation token"});
     return json(res, 200, {
-      url: `http://127.0.0.1:3000/auth/confirm?token_hash=${encodeURIComponent(token)}&type=signup`,
+      url: `http://localhost:3000/auth/confirm?token_hash=${encodeURIComponent(token)}&type=signup`,
     });
   }
 
