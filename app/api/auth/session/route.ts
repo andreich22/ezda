@@ -13,14 +13,22 @@ export async function GET() {
 
   try {
     const user = await getUser(accessToken);
-    await ensureProfile(user.id, user.email);
+    try {
+      await ensureProfile(user.id, user.email);
+    } catch {
+      // Profile persistence must not invalidate an otherwise valid Auth session.
+    }
     return NextResponse.json({user});
   } catch {
     if (!refreshToken) return NextResponse.json({user: null});
 
     try {
       const session = await refreshSession(refreshToken);
-      await ensureProfile(session.user.id, session.user.email);
+      try {
+        await ensureProfile(session.user.id, session.user.email);
+      } catch {
+        // Profile persistence must not invalidate an otherwise valid Auth session.
+      }
       const response = NextResponse.json({user: session.user});
       setSessionCookies(response, session);
       return response;
