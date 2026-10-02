@@ -12,7 +12,8 @@ export async function POST(request: Request) {
       return NextResponse.json({error: "Email and password (minimum 8 characters) are required"}, {status: 400});
     }
 
-    const result = await signUp(email, password);
+    const origin = new URL(request.url).origin;
+    const result = await signUp(email, password, `${origin}/auth/confirm`);
     const response = NextResponse.json({
       user: result.user,
       requiresEmailConfirmation: !result.session,
