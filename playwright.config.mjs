@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 1,
   reporter: process.env.CI ? "github" : "line",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: "http://localhost:3000",
     browserName: "chromium",
     trace: "on-first-retry",
   },
@@ -21,7 +21,7 @@ export default defineConfig({
     },
     {
       command: "SUPABASE_URL=http://127.0.0.1:4010 SUPABASE_ANON_KEY=e2e-key npm run dev -- --port 3000",
-      url: "http://127.0.0.1:3000/auth",
+      url: "http://localhost:3000/auth",
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
     },
