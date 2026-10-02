@@ -56,7 +56,7 @@ describe("Supabase Auth adapter", () => {
     vi.stubEnv("SUPABASE_URL", "https://example.supabase.co");
     vi.stubEnv("SUPABASE_ANON_KEY", "publishable-key");
 
-    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({user: {id: "user-1"}, session: null}), {status: 200}),
     );
 
