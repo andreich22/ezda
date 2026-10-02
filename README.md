@@ -201,4 +201,4 @@ Configure Authentication → Email Templates → **Confirm signup** to use the s
 
 The callback consumes `token_hash` server-side, creates the Ezda session cookies, removes the token from the browser URL, and redirects to `/auth?confirmed=1`. Invalid or expired links redirect to `/auth?error=email_confirmation` without echoing the token.
 
-Supabase's current documentation recommends this token-hash/server-endpoint pattern for SSR applications because the default confirmation flow returns session data in URL fragments, which server handlers cannot read. citeturn0search1turn1search4
+Supabase's current documentation recommends this token-hash/server-endpoint pattern for SSR applications because the default confirmation flow returns session data in URL fragments, which server handlers cannot read.
