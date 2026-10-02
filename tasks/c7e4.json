@@ -1,0 +1,65 @@
+{
+  "id": "c7e4",
+  "title": "Production/local email confirmation redirects and E2E registration",
+  "status": "in_progress",
+  "createdAt": "2026-10-02T09:20:23Z",
+  "updatedAt": "2026-10-02T09:20:23Z",
+  "issue": {
+    "number": 79,
+    "url": "https://github.com/andreich22/ezda/issues/79",
+    "title": "TASK-c7e4 Production/local email confirmation redirects and E2E registration"
+  },
+  "description": "Сделать регистрацию Ezda надёжной в production и local: явные redirect URL, callback подтверждения email, серверная сессия после подтверждения и E2E-проверка.",
+  "requirements": [
+    "Генерировать redirect URL для confirmation из текущего origin приложения.",
+    "Иметь callback подтверждения email, который безопасно завершает Supabase Auth flow и устанавливает HttpOnly session cookies.",
+    "Поддерживать production и local redirect behavior.",
+    "Покрыть регистрацию и подтверждение email E2E-тестом без production credentials.",
+    "Не раскрывать Supabase secrets или auth tokens клиентскому коду."
+  ],
+  "definitionOfReady": [
+    "GitHub Issue #79 создан с acceptance criteria и technical approach.",
+    "Существующий Supabase Auth HTTP adapter и /auth flow изучены."
+  ],
+  "acceptanceCriteria": [
+    "Production signup confirmation возвращает пользователя в production auth flow, а не localhost.",
+    "Local signup confirmation возвращает пользователя в local auth flow.",
+    "Callback подтверждения устанавливает Ezda HttpOnly session cookies при успешном обмене.",
+    "Недействительная или просроченная ссылка показывает понятную auth-ошибку без утечки токена.",
+    "E2E покрывает signup и callback confirmation через контролируемый test flow без секретов в репозитории.",
+    "Unit/API tests покрывают redirect selection и callback error handling."
+  ],
+  "technicalApproach": [
+    "Оставить Supabase Auth REST интеграцию серверной.",
+    "Вынести вычисление auth redirect в отдельный helper с явным production/local контрактом.",
+    "Использовать Supabase confirmation callback/token exchange и существующие cookie/session helpers.",
+    "Добавить Playwright E2E инфраструктуру минимально необходимым объёмом."
+  ],
+  "definitionOfDone": [
+    "npm run tasks:validate проходит.",
+    "npm run test:run проходит.",
+    "npm run build проходит.",
+    "E2E registration flow проходит в контролируемом окружении или ограничение явно зафиксировано.",
+    "Task metadata содержит историю и commit metadata.",
+    "Изменение доставлено через implementation PR в main."
+  ],
+  "history": [
+    {
+      "at": "2026-10-02T09:20:23Z",
+      "event": "created",
+      "details": "Created from GitHub Issue #79; implementation and task metadata are delivered in the same task PR."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": [
+    {
+      "type": "parent",
+      "to": "a11a"
+    },
+    {
+      "type": "related",
+      "to": "41b2"
+    }
+  ]
+}
