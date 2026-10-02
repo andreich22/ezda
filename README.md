@@ -174,3 +174,31 @@ ORS_API_KEY=<OpenRouteService key>
 Use the database URL in Production and Preview as appropriate for the corresponding Supabase database. After changing environment variables, redeploy the Vercel project.
 
 No `NEXT_PUBLIC_SUPABASE_*` variables are required yet because Ezda currently talks to Supabase through server-side PostgreSQL/Drizzle rather than the browser Data API.
+
+
+## Supabase Auth email confirmation
+
+Registration uses a server-side confirmation callback so the session can be stored in Ezda's HttpOnly cookies instead of exposing access/refresh tokens to browser JavaScript.
+
+The signup endpoint derives the callback origin from the incoming request:
+
+- local: `http://localhost:3000/auth/confirm`
+- production: `https://ezda-eta.vercel.app/auth/confirm`
+- Vercel previews use their own origin and therefore require an allowed redirect wildcard if previews are tested.
+
+Configure Supabase Authentication → URL Configuration:
+
+1. Set **Site URL** to the production application URL: `https://ezda-eta.vercel.app`.
+2. Add `https://ezda-eta.vercel.app/**` to Redirect URLs.
+3. Keep `http://localhost:3000/**` for local development.
+4. If preview deployments are tested, add the appropriate Vercel preview wildcard.
+
+Configure Authentication → Email Templates → **Confirm signup** to use the server callback. Replace the default `{{ .ConfirmationURL }}` link with:
+
+```html
+<p><a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=signup">Confirm email address</a></p>
+```
+
+The callback consumes `token_hash` server-side, creates the Ezda session cookies, removes the token from the browser URL, and redirects to `/auth?confirmed=1`. Invalid or expired links redirect to `/auth?error=email_confirmation` without echoing the token.
+
+Supabase's current documentation recommends this token-hash/server-endpoint pattern for SSR applications because the default confirmation flow returns session data in URL fragments, which server handlers cannot read. citeturn0search1turn1search4
