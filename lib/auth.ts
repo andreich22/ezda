@@ -57,10 +57,22 @@ async function authRequest<T>(
   return body as T;
 }
 
-export async function signUp(email: string, password: string) {
+export async function signUp(email: string, password: string, redirectTo?: string) {
+  const path = redirectTo ? `signup?redirect_to=${encodeURIComponent(redirectTo)}` : "signup";
+
   return authRequest<{user: SupabaseUser | null; session: AuthSession | null}>(
-    "signup",
+    path,
     {method: "POST", body: JSON.stringify({email, password})},
+  );
+}
+
+export async function verifyEmailToken(tokenHash: string, type: "signup" | "email") {
+  return authRequest<AuthSession>(
+    "verify",
+    {
+      method: "POST",
+      body: JSON.stringify({token_hash: tokenHash, type}),
+    },
   );
 }
 
