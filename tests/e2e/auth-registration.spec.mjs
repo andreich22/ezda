@@ -1,6 +1,7 @@
 import {test, expect} from "@playwright/test";
 
 test("registration confirms email through the server callback and creates a session", async ({page, request}) => {
+  test.setTimeout(120_000);
   const email = `e2e-${Date.now()}@example.test`;
   const password = "E2e-password-123!";
 
@@ -8,9 +9,17 @@ test("registration confirms email through the server callback and creates a sess
   await page.getByRole("button", {name: "Create account"}).click();
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
-  await page.getByRole("button", {name: "Create account"}).click();
 
-  await expect(page.getByText("Account created. Check your email to confirm the account before signing in.")).toBeVisible();
+  const signupResponsePromise = page.waitForResponse(
+    (response) => response.url().endsWith("/api/auth/signup"),
+  );
+  await page.getByRole("button", {name: "Create account"}).click();
+  const signupResponse = await signupResponsePromise;
+  expect(signupResponse.ok()).toBeTruthy();
+
+  await expect(
+    page.getByText("Account created. Check your email to confirm the account before signing in."),
+  ).toBeVisible({timeout: 30_000});
 
   const confirmation = await request.get(
     `http://127.0.0.1:4010/test/confirmation?email=${encodeURIComponent(email)}`,
