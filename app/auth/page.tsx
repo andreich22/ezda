@@ -17,6 +17,13 @@ export default function AuthPage() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("confirmed") === "1") {
+      setMessage("Email confirmed. Your account is ready.");
+    } else if (params.get("error") === "email_confirmation") {
+      setError("This confirmation link is invalid or has expired. Request a new confirmation email.");
+    }
+
     fetch("/api/auth/session", {cache: "no-store"})
       .then((response) => response.json())
       .then((body) => setUserEmail(body.user?.email ?? null))
