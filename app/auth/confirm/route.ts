@@ -1,6 +1,6 @@
 import {NextResponse} from "next/server";
-import {verifyEmailToken} from "../../../../lib/auth";
-import {setSessionCookies} from "../../../../lib/auth-cookies";
+import {verifyEmailToken} from "../../../lib/auth";
+import {setSessionCookies} from "../../../lib/auth-cookies";
 
 const CONFIRMATION_ERROR = "email_confirmation";
 
