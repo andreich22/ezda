@@ -49,6 +49,10 @@ jobs:
             echo "::warning::Coverage regression detected. This is informational and does not block CI."
           fi
       - run: npm run build
+      - name: Install Playwright Chromium
+        run: npx -y -p @playwright/test@1.54.2 playwright install --with-deps chromium
+      - name: Run registration E2E
+        run: npm run test:e2e:auth
       - name: Validate pull request task
         if: github.event_name == 'pull_request'
         run: node scripts/validate-pr-task.mjs
