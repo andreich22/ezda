@@ -202,3 +202,31 @@ Configure Authentication → Email Templates → **Confirm signup** to use the s
 The callback consumes `token_hash` server-side, creates the Ezda session cookies, removes the token from the browser URL, and redirects to `/auth?confirmed=1`. Invalid or expired links redirect to `/auth?error=email_confirmation` without echoing the token.
 
 Supabase's current documentation recommends this token-hash/server-endpoint pattern for SSR applications because the default confirmation flow returns session data in URL fragments, which server handlers cannot read.
+
+
+### Supabase Auth password recovery
+
+Password recovery uses a server-side callback so the recovery session is stored in Ezda HttpOnly cookies rather than browser storage.
+
+Configure Vercel Production with:
+
+```text
+NEXT_PUBLIC_SITE_URL=https://ezda-eta.vercel.app
+```
+
+Keep local development without this variable so requests from `http://localhost:3000` keep the local redirect. Preview deployments use Vercel's `VERCEL_URL`.
+
+In Supabase Authentication → URL Configuration:
+
+- **Site URL:** `https://ezda-eta.vercel.app`
+- **Redirect URLs:** `https://ezda-eta.vercel.app/**`
+- **Redirect URLs:** `http://localhost:3000/**`
+- Add the Vercel preview wildcard when preview recovery is tested.
+
+In Authentication → Email Templates → **Reset Password**, use the server callback instead of the default client-side flow:
+
+```html
+<p><a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=recovery">Reset password</a></p>
+```
+
+The link first reaches `/auth/recover`, where Ezda consumes the one-time `token_hash`, establishes HttpOnly session cookies, and redirects to `/auth/reset-password`. The password update is then performed by the server-side Ezda API. The token is not retained in the browser URL after the callback.
