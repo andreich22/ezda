@@ -109,6 +109,8 @@ export async function getPublicRoute(id: string) {
   };
 }
 
+export type RouteVisibility = "all" | "my" | "public" | "private";
+
 export type PublicRouteListItem = {
   id: string;
   title: string;
@@ -117,11 +119,31 @@ export type PublicRouteListItem = {
   durationSeconds: number | null;
   elevationGainMeters: number | null;
   createdAt: string;
+  isPublic: boolean;
 };
 
-export async function getPublicRoutes(limit = 50): Promise<PublicRouteListItem[]> {
+export async function getPublicRoutes(
+  limit = 50,
+  visibility: RouteVisibility = "public",
+  authorId?: string | null,
+): Promise<PublicRouteListItem[]> {
   const {db} = await import("./index");
   const safeLimit = Math.min(Math.max(Math.trunc(limit) || 50, 1), 100);
+  const canReadOwnRoutes = Boolean(authorId);
+  const effectiveVisibility =
+    visibility === "public" || (canReadOwnRoutes && visibility !== "public")
+      ? visibility
+      : "public";
+
+  let visibilityCondition = sql`is_public = true`;
+  if (effectiveVisibility === "my") {
+    visibilityCondition = sql`author_id = ${authorId!}::uuid`;
+  } else if (effectiveVisibility === "private") {
+    visibilityCondition = sql`author_id = ${authorId!}::uuid and is_public = false`;
+  } else if (effectiveVisibility === "all" && canReadOwnRoutes) {
+    visibilityCondition = sql`(is_public = true or author_id = ${authorId!}::uuid)`;
+  }
+
   const result = await db.execute(sql`
     select
       id,
@@ -130,13 +152,13 @@ export async function getPublicRoutes(limit = 50): Promise<PublicRouteListItem[]
       distance_meters as "distanceMeters",
       duration_seconds as "durationSeconds",
       elevation_gain_meters as "elevationGainMeters",
-      created_at as "createdAt"
+      created_at as "createdAt",
+      is_public as "isPublic"
     from public.routes
-    where is_public = true
+    where ${visibilityCondition}
     order by created_at desc
     limit ${safeLimit}
   `);
 
   return result as unknown as PublicRouteListItem[];
 }
-
