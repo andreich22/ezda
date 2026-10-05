@@ -95,6 +95,7 @@ export default function RouteCatalog({userId}: Props) {
     return routeCache.get(cacheKey) ?? null;
   });
   const [error, setError] = useState("");
+  const [retryNonce, setRetryNonce] = useState(0);
 
   useEffect(() => {
     const cached = routeCache.get(cacheKey);
@@ -131,12 +132,14 @@ export default function RouteCatalog({userId}: Props) {
     return () => {
       cancelled = true;
     };
-  }, [cacheKey]);
+  }, [cacheKey, retryNonce]);
 
   useEffect(() => {
     const invalidate = () => {
       routeCache.clear();
       setCatalog(null);
+      setError("");
+      setRetryNonce((value) => value + 1);
     };
 
     window.addEventListener("ezda:route-catalog-invalidate", invalidate);
