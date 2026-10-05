@@ -3,7 +3,7 @@
   "title": "Fix production password recovery redirect",
   "status": "review",
   "createdAt": "2026-10-05T13:04:00Z",
-  "updatedAt": "2026-10-05T13:07:30Z",
+  "updatedAt": "2026-10-05T13:08:30Z",
   "issue": {
     "number": 84,
     "url": "https://github.com/andreich22/ezda/issues/84",
@@ -50,6 +50,11 @@
       "at": "2026-10-05T13:07:30Z",
       "event": "implementation",
       "details": "Added production/local/preview auth redirect selection, server recovery callback, HttpOnly password update flow, regression tests, recovery E2E provider support, and Supabase configuration documentation."
+    },
+    {
+      "at": "2026-10-05T13:08:30Z",
+      "event": "validation",
+      "details": "Task validator passed on PR #85; initial CI failures exposed formatting issues in generated files, which were corrected. Latest CI run is in progress through unit tests."
     }
   ],
   "commits": [
@@ -70,7 +75,13 @@
     "b80f04357697f48db65676d67018d27317019029",
     "9064351cc1b5744543015186302f172910296bf0",
     "d822d4f5244e9b0460b7a2dca4fec1a36346bd19",
-    "a72e1860ad41f3a0fed1264c0f63c35630ebbed7"
+    "a72e1860ad41f3a0fed1264c0f63c35630ebbed7",
+    "8b3580e79f8b59508504178ff08959b473cdf65d",
+    "fa97174dfe6acbd745f12a81e0381183fc32a256",
+    "53c7e051a669b7050f2d05fc43607b9cc7484ef2",
+    "00c4e023c85befb134e89d34b016b6a6cf4def6b",
+    "96e3827976964f8837acad01357aa2dd10000665",
+    "e6c36ae019e43ae07797931899e0c8aa07300191"
   ],
   "decisionLog": [
     {
