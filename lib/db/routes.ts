@@ -173,17 +173,14 @@ export async function getPublicRoutes(
   const {db} = await import("./index");
   const safeLimit = Math.min(Math.max(Math.trunc(limit) || 50, 1), 100);
   const canReadOwnRoutes = Boolean(authorId);
-  const effectiveVisibility =
-    visibility === "public" || (canReadOwnRoutes && visibility !== "public")
-      ? visibility
-      : "public";
+  const effectiveVisibility: RouteVisibility = canReadOwnRoutes ? visibility : "public";
 
   let visibilityCondition = sql`is_public = true`;
   if (effectiveVisibility === "my") {
     visibilityCondition = sql`author_id = ${authorId!}::uuid`;
   } else if (effectiveVisibility === "private") {
     visibilityCondition = sql`author_id = ${authorId!}::uuid and is_public = false`;
-  } else if (effectiveVisibility === "all" && canReadOwnRoutes) {
+  } else if (effectiveVisibility === "all") {
     visibilityCondition = sql`(is_public = true or author_id = ${authorId!}::uuid)`;
   }
 
