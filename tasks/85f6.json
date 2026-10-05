@@ -3,7 +3,7 @@
   "title": "Публичные профили",
   "status": "in_progress",
   "createdAt": "2026-10-05T00:00:00Z",
-  "updatedAt": "2026-10-05T10:30:00Z",
+  "updatedAt": "2026-10-05T10:45:00Z",
   "issue": {
     "number": 66,
     "url": "https://github.com/andreich22/ezda/issues/66",
@@ -54,8 +54,42 @@
       "date": "2026-10-05T10:30:00Z",
       "status": "in_progress",
       "action": "Created task/85f6-public-profiles from umbrella integration branch task/a11a-auth-users after TASK-74e5 merge."
+    },
+    {
+      "date": "2026-10-05T10:45:00Z",
+      "status": "in_progress",
+      "action": "Implemented public profile queries, public profile page, responsive styles, and page regression tests."
     }
   ],
-  "commits": [],
+  "commits": [
+    {
+      "sha": "48fe6a72d061fc0288020ff168e814023e1dc2d1",
+      "message": "chore: 85f6 | register public profiles task"
+    },
+    {
+      "sha": "515d283f89e457c9ce7182d0fcf05f4b70aa9b26",
+      "message": "chore: 85f6 | add task to index"
+    },
+    {
+      "sha": "e26301eec208a73d0109592a4a43a75b889de4dc",
+      "message": "chore: 85f6 | add task relations"
+    },
+    {
+      "sha": "dcbbe86cf7cde2cdf73bc9fde91c240c8086f6fa",
+      "message": "feat: 85f6 | add public profile queries"
+    },
+    {
+      "sha": "16903a7a7246e1a74d7683d479c277c2a586e314",
+      "message": "feat: 85f6 | add public profile page"
+    },
+    {
+      "sha": "8203e6c8bbd878644922be23cc7333deb5390401",
+      "message": "feat: 85f6 | style public profile page"
+    },
+    {
+      "sha": "691f6cec7065f3419b273d64de85da3b2d451f2c",
+      "message": "test: 85f6 | cover public profile page"
+    }
+  ],
   "relations": []
 }
