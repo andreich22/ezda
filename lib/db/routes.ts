@@ -109,6 +109,49 @@ export async function getPublicRoute(id: string) {
   };
 }
 
+export async function getRouteForViewer(id: string, authorId?: string | null) {
+  const {db} = await import("./index");
+  const result = await db.execute(sql`
+    select
+      id,
+      title,
+      description,
+      distance_meters as "distanceMeters",
+      duration_seconds as "durationSeconds",
+      elevation_gain_meters as "elevationGainMeters",
+      created_at as "createdAt",
+      gis.ST_AsGeoJSON(geometry::gis.geometry) as geometry
+    from public.routes
+    where id = ${id}::uuid
+      and (is_public = true or (${authorId ?? null}::uuid is not null and author_id = ${authorId ?? null}::uuid))
+    limit 1
+  `);
+
+  const row = result[0] as
+    | {
+        id: string;
+        title: string;
+        description: string | null;
+        distanceMeters: number;
+        durationSeconds: number | null;
+        elevationGainMeters: number | null;
+        createdAt: string;
+        geometry: string;
+      }
+    | undefined;
+
+  if (!row) return null;
+
+  return {
+    ...row,
+    geometry: {
+      type: "Feature",
+      properties: {},
+      geometry: JSON.parse(row.geometry),
+    },
+  };
+}
+
 export type RouteVisibility = "all" | "my" | "public" | "private";
 
 export type PublicRouteListItem = {
