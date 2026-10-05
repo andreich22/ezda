@@ -66,7 +66,7 @@ export async function signUp(email: string, password: string, redirectTo?: strin
   );
 }
 
-export async function verifyEmailToken(tokenHash: string, type: "signup" | "email") {
+export async function verifyEmailToken(tokenHash: string, type: "signup" | "email" | "recovery") {
   return authRequest<AuthSession>(
     "verify",
     {
@@ -90,7 +90,7 @@ export async function sendPasswordReset(email: string, redirectTo: string) {
   );
 }
 
-export async function refreshSession(refreshToken: string) {
+export async function updatePassword(accessToken: string, password: string) {\n  return authRequest<{user: SupabaseUser}>(\n    "user",\n    {method: "PUT", body: JSON.stringify({password})},\n    accessToken,\n  );\n}\n\nexport async function refreshSession(refreshToken: string) {
   return authRequest<AuthSession>(
     "token?grant_type=refresh_token",
     {method: "POST", body: JSON.stringify({refresh_token: refreshToken})},
