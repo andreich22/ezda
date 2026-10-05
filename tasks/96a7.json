@@ -1,0 +1,68 @@
+{
+  "id": "96a7",
+  "title": "OAuth Google",
+  "status": "in_progress",
+  "createdAt": "2026-10-05T00:00:00Z",
+  "updatedAt": "2026-10-05T18:20:00Z",
+  "issue": {
+    "number": 67,
+    "url": "https://github.com/andreich22/ezda/issues/67",
+    "title": "TASK-96a7 OAuth Google"
+  },
+  "description": "Добавить вход через Google OAuth с Supabase Auth, callback flow и корректным созданием/сопоставлением профиля пользователя.",
+  "requirements": [
+    "На /auth доступен вход через Google.",
+    "OAuth flow использует Supabase Auth и PKCE.",
+    "OAuth callback работает с локальным, production и Vercel preview origin без hardcoded localhost.",
+    "OAuth state и PKCE verifier хранятся в короткоживущих HttpOnly cookies.",
+    "После успешного callback создаётся или находится профиль пользователя.",
+    "Сессия Ezda сохраняется в существующие HttpOnly access/refresh cookies.",
+    "next принимает только относительный путь и не создаёт open redirect.",
+    "Ошибки OAuth не раскрывают токены или code в URL."
+  ],
+  "definitionOfReady": [
+    "TASK-85f6 реализована в umbrella branch.",
+    "Supabase Auth Google provider включён в проекте.",
+    "Supabase redirect allow list содержит локальный и production/preview callback URLs."
+  ],
+  "acceptanceCriteria": [
+    "GET /api/auth/google перенаправляет в Supabase Google authorize flow.",
+    "Authorize flow содержит redirect_to, state и PKCE code_challenge.",
+    "GET /auth/callback отклоняет неверный или отсутствующий state.",
+    "Успешный callback обменивает code на Supabase session.",
+    "После callback ensureProfile вызывается для OAuth пользователя.",
+    "Ezda access/refresh cookies устанавливаются после успешного OAuth.",
+    "OAuth cookies очищаются после завершения flow.",
+    "Ошибки callback возвращают пользователя на /auth без OAuth code/token.",
+    "Есть регрессионные unit tests для authorize, state mismatch и callback success/error.",
+    "npm run tasks:validate, npm run test:run и npm run build проходят."
+  ],
+  "technicalApproach": [
+    "Добавить server-side GET /api/auth/google.",
+    "Генерировать криптографически случайные state и PKCE verifier, вычислять S256 challenge.",
+    "Сохранять state, verifier и безопасный next в HttpOnly SameSite=Lax cookies с коротким TTL.",
+    "Направлять браузер в Supabase Auth /auth/v1/authorize?provider=google.",
+    "Добавить server-side GET /auth/callback с проверкой state и обменом code через /auth/v1/token?grant_type=pkce.",
+    "После token exchange вызвать ensureProfile и setSessionCookies.",
+    "Добавить кнопку Google на существующую страницу /auth.",
+    "Не добавлять клиентский Supabase SDK или публичные секреты."
+  ],
+  "definitionOfDone": [
+    "Google OAuth flow реализован server-side через Supabase Auth.",
+    "PKCE/state защищают callback от перехвата и CSRF.",
+    "Profile provisioning работает так же, как для password login.",
+    "Локальный и production/preview redirect строятся из request origin.",
+    "Тесты, build и task validator проходят.",
+    "Task metadata и history обновлены.",
+    "Изменение доставлено через child implementation PR в umbrella branch после human review."
+  ],
+  "history": [
+    {
+      "date": "2026-10-05T18:20:00Z",
+      "status": "in_progress",
+      "action": "Created task/96a7-google-oauth from umbrella integration branch task/a11a-auth-users."
+    }
+  ],
+  "commits": [],
+  "relations": []
+}
