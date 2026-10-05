@@ -3,7 +3,7 @@
   "title": "Пагинация каталога маршрутов page + limit 50 и фронтенд-кэш",
   "status": "in_progress",
   "createdAt": "2026-10-05T19:52:58Z",
-  "updatedAt": "2026-10-05T23:05:00Z",
+  "updatedAt": "2026-10-05T23:08:00Z",
   "issue": {
     "number": 106,
     "url": "https://github.com/andreich22/ezda/issues/106",
@@ -69,6 +69,11 @@
       "at": "2026-10-05T23:05:00Z",
       "event": "implementation_reviewed",
       "details": "Reviewed the branch diff for privacy isolation, pagination bounds, cache key isolation, URL synchronization and retry behavior. Local npm execution is unavailable because the environment cannot resolve GitHub from the shell."
+    },
+    {
+      "at": "2026-10-05T23:08:00Z",
+      "event": "implementation_pr_opened",
+      "details": "Opened PR #108 from task/4f8c-routes-pagination-cache into main. GitHub CI is queued; Vercel status currently reports the account build-rate-limit failure, not a code validation result."
     }
   ],
   "commits": [
