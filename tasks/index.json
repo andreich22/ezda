@@ -150,6 +150,11 @@
       "id": "85f6",
       "title": "Публичные профили",
       "status": "in_progress"
+    },
+    {
+      "id": "96a7",
+      "title": "OAuth Google",
+      "status": "in_progress"
     }
   ]
 }
