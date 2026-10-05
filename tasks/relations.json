@@ -69,6 +69,16 @@
       "from": "c7e4",
       "type": "related",
       "to": "41b2"
+    },
+    {
+      "from": "74e5",
+      "type": "parent",
+      "to": "a11a"
+    },
+    {
+      "from": "74e5",
+      "type": "depends_on",
+      "to": "63d4"
     }
   ]
 }
