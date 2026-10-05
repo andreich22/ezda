@@ -1,8 +1,35 @@
 import {NextResponse} from "next/server";
 import {parseCreateRouteInput} from "../../../lib/route-validation";
 import {getCurrentUser} from "../../../lib/current-user";
+import {normalizeRouteVisibility} from "../../../lib/route-filters";
+import {normalizeRoutePagination} from "../../../lib/route-pagination";
 
 const MAX_BODY_BYTES = 256 * 1024;
+
+export async function GET(req: Request) {
+  try {
+    const user = await getCurrentUser();
+    const url = new URL(req.url);
+    const {page, pageSize} = normalizeRoutePagination(
+      url.searchParams.get("page"),
+      url.searchParams.get("limit"),
+    );
+    const visibility = normalizeRouteVisibility(
+      url.searchParams.get("visibility") ?? undefined,
+      Boolean(user),
+    );
+
+    const {getPublicRoutes} = await import("../../../lib/db/routes");
+    const catalog = await getPublicRoutes(page, pageSize, visibility, user?.id);
+
+    return NextResponse.json(catalog, {
+      headers: {"Cache-Control": "private, no-store"},
+    });
+  } catch (error) {
+    console.error("Route catalog lookup failed", error instanceof Error ? error.message : "unknown error");
+    return NextResponse.json({error: "Unable to load routes"}, {status: 500});
+  }
+}
 
 export async function POST(req: Request) {
   try {

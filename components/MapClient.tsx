@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { pushHistory, undoHistory } from "../lib/route-history";
+import { invalidateRouteCatalogCache } from "../lib/route-catalog-cache";
 import { LngLatBounds, Map, Marker, NavigationControl, setWorkerUrl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -298,6 +299,7 @@ export default function MapClient() {
         throw new Error(data.error || "Unable to save route");
       }
 
+      invalidateRouteCatalogCache();
       window.location.assign(data.url);
     } catch (e) {
       setSaveError(e instanceof Error ? e.message : "Unable to save route");
