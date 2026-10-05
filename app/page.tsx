@@ -15,6 +15,10 @@ export default function Home() {
 
   useEffect(() => {
     setCollapsed(parseSidebarCollapsed(window.localStorage.getItem(SIDEBAR_STORAGE_KEY)));
+    fetch("/api/auth/session", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((body) => setUsername(getUsernameFromEmail(body.user?.email)))
+      .catch(() => setUsername(null));
   }, []);
 
   useEffect(() => {
@@ -51,6 +55,7 @@ export default function Home() {
         <div className="logo">Ezda</div>
         <div className="header-title">
           <span>cycling routes MVP</span>
+          {username && <span className="header-username">{username}</span>}
           <span className="app-version">v{APP_VERSION}</span>
         </div>
       </header>
