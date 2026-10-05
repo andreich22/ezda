@@ -125,6 +125,11 @@
       "id": "c7e4",
       "title": "Production/local email confirmation redirects and E2E registration",
       "status": "in_progress"
+    },
+    {
+      "id": "e7b4",
+      "title": "Fix production password recovery redirect",
+      "status": "in_progress"
     }
   ]
 }
