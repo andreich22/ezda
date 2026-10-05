@@ -31,7 +31,7 @@ const server = http.createServer(async (req, res) => {
     const email = body.email;
     const id = `e2e-${Buffer.from(email).toString("hex").slice(0, 24)}`;
     const token = `e2e-confirm-${Buffer.from(email).toString("hex")}`;
-    users.set(email, {id, email, confirmed: false});
+    users.set(email, {id, email, confirmed: false, password: body.password});
     tokens.set(token, email);
     return json(res, 200, {
       user: {id, email},
@@ -41,7 +41,7 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "POST" && url.pathname === "/auth/v1/verify") {
     const body = await readBody(req);
-    if (body.type !== "signup" || !tokens.has(body.token_hash)) {
+    if (!tokens.has(body.token_hash) || !["signup", "recovery"].includes(body.type)) {
       return json(res, 403, {message: "Email link is invalid or has expired"});
     }
     const email = tokens.get(body.token_hash);
@@ -55,6 +55,16 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
+  if (req.method === "POST" && url.pathname === "/auth/v1/recover") {
+    const body = await readBody(req);
+    const user = users.get(body.email);
+    if (user) {
+      const token = `e2e-recovery-${Buffer.from(body.email).toString("hex")}`;
+      tokens.set(token, body.email);
+    }
+    return json(res, 200, {message: "Password reset email sent"});
+  }
+
   if (req.method === "GET" && url.pathname === "/auth/v1/user") {
     const token = req.headers.authorization?.replace(/^Bearer /, "");
     const user = [...users.values()].find((item) => `e2e-access-${item.id}` === token && item.confirmed);
@@ -64,6 +74,15 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "POST" && url.pathname === "/auth/v1/token") {
     return json(res, 401, {message: "Password login is not part of the E2E provider"});
+  }
+
+  if (req.method === "GET" && url.pathname === "/test/recovery") {
+    const email = url.searchParams.get("email");
+    const token = [...tokens.entries()].find(([key, value]) => value === email && key.startsWith("e2e-recovery-"))?.[0];
+    if (!token) return json(res, 404, {error: "No recovery token"});
+    return json(res, 200, {
+      url: `http://localhost:3000/auth/recover?token_hash=${encodeURIComponent(token)}&type=recovery`,
+    });
   }
 
   if (req.method === "GET" && url.pathname === "/test/confirmation") {
