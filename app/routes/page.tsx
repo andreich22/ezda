@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {getCurrentUser} from "../../lib/current-user";
 import {getPublicRoutes, type PublicRouteListItem, type RouteVisibility} from "../../lib/db/routes";
+import {normalizeRouteVisibility} from "../../lib/route-filters";
 
 function formatDistance(meters: number) {
   return (Number(meters) / 1000).toFixed(1) + " km";
@@ -36,12 +37,6 @@ const FILTERS: Array<{value: RouteVisibility; label: string}> = [
   {value: "public", label: "Public"},
 ];
 
-function normalizeVisibility(value: string | undefined, authenticated: boolean): RouteVisibility {
-  if (!authenticated) return "public";
-  if (value === "all" || value === "my" || value === "private") return value;
-  return "public";
-}
-
 export default async function RoutesPage({
   searchParams,
 }: {
@@ -49,7 +44,7 @@ export default async function RoutesPage({
 }) {
   const user = await getCurrentUser();
   const params = await searchParams;
-  const visibility = normalizeVisibility(params.visibility, Boolean(user));
+  const visibility = normalizeRouteVisibility(params.visibility, Boolean(user));
 
   let routes: PublicRouteListItem[];
   try {
