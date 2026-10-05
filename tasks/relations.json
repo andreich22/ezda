@@ -109,6 +109,16 @@
       "from": "85f6",
       "type": "depends_on",
       "to": "74e5"
+    },
+    {
+      "from": "96a7",
+      "type": "parent",
+      "to": "a11a"
+    },
+    {
+      "from": "96a7",
+      "type": "depends_on",
+      "to": "85f6"
     }
   ]
 }
