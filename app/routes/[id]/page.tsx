@@ -1,6 +1,7 @@
 import {notFound} from "next/navigation";
 import SavedRouteMap from "../../../components/SavedRouteMap";
-import {getPublicRoute} from "../../../lib/db/routes";
+import {getRouteForViewer} from "../../../lib/db/routes";
+import {getCurrentUser} from "../../../lib/current-user";
 import {isValidRouteId} from "../../../lib/route-id";
 
 type Props = {
@@ -12,9 +13,10 @@ export default async function RoutePage({params}: Props) {
 
   if (!isValidRouteId(id)) notFound();
 
+  const user = await getCurrentUser();
   let route;
   try {
-    route = await getPublicRoute(id);
+    route = await getRouteForViewer(id, user?.id);
   } catch (error) {
     console.error("Route lookup failed", error);
     throw new Error("Unable to load route");
@@ -25,12 +27,12 @@ export default async function RoutePage({params}: Props) {
   return (
     <main className="route-page">
       <header className="route-page-header">
-        <a href="/" className="route-back">← Build a route</a>
+        <a href="/routes" className="route-back">← Routes</a>
         <div className="logo">Ezda</div>
       </header>
       <div className="route-page-content">
         <section className="route-detail card">
-          <div className="label">Saved cycling route</div>
+          <div className="label">{user?.id ? "Saved cycling route" : "Public cycling route"}</div>
           <h1>{route.title}</h1>
           {route.description && <p className="route-description">{route.description}</p>}
           <div className="stat">
