@@ -170,6 +170,11 @@
       "id": "d4f8",
       "title": "Уточнить правило дочерних PR для закрытых umbrella-задач",
       "status": "in_progress"
+    },
+    {
+      "id": "4f8c",
+      "title": "Пагинация каталога маршрутов page + limit 50 и фронтенд-кэш",
+      "status": "in_progress"
     }
   ]
 }
