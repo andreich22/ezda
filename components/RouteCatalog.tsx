@@ -151,6 +151,15 @@ export default function RouteCatalog({userId}: Props) {
   }, [catalog, page]);
 
   const totalPages = catalog ? Math.max(1, Math.ceil(catalog.total / pageSize)) : 1;
+
+  useEffect(() => {
+    if (!catalog || page <= totalPages) return;
+
+    setCatalog(null);
+    setError("");
+    setCatalogUrl(visibility, totalPages);
+  }, [catalog, page, totalPages, visibility]);
+
   const heading =
     visibility === "my"
       ? "My Routes"
