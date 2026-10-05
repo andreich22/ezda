@@ -1,0 +1,51 @@
+{
+  "id": "3f7a",
+  "title": "Показывать имя пользователя в header из email",
+  "status": "in_progress",
+  "createdAt": "2026-10-05T16:45:30Z",
+  "updatedAt": "2026-10-05T16:45:30Z",
+  "issue": {
+    "number": 94,
+    "url": "https://github.com/andreich22/ezda/issues/94",
+    "title": "TASK-3f7a Показывать имя пользователя в header из email"
+  },
+  "description": "В header авторизованного пользователя отображать имя, вычисленное как часть email до первого символа @.",
+  "requirements": [
+    "Для авторизованного пользователя показывать local-part email.",
+    "Не показывать полный email вместо имени.",
+    "Для неавторизованного пользователя сохранить текущее поведение header.",
+    "Использовать существующий auth session."
+  ],
+  "definitionOfReady": [
+    "Авторизация пользователей реализована.",
+    "Текущий auth user доступен через существующий /api/auth/session."
+  ],
+  "acceptanceCriteria": [
+    "После входа header отображает local-part email.",
+    "Для email с несколькими @ используется часть до первого @.",
+    "После выхода имя пользователя исчезает.",
+    "Существующие меню и маршруты не ломаются.",
+    "Добавлен regression test."
+  ],
+  "technicalApproach": [
+    "Добавить небольшую чистую функцию получения имени из email.",
+    "Получать email через существующий auth session endpoint.",
+    "Покрыть функцию тестом.",
+    "Не менять модель profiles."
+  ],
+  "definitionOfDone": [
+    "Изменение реализовано в task branch и PR.",
+    "npm run tasks:validate, релевантные тесты и build проходят.",
+    "Task metadata и history обновлены."
+  ],
+  "history": [
+    {
+      "date": "2026-10-05T16:45:30Z",
+      "status": "in_progress",
+      "action": "Created TASK-3f7a implementation branch from main."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
