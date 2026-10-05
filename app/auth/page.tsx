@@ -22,6 +22,8 @@ export default function AuthPage() {
       setMessage("Email confirmed. Your account is ready.");
     } else if (params.get("error") === "email_confirmation") {
       setError("This confirmation link is invalid or has expired. Request a new confirmation email.");
+    } else if (params.get("error") === "oauth_error" || params.get("error") === "oauth_unavailable") {
+      setError("Google sign-in could not be completed. Please try again.");
     }
 
     fetch("/api/auth/session", {cache: "no-store"})
@@ -95,6 +97,14 @@ export default function AuthPage() {
             ? "Enter your email and we'll send password recovery instructions."
             : "Use your email and password to access your Ezda account."}
         </p>
+
+        {mode !== "recover" && (
+          <a className="oauth-button" href={"/api/auth/google?next=" + encodeURIComponent("/")}>
+            Continue with Google
+          </a>
+        )}
+
+        {mode !== "recover" && <div className="auth-divider"><span>or</span></div>}
 
         <form onSubmit={submit}>
           <label className="field">
