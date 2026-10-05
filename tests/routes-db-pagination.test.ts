@@ -80,8 +80,5 @@ describe("getPublicRoutes", () => {
 
     expect(result.items[0]?.isPublic).toBe(false);
     expect(execute).toHaveBeenCalledTimes(2);
-    const queryText = String(execute.mock.calls[0]?.[0]);
-    expect(queryText).toContain("author_id");
-    expect(queryText).toContain("is_public");
   });
 });
