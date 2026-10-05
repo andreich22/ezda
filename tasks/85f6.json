@@ -1,0 +1,61 @@
+{
+  "id": "85f6",
+  "title": "Публичные профили",
+  "status": "in_progress",
+  "createdAt": "2026-10-05T00:00:00Z",
+  "updatedAt": "2026-10-05T10:30:00Z",
+  "issue": {
+    "number": 66,
+    "url": "https://github.com/andreich22/ezda/issues/66",
+    "title": "TASK-85f6 Публичные профили"
+  },
+  "description": "Добавить публичные страницы профилей пользователей с базовой информацией и списком их публичных маршрутов.",
+  "requirements": [
+    "Публичный профиль доступен по username без авторизации.",
+    "Профиль показывает username, display name и базовую информацию, доступную публично.",
+    "На профиле отображаются только маршруты этого пользователя с is_public=true.",
+    "Несуществующий username обрабатывается как 404.",
+    "Private routes и внутренние auth-данные не раскрываются.",
+    "Публичный профиль не требует клиентских Supabase ключей или токенов."
+  ],
+  "definitionOfReady": [
+    "TASK-74e5 завершена и merged в umbrella branch task/a11a-auth-users.",
+    "Таблица profiles существует и содержит username/display_name/avatar_url.",
+    "routes.author_id связан с profile/user id.",
+    "Публичные route queries уже фильтруют is_public=true."
+  ],
+  "acceptanceCriteria": [
+    "GET /profile/:username отображает существующий профиль.",
+    "Профиль содержит username и display name, если он задан.",
+    "В списке профиля присутствуют только публичные маршруты пользователя.",
+    "Private route не появляется на публичном профиле.",
+    "Неизвестный username приводит к 404.",
+    "Есть регрессионные тесты для public/private visibility и unknown profile.",
+    "npm run tasks:validate, npm run test:run и npm run build проходят."
+  ],
+  "technicalApproach": [
+    "Добавить server-side queries getPublicProfile и getPublicProfileRoutes в lib/db/profiles.ts.",
+    "Получать профиль по username без auth-сессии.",
+    "Получать маршруты через author_id и is_public=true, без auth-данных.",
+    "Добавить App Router страницу app/profile/[username]/page.tsx как Server Component.",
+    "Использовать существующие route card styles без новых зависимостей.",
+    "Добавить unit tests для публичного profile data behavior."
+  ],
+  "definitionOfDone": [
+    "Публичная страница профиля работает без авторизации.",
+    "Публичные маршруты пользователя отображаются, private маршруты скрыты.",
+    "Unknown profile возвращает 404.",
+    "Тесты и build проходят.",
+    "Task metadata и history обновлены.",
+    "Изменение доставлено через child implementation PR в umbrella branch после human review."
+  ],
+  "history": [
+    {
+      "date": "2026-10-05T10:30:00Z",
+      "status": "in_progress",
+      "action": "Created task/85f6-public-profiles from umbrella integration branch task/a11a-auth-users after TASK-74e5 merge."
+    }
+  ],
+  "commits": [],
+  "relations": []
+}
