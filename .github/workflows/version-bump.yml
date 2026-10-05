@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: main
           fetch-depth: 0
@@ -82,21 +82,30 @@ jobs:
 
       - name: Create version bump pull request
         if: steps.version.outputs.needs_bump == 'true'
-        uses: peter-evans/create-pull-request@v7
+        id: cpr
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
           branch: automation/version-bump
           delete-branch: true
-          commit-message: "chore: 7d3a | bump application version to ${{ steps.target.outputs.version }}"
-          title: "chore: 7d3a | bump application version to ${{ steps.target.outputs.version }}"
+          commit-message: "chore: 9f2b | bump application version to ${{ steps.target.outputs.version }}"
+          title: "chore: 9f2b | bump application version to ${{ steps.target.outputs.version }}"
           body: |
             Automatic application version bump after a change reached main without changing the application version.
 
-            Task: TASK-7d3a
+            Task: TASK-9f2b
             Bump type: PATCH
             Source version: ${{ steps.version.outputs.current_version }}
             Target version: ${{ steps.target.outputs.version }}
 
-            The version change is delivered through a normal pull request; main is never updated directly by this job.
+            The version change is delivered through a normal pull request and auto-merged after repository requirements pass.
           labels: automated
+
+      - name: Enable automatic merge for version bump
+        if: steps.cpr.outputs.pull-request-number != ''
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
