@@ -3,7 +3,7 @@
   "title": "Фильтр приватных маршрутов на странице маршрутов",
   "status": "in_progress",
   "createdAt": "2026-10-05T17:32:24Z",
-  "updatedAt": "2026-10-05T20:45:00Z",
+  "updatedAt": "2026-10-05T20:50:00Z",
   "issue": {
     "number": 97,
     "url": "https://github.com/andreich22/ezda/issues/97",
@@ -63,6 +63,11 @@
       "at": "2026-10-05T20:45:00Z",
       "event": "implementation_committed",
       "details": "Implemented server-side route visibility filters, owner-only private route reads, authenticated hamburger links, UI filters and regression tests."
+    },
+    {
+      "at": "2026-10-05T20:50:00Z",
+      "event": "implementation_pr_opened",
+      "details": "Opened PR #99 from task/2a6d-private-route-filter-clean into recreated umbrella branch task/a11a-auth-users."
     }
   ],
   "commits": [
@@ -77,6 +82,10 @@
     {
       "sha": "0a21a75bdc340571aa49d46cfc987d64ea5126a4",
       "message": "chore: 2a6d | record task relationships"
+    },
+    {
+      "sha": "1a5d00754956e3a69a8ecc5452cec50335a5c02c",
+      "message": "chore: 2a6d | record implementation history"
     }
   ],
   "relations": [
