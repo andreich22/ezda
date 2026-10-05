@@ -1,0 +1,62 @@
+{
+  "id": "e7b4",
+  "title": "Fix production password recovery redirect",
+  "status": "in_progress",
+  "createdAt": "2026-10-05T13:04:00Z",
+  "updatedAt": "2026-10-05T13:04:00Z",
+  "issue": {
+    "number": 84,
+    "url": "https://github.com/andreich22/ezda/issues/84",
+    "title": "TASK-e7b4 Fix production password recovery redirect"
+  },
+  "description": "Исправить восстановление пароля Ezda: production reset email должен возвращать пользователя в production auth flow вместо localhost, а recovery callback должен безопасно устанавливать новую сессию и пароль.",
+  "requirements": [
+    "Формировать recovery redirect URL с production/local поведением, не зависящим от ошибочного Supabase Site URL.",
+    "Добавить server-side recovery callback и страницу установки нового пароля.",
+    "Сохранять access/refresh tokens только в HttpOnly cookies.",
+    "Добавить regression tests для redirect selection и recovery callback/update-password error handling.",
+    "Добавить контролируемую E2E-проверку recovery flow и документацию по Supabase Reset Password template/Redirect URLs."
+  ],
+  "definitionOfReady": [
+    "GitHub Issue #84 создан с acceptance criteria и technical approach.",
+    "Текущий /api/auth/recover и server-side Supabase Auth adapter изучены."
+  ],
+  "acceptanceCriteria": [
+    "Production reset email uses https://ezda-eta.vercel.app/auth/recover rather than localhost.",
+    "Local reset email uses http://localhost:3000/auth/recover.",
+    "Valid recovery callback consumes token_hash server-side, establishes HttpOnly session cookies, and redirects to a clean password-update page.",
+    "New password is saved through a server-side authenticated endpoint.",
+    "Invalid/expired recovery links show a clear error without echoing the token.",
+    "npm run tasks:validate, npm run test:run, and npm run build pass."
+  ],
+  "technicalApproach": [
+    "Use an explicit auth redirect helper with NEXT_PUBLIC_SITE_URL/VERCEL_URL and safe localhost fallback.",
+    "Keep the existing server-side REST adapter and cookie helpers; add recovery token verification and update-user operations.",
+    "Use a /auth/recover callback with token_hash/type=recovery and a /auth/reset-password client page that talks only to the Ezda API.",
+    "Document the Supabase Reset Password email template using .RedirectTo and .TokenHash."
+  ],
+  "definitionOfDone": [
+    "Relevant tests and build pass.",
+    "Task metadata contains history and commit metadata.",
+    "Implementation is delivered through a protected PR targeting main."
+  ],
+  "history": [
+    {
+      "at": "2026-10-05T13:04:00Z",
+      "event": "created_from_issue",
+      "details": "Task created from GitHub Issue #84; metadata is included in the implementation PR."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": [
+    {
+      "type": "parent",
+      "to": "a11a"
+    },
+    {
+      "type": "related",
+      "to": "c7e4"
+    }
+  ]
+}
