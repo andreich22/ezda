@@ -3,7 +3,7 @@
   "title": "Пагинация каталога маршрутов page + limit 50 и фронтенд-кэш",
   "status": "in_progress",
   "createdAt": "2026-10-05T19:52:58Z",
-  "updatedAt": "2026-10-05T23:08:00Z",
+  "updatedAt": "2026-10-05T20:12:00Z",
   "issue": {
     "number": 106,
     "url": "https://github.com/andreich22/ezda/issues/106",
@@ -74,6 +74,26 @@
       "at": "2026-10-05T23:08:00Z",
       "event": "implementation_pr_opened",
       "details": "Opened PR #108 from task/4f8c-routes-pagination-cache into main. GitHub CI is queued; Vercel status currently reports the account build-rate-limit failure, not a code validation result."
+    },
+    {
+      "at": "2026-10-05T20:10:50Z",
+      "event": "review_fix",
+      "details": "Fixed out-of-range pagination by separating COUNT from page data query so total remains correct when OFFSET returns no rows."
+    },
+    {
+      "at": "2026-10-05T20:11:04Z",
+      "event": "review_fix",
+      "details": "Route catalog now normalizes an out-of-range URL page to the last existing page instead of showing a dead empty state."
+    },
+    {
+      "at": "2026-10-05T20:11:17Z",
+      "event": "review_tests_added",
+      "details": "Added regression coverage for server page 2 metadata, out-of-range totals, private visibility, and GET /api/routes anonymous/authenticated visibility semantics."
+    },
+    {
+      "at": "2026-10-05T20:11:27Z",
+      "event": "review_test_cleanup",
+      "details": "Removed a brittle SQL object string assertion from the DB test."
     }
   ],
   "commits": [
@@ -88,6 +108,26 @@
     {
       "sha": "6d28cf71be27a588a2043830f16ab7de7896f06b",
       "message": "fix: 4f8c | retry route catalog after cache invalidation"
+    },
+    {
+      "sha": "a5dba42f7fe117e135bda483306d876a857c40fb",
+      "message": "fix: 4f8c | preserve route totals for out-of-range pages"
+    },
+    {
+      "sha": "4ed58c14edd2bb24d976ad95dd6bd683dadbc34f",
+      "message": "fix: 4f8c | normalize route catalog to last page"
+    },
+    {
+      "sha": "7165dcc347487ac332de94317ee312f9ad72c6c8",
+      "message": "test: 4f8c | cover server route pagination and privacy"
+    },
+    {
+      "sha": "b06cb7b863abb5f8e3995cf7096c08e305c56ad9",
+      "message": "test: 4f8c | cover route catalog API visibility"
+    },
+    {
+      "sha": "ad2daf688d3fbbd16217e7d5b78ccac650eecd77",
+      "message": "fix: 4f8c | avoid brittle SQL shape assertion"
     }
   ],
   "relations": [
