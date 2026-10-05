@@ -6,9 +6,11 @@ import { parseSidebarCollapsed, SIDEBAR_STORAGE_KEY } from "../lib/sidebar-state
 import { shouldDismissMobileSidebarSwipe } from "../lib/sidebar-swipe";
 import { APP_VERSION } from "../lib/app-version";
 import HamburgerMenu from "../components/HamburgerMenu";
+import { getUsernameFromEmail } from "../lib/user-name";
 
 export default function Home() {
   const [collapsed, setCollapsed] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
   const swipeStart = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
