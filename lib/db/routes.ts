@@ -195,6 +195,13 @@ export async function getPublicRoutes(
     visibilityCondition = sql`(is_public = true or author_id = ${authorId!}::uuid)`;
   }
 
+  const countResult = await db.execute(sql`
+    select count(*) as "total"
+    from public.routes
+    where ${visibilityCondition}
+  `);
+  const total = Number((countResult[0] as {total: number | string} | undefined)?.total ?? 0);
+
   const result = await db.execute(sql`
     select
       id,
@@ -204,8 +211,7 @@ export async function getPublicRoutes(
       duration_seconds as "durationSeconds",
       elevation_gain_meters as "elevationGainMeters",
       created_at as "createdAt",
-      is_public as "isPublic",
-      count(*) over() as "total"
+      is_public as "isPublic"
     from public.routes
     where ${visibilityCondition}
     order by created_at desc
@@ -213,9 +219,7 @@ export async function getPublicRoutes(
     offset ${offset}
   `);
 
-  const rows = result as unknown as Array<PublicRouteListItem & {total: number | string}>;
-  const total = rows.length ? Number(rows[0].total) : 0;
-  const items = rows.map(({total: _total, ...item}) => item);
+  const items = result as unknown as PublicRouteListItem[];
 
   return {
     items,
