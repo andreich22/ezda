@@ -1,4 +1,4 @@
-import {sql} from "drizzle-orm";
+import {and, eq, sql} from "drizzle-orm";
 import {routes} from "./schema";
 import type {CreateRouteInput} from "../route-validation";
 
@@ -24,6 +24,46 @@ export async function createRoute(input: CreateRouteInput, authorId: string) {
 
   if (!row) throw new Error("route was not created");
   return row;
+}
+
+export async function getRouteOwnership(id: string) {
+  const {db} = await import("./index");
+  const [row] = await db
+    .select({id: routes.id, authorId: routes.authorId})
+    .from(routes)
+    .where(eq(routes.id, id))
+    .limit(1);
+
+  return row ?? null;
+}
+
+export async function updateRoute(id: string, authorId: string, input: CreateRouteInput) {
+  const {db} = await import("./index");
+  const [row] = await db
+    .update(routes)
+    .set({
+      title: input.title,
+      description: input.description,
+      geometry: sql`gis.ST_GeogFromText(${toWkt(input.geometry.geometry.coordinates)})`,
+      distanceMeters: input.distanceMeters,
+      durationSeconds: input.durationSeconds,
+      elevationGainMeters: input.elevationGainMeters,
+      isPublic: input.isPublic,
+    })
+    .where(and(eq(routes.id, id), eq(routes.authorId, authorId)))
+    .returning({id: routes.id});
+
+  return row ?? null;
+}
+
+export async function deleteRoute(id: string, authorId: string) {
+  const {db} = await import("./index");
+  const [row] = await db
+    .delete(routes)
+    .where(and(eq(routes.id, id), eq(routes.authorId, authorId)))
+    .returning({id: routes.id});
+
+  return row ?? null;
 }
 
 export async function getPublicRoute(id: string) {
