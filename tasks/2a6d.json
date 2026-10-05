@@ -3,7 +3,7 @@
   "title": "Фильтр приватных маршрутов на странице маршрутов",
   "status": "in_progress",
   "createdAt": "2026-10-05T17:32:24Z",
-  "updatedAt": "2026-10-05T20:35:00Z",
+  "updatedAt": "2026-10-05T20:45:00Z",
   "issue": {
     "number": 97,
     "url": "https://github.com/andreich22/ezda/issues/97",
@@ -58,9 +58,27 @@
       "at": "2026-10-05T20:35:00Z",
       "event": "implementation_started",
       "details": "Created task/2a6d-private-route-filter from main after inspecting AGENTS.md, README.md, docs/development-workflow.md and existing route/auth ownership implementation."
+    },
+    {
+      "at": "2026-10-05T20:45:00Z",
+      "event": "implementation_committed",
+      "details": "Implemented server-side route visibility filters, owner-only private route reads, authenticated hamburger links, UI filters and regression tests."
     }
   ],
-  "commits": [],
+  "commits": [
+    {
+      "sha": "85d4dcf35aed031cf9f4658c389b77c104a19e2b",
+      "message": "feat: 2a6d | add route visibility filters"
+    },
+    {
+      "sha": "100739c5f776dc5e5e2e9371423ecee1950d602c",
+      "message": "chore: 2a6d | register task in index"
+    },
+    {
+      "sha": "0a21a75bdc340571aa49d46cfc987d64ea5126a4",
+      "message": "chore: 2a6d | record task relationships"
+    }
+  ],
   "relations": [
     {
       "type": "parent",
