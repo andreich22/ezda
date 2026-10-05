@@ -1,5 +1,6 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
 import {getAuthOrigin, getPasswordRecoveryRedirect} from "../lib/auth-redirect";
+import {POST as requestRecovery} from "../app/api/auth/recover/route";
 import {GET as recoveryCallback} from "../app/auth/recover/route";
 
 afterEach(() => {
@@ -31,6 +32,35 @@ describe("auth redirect selection", () => {
 
     const request = new Request("https://ezda-preview.vercel.app/api/auth/recover");
     expect(getPasswordRecoveryRedirect(request)).toBe("https://ezda-preview.vercel.app/auth/recover");
+  });
+});
+
+describe("password recovery request", () => {
+  it("passes the deployment-aware recovery callback to Supabase", async () => {
+    vi.stubEnv("SUPABASE_URL", "https://example.supabase.co");
+    vi.stubEnv("SUPABASE_ANON_KEY", "publishable-key");
+    vi.stubEnv("VERCEL_ENV", "production");
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://ezda-eta.vercel.app");
+
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({message: "Password reset email sent"}), {status: 200}),
+    );
+
+    const response = await requestRecovery(
+      new Request("https://ezda-eta.vercel.app/api/auth/recover", {
+        method: "POST",
+        headers: {"content-type": "application/json"},
+        body: JSON.stringify({email: "recover@example.com"}),
+      }),
+    );
+
+    expect(response.status).toBe(200);
+
+    const init = vi.mocked(globalThis.fetch).mock.calls[0][1]!;
+    expect(JSON.parse(String(init.body))).toEqual({
+      email: "recover@example.com",
+      redirect_to: "https://ezda-eta.vercel.app/auth/recover",
+    });
   });
 });
 
