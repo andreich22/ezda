@@ -3,7 +3,7 @@
   "title": "Защита собственных маршрутов",
   "status": "in_progress",
   "createdAt": "2026-10-05T00:00:00Z",
-  "updatedAt": "2026-10-05T10:00:00Z",
+  "updatedAt": "2026-10-05T10:20:00Z",
   "issue": {
     "number": 65,
     "url": "https://github.com/andreich22/ezda/issues/65",
@@ -60,6 +60,11 @@
       "at": "2026-10-05T10:00:00Z",
       "event": "implementation_committed",
       "details": "Added ownership-aware PATCH/DELETE API handlers, persistence-layer owner predicates, and regression tests for 401/403/404 and server-side owner enforcement."
+    },
+    {
+      "at": "2026-10-05T10:20:00Z",
+      "event": "implementation_pr_opened",
+      "details": "Opened PR #81 from task/74e5-route-protection into umbrella branch task/a11a-auth-users. Local command execution is unavailable in this environment; repository CI/Vercel validation is pending."
     }
   ],
   "commits": [
@@ -74,6 +79,10 @@
     {
       "sha": "e8f75b895ad6758b70b33c654252ca65ae582e3f",
       "message": "test: 74e5 | cover route ownership protection"
+    },
+    {
+      "sha": "060f27f0f3715fadbdef26ccada7125ed0514e33",
+      "message": "chore: 74e5 | record implementation history"
     }
   ],
   "decisionLog": [
