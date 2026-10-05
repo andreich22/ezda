@@ -3,11 +3,19 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import { APP_MENU_ITEMS } from "../lib/app-menu";
+import { APP_MENU_ITEMS, AUTHENTICATED_APP_MENU_ITEMS } from "../lib/app-menu";
 
 export default function HamburgerMenu() {
   const [open, setOpen] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/session", {cache: "no-store"})
+      .then((response) => response.json())
+      .then((body) => setAuthenticated(Boolean(body.user)))
+      .catch(() => setAuthenticated(false));
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -29,6 +37,10 @@ export default function HamburgerMenu() {
     };
   }, [open]);
 
+  const items = authenticated
+    ? [...APP_MENU_ITEMS.filter((item) => item.label !== "Sign in"), ...AUTHENTICATED_APP_MENU_ITEMS]
+    : APP_MENU_ITEMS;
+
   return (
     <div className="hamburger-menu" ref={menuRef}>
       <button
@@ -48,7 +60,7 @@ export default function HamburgerMenu() {
 
       {open && (
         <nav id="app-navigation-menu" className="hamburger-panel" aria-label="Main navigation">
-          {APP_MENU_ITEMS.map((item) => (
+          {items.map((item) => (
             <Link
               key={item.href}
               href={item.href}
