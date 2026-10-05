@@ -1,0 +1,47 @@
+{
+  "id": "6a3f",
+  "title": "Добавить ссылку на авторизацию в hamburger menu",
+  "status": "in_progress",
+  "createdAt": "2026-10-05T13:21:31Z",
+  "updatedAt": "2026-10-05T13:21:31Z",
+  "issue": {
+    "number": 86,
+    "url": "https://github.com/andreich22/ezda/issues/86",
+    "title": "TASK-6a3f Добавить ссылку на авторизацию в hamburger menu"
+  },
+  "description": "Добавить в существующее hamburger menu ссылку на страницу авторизации Ezda.",
+  "requirements": [
+    "В меню должна отображаться ссылка Sign in на /auth.",
+    "Существующая ссылка Routes должна сохраниться.",
+    "Переход должен использовать текущий Next.js Link и закрывать меню после выбора пункта."
+  ],
+  "definitionOfReady": [
+    "Страница /auth реализована задачей TASK-41b2.",
+    "Hamburger menu и каталог Routes уже реализованы."
+  ],
+  "acceptanceCriteria": [
+    "В hamburger menu видны пункты Sign in и Routes.",
+    "Клик по Sign in открывает /auth.",
+    "Клик по пункту закрывает hamburger menu.",
+    "Существующая навигация Routes не регрессирует."
+  ],
+  "technicalApproach": [
+    "Расширить APP_MENU_ITEMS пунктом { label: \"Sign in\", href: \"/auth\" }.",
+    "Использовать существующий рендеринг пунктов через Next.js Link в HamburgerMenu."
+  ],
+  "definitionOfDone": [
+    "Изменение реализовано в отдельной task-ветке.",
+    "Task metadata входит в тот же implementation PR.",
+    "npm run tasks:validate и релевантные проверки проходят."
+  ],
+  "history": [
+    {
+      "at": "2026-10-05T13:21:31Z",
+      "event": "implementation_started",
+      "details": "Created task/6a3f-auth-menu-link from main for the hamburger menu auth link."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
