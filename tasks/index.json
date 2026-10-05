@@ -160,6 +160,11 @@
       "id": "3f7a",
       "title": "Показывать имя пользователя в header из email",
       "status": "in_progress"
+    },
+    {
+      "id": "2a6d",
+      "title": "Фильтр приватных маршрутов на странице маршрутов",
+      "status": "in_progress"
     }
   ]
 }
