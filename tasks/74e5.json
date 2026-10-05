@@ -3,7 +3,7 @@
   "title": "Защита собственных маршрутов",
   "status": "in_progress",
   "createdAt": "2026-10-05T00:00:00Z",
-  "updatedAt": "2026-10-05T00:00:00Z",
+  "updatedAt": "2026-10-05T10:00:00Z",
   "issue": {
     "number": 65,
     "url": "https://github.com/andreich22/ezda/issues/65",
@@ -55,9 +55,33 @@
       "at": "2026-10-05T00:00:00Z",
       "event": "implementation_started",
       "details": "Created task/74e5-route-protection from umbrella integration branch task/a11a-auth-users after TASK-63d4 ownership dependency."
+    },
+    {
+      "at": "2026-10-05T10:00:00Z",
+      "event": "implementation_committed",
+      "details": "Added ownership-aware PATCH/DELETE API handlers, persistence-layer owner predicates, and regression tests for 401/403/404 and server-side owner enforcement."
     }
   ],
-  "commits": [],
-  "decisionLog": [],
+  "commits": [
+    {
+      "sha": "43d2c8488b487e5c185fb8b8c04f33bd5f27eea1",
+      "message": "feat: 74e5 | add ownership-aware route mutations"
+    },
+    {
+      "sha": "a19c745ba3c0fcd1ac55e48116d70a86b54eeff0",
+      "message": "feat: 74e5 | protect route update and delete"
+    },
+    {
+      "sha": "e8f75b895ad6758b70b33c654252ca65ae582e3f",
+      "message": "test: 74e5 | cover route ownership protection"
+    }
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-05T10:00:00Z",
+      "decision": "Keep public route reads on the existing is_public=true queries while adding owner-only mutation endpoints; legacy routes with null author_id cannot be mutated.",
+      "reason": "This preserves public MVP sharing semantics and avoids granting mutation rights to pre-authentication records whose ownership is unknown."
+    }
+  ],
   "relations": []
 }
