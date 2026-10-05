@@ -64,16 +64,24 @@
       "message": "chore: 3f7a | add task relation"
     },
     {
-      "sha": "",
+      "sha": "9665cc4d4192c749989b56da144c19aac4d7f253",
       "message": "feat: 3f7a | add email username helper"
     },
     {
-      "sha": "",
+      "sha": "ba3717484bd13981090fd2253bab9bdfa79261cb",
       "message": "test: 3f7a | cover email username extraction"
+    },
+    {
+      "sha": "ebade2e1b1b6462b4f081e878b2801b6f162c978",
+      "message": "feat: 3f7a | show authenticated username in header"
     },
     {
       "sha": "ce6a14f7fd6d4254ec5103225043c41f9c1fc0be",
       "message": "feat: 3f7a | render authenticated username in header"
+    },
+    {
+      "sha": "10035cab0711cdbd8ef0f0ec5f3bae737cc432bf",
+      "message": "chore: 3f7a | update task history"
     }
   ],
   "decisionLog": [],
