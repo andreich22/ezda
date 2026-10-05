@@ -129,7 +129,7 @@
     {
       "id": "e7b4",
       "title": "Fix production password recovery redirect",
-      "status": "in_progress"
+      "status": "review"
     }
   ]
 }
