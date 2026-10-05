@@ -1,5 +1,6 @@
 import {NextResponse} from "next/server";
-import {sendPasswordReset} from "../../../../lib/auth";\nimport {getPasswordRecoveryRedirect} from "../../../../lib/auth-redirect";
+import {sendPasswordReset} from "../../../../lib/auth";
+import {getPasswordRecoveryRedirect} from "../../../../lib/auth-redirect";
 
 export async function POST(request: Request) {
   try {
