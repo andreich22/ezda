@@ -1,9 +1,9 @@
 {
   "id": "e7b4",
   "title": "Fix production password recovery redirect",
-  "status": "in_progress",
+  "status": "review",
   "createdAt": "2026-10-05T13:04:00Z",
-  "updatedAt": "2026-10-05T13:04:00Z",
+  "updatedAt": "2026-10-05T13:07:30Z",
   "issue": {
     "number": 84,
     "url": "https://github.com/andreich22/ezda/issues/84",
@@ -45,10 +45,40 @@
       "at": "2026-10-05T13:04:00Z",
       "event": "created_from_issue",
       "details": "Task created from GitHub Issue #84; metadata is included in the implementation PR."
+    },
+    {
+      "at": "2026-10-05T13:07:30Z",
+      "event": "implementation",
+      "details": "Added production/local/preview auth redirect selection, server recovery callback, HttpOnly password update flow, regression tests, recovery E2E provider support, and Supabase configuration documentation."
     }
   ],
-  "commits": [],
-  "decisionLog": [],
+  "commits": [
+    "9373998f38400a25aa07d0e109171041c1e0e6e7",
+    "c252b903bb1491614d35ded2d7f8042e8586c706",
+    "0e2e09a3dc09dce29dccd04f825a9cf32e381db8",
+    "c65ce9db992bde427ef148771dfd9f4c441a8d89",
+    "cee94f6b71039354871a813f4f429ea92fb15fb0",
+    "3568928b45d3229667eb2a61c8964763b0e4af5e",
+    "b00e757033f7e1175d423de483a29adefa963248",
+    "f7a9d4e2fd87a880fb23c6090c35304f31298b4d",
+    "7d8e49cd15527126bd961ba4919c1d53d97e635a",
+    "75078be5c8946fdc82ca3e92588a02ece696ae83",
+    "baef1a52c8c3c3ff727d6842ad1bee0bf1737910",
+    "e6326696b2f55da656dec7c135b20e3fafcca47d",
+    "ef18afb49ddf0a34fb7dfe0f484b969def760cbb",
+    "aae9b3f78b9f73eda20faa7dd635db22c00f3814",
+    "b80f04357697f48db65676d67018d27317019029",
+    "9064351cc1b5744543015186302f172910296bf0",
+    "d822d4f5244e9b0460b7a2dca4fec1a36346bd19",
+    "a72e1860ad41f3a0fed1264c0f63c35630ebbed7"
+  ],
+  "decisionLog": [
+    {
+      "at": "2026-10-05T13:07:30Z",
+      "decision": "Use NEXT_PUBLIC_SITE_URL for production and VERCEL_URL for previews, while preserving request origin on localhost.",
+      "reason": "The observed recovery link incorrectly used localhost in production; explicit deployment-aware origin selection prevents Supabase Site URL drift from controlling application redirects."
+    }
+  ],
   "relations": [
     {
       "type": "parent",
