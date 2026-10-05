@@ -1,4 +1,4 @@
-import {eq} from "drizzle-orm";
+import {eq, sql} from "drizzle-orm";
 import {profiles} from "./schema";
 
 export type UserProfile = {
@@ -37,6 +37,52 @@ export async function ensureProfile(userId: string, email?: string | null): Prom
   const [row] = await db.insert(profiles).values({id: userId, username}).returning();
   if (!row) throw new Error("profile was not created");
   return row;
+}
+
+export type PublicProfileRoute = {
+  id: string;
+  title: string;
+  description: string | null;
+  distanceMeters: number;
+  durationSeconds: number | null;
+  elevationGainMeters: number | null;
+  createdAt: Date;
+};
+
+export async function getPublicProfile(username: string): Promise<UserProfile | null> {
+  const {db} = await import("./index");
+  const normalizedUsername = username.trim().toLowerCase();
+  if (!normalizedUsername) return null;
+
+  const [row] = await db
+    .select()
+    .from(profiles)
+    .where(eq(profiles.username, normalizedUsername))
+    .limit(1);
+
+  return row ?? null;
+}
+
+export async function getPublicProfileRoutes(userId: string, limit = 50): Promise<PublicProfileRoute[]> {
+  const {db} = await import("./index");
+  const safeLimit = Math.min(Math.max(Math.trunc(limit) || 50, 1), 100);
+  const result = await db.execute(sql`
+    select
+      id,
+      title,
+      description,
+      distance_meters as "distanceMeters",
+      duration_seconds as "durationSeconds",
+      elevation_gain_meters as "elevationGainMeters",
+      created_at as "createdAt"
+    from public.routes
+    where author_id = ${userId}::uuid
+      and is_public = true
+    order by created_at desc
+    limit ${safeLimit}
+  `);
+
+  return result as unknown as PublicProfileRoute[];
 }
 
 export async function updateProfile(
