@@ -135,6 +135,11 @@
       "id": "6a3f",
       "title": "Добавить ссылку на авторизацию в hamburger menu",
       "status": "in_progress"
+    },
+    {
+      "id": "9f2b",
+      "title": "Исправить автоматическое повышение версии после merge в main",
+      "status": "in_progress"
     }
   ]
 }
