@@ -232,7 +232,9 @@ The implementation PR targets `main).
 
 An umbrella task is a parent task that has one or more child/subtasks in its task relationships.
 
-For an umbrella task:
+**This umbrella workflow applies only while the umbrella task is open.** Before creating a new child task or opening a child-task PR, AI MUST verify that the umbrella GitHub Issue is open. If the umbrella task is closed, AI MUST NOT create new child tasks for it and MUST NOT open new PRs targeting its umbrella branch. New work after an umbrella task is closed MUST use the ordinary task workflow or a new open umbrella task.
+
+For an open umbrella task:
 
 1. Create a dedicated umbrella branch from `main`:
    `task/<umbrella-task-id>-<short-name>`.
