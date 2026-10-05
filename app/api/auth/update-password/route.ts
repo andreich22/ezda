@@ -1,4 +1,5 @@
-import {NextResponse} from "next/server";\nimport {cookies} from "next/headers";
+import {NextResponse} from "next/server";
+import {cookies} from "next/headers";
 import {getUser, updatePassword} from "../../../../lib/auth";
 import {ACCESS_TOKEN_COOKIE} from "../../../../lib/auth";
 
@@ -10,9 +11,8 @@ export async function POST(request: Request) {
       return NextResponse.json({error: "Password must be at least 8 characters"}, {status: 400});
     }
 
-    const token = request.headers.get("cookie")?.match(
-      new RegExp(`(?:^|;\\s*)${ACCESS_TOKEN_COOKIE}=([^;]+)`),
-    )?.[1];
+    const cookieStore = await cookies();
+    const token = cookieStore.get(ACCESS_TOKEN_COOKIE)?.value;
 
     if (!token) {
       return NextResponse.json({error: "Recovery session is missing or expired"}, {status: 401});
