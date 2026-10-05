@@ -1,0 +1,71 @@
+{
+  "id": "4f8c",
+  "title": "Пагинация каталога маршрутов page + limit 50 и фронтенд-кэш",
+  "status": "in_progress",
+  "createdAt": "2026-10-05T19:52:58Z",
+  "updatedAt": "2026-10-05T22:58:00Z",
+  "issue": {
+    "number": 106,
+    "url": "https://github.com/andreich22/ezda/issues/106",
+    "title": "TASK-4f8c Пагинация каталога маршрутов page + limit 50 и фронтенд-кэш"
+  },
+  "description": "Убрать повторные backend-запросы при переключении фильтров на /routes, не загружая весь каталог маршрутов в браузер.",
+  "requirements": [
+    "Оставить серверную фильтрацию маршрутов и контроль приватных данных.",
+    "Добавить пагинацию каталога через page и limit.",
+    "По умолчанию и в UI использовать limit=50.",
+    "API/серверный слой должен возвращать только текущую страницу, а не весь каталог.",
+    "Поддержать существующие фильтры All, My Routes, Public и private режим без изменения security semantics.",
+    "На фронтенде использовать кэш с ключом по user context + visibility + page + pageSize.",
+    "Ранее загруженные filter/page должны читаться из свежего клиентского кэша без нового backend-запроса.",
+    "Не загружать все 1000+ маршрутов в браузер только ради локальной фильтрации.",
+    "Синхронизировать текущий фильтр и номер страницы с URL.",
+    "Предусмотреть пагинацию в UI.",
+    "Предусмотреть инвалидирование клиентских кэшей после create/update/delete.",
+    "Не допустить утечки private routes между пользователями через общий кэш."
+  ],
+  "definitionOfReady": [
+    "Текущая серверная фильтрация /routes сохранена как источник истины.",
+    "Visibility semantics сохранены: All = public + собственные private, My Routes = собственные public/private, Public = только public.",
+    "Размер страницы первой версии зафиксирован на 50.",
+    "Клиентский кэш не заменяет server-side authorization."
+  ],
+  "acceptanceCriteria": [
+    "/routes получает данные постранично, максимум 50 элементов за запрос.",
+    "Переключение All → My Routes → Public → All не повторяет запрос для уже загруженной комбинации filter/page, пока запись свежая.",
+    "Новая filter/page выполняет только необходимый запрос за текущей страницей.",
+    "Private routes никогда не попадают в кэш другого пользователя.",
+    "URL содержит текущие filter/page параметры и восстанавливает состояние.",
+    "При наличии более 50 маршрутов можно перейти на следующую страницу без загрузки всего каталога."
+  ],
+  "technicalApproach": [
+    "Расширить существующий route catalog query параметрами page и limit с безопасным максимумом 50.",
+    "Возвращать page, pageSize, total и hasNextPage вместе с максимум 50 items.",
+    "Добавить GET /api/routes с server-side getCurrentUser и существующей visibility semantics.",
+    "Сделать небольшой browser cache с TTL и ключом userId + visibility + page + pageSize без новой зависимости.",
+    "Сделать /routes server shell без чтения searchParams; фильтр/page управляются Client Component и API cache.",
+    "Инвалидировать cache через явный helper/event после client-side route creation и предоставить тот же helper для update/delete flows."
+  ],
+  "definitionOfDone": [
+    "Пагинация page + limit=50 работает на /routes.",
+    "Клиентский кэш предотвращает повторные запросы к уже загруженным filter/page.",
+    "Privacy/authorization semantics не изменились.",
+    "Regression/unit tests покрывают pagination, cache key, filter switching and privacy isolation.",
+    "npm run tasks:validate, npm run test:run и npm run build проходят в CI или ограничения явно зафиксированы.",
+    "Изменения доставлены через task branch и PR в main после регистрации Task Issue."
+  ],
+  "history": [
+    {
+      "at": "2026-10-05T22:58:00Z",
+      "event": "implementation_started",
+      "details": "Created task/4f8c-routes-pagination-cache from main after reviewing AGENTS.md, README.md, docs/development-workflow.md, route catalog, auth ownership and task relationships."
+    }
+  ],
+  "commits": [],
+  "relations": [
+    {
+      "type": "depends_on",
+      "to": "2a6d"
+    }
+  ]
+}
