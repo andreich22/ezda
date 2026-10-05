@@ -3,7 +3,7 @@
   "title": "Показывать имя пользователя в header из email",
   "status": "in_progress",
   "createdAt": "2026-10-05T16:45:30Z",
-  "updatedAt": "2026-10-05T16:45:30Z",
+  "updatedAt": "2026-10-05T16:55:00Z",
   "issue": {
     "number": 94,
     "url": "https://github.com/andreich22/ezda/issues/94",
@@ -43,9 +43,39 @@
       "date": "2026-10-05T16:45:30Z",
       "status": "in_progress",
       "action": "Created TASK-3f7a implementation branch from main."
+    },
+    {
+      "date": "2026-10-05T16:55:00Z",
+      "status": "in_progress",
+      "action": "Implemented email local-part extraction, auth session lookup in the home header, and regression tests."
     }
   ],
-  "commits": [],
+  "commits": [
+    {
+      "sha": "02e1c507c82130cd86b0f41f7935abb471e6a402",
+      "message": "chore: 3f7a | register header username task"
+    },
+    {
+      "sha": "a724572d7cb885c8d181ac0a9ae230ae5821f3c5",
+      "message": "chore: 3f7a | add task to index"
+    },
+    {
+      "sha": "c93c672f47579bdeadbfdd801842a6402ecb504c",
+      "message": "chore: 3f7a | add task relation"
+    },
+    {
+      "sha": "",
+      "message": "feat: 3f7a | add email username helper"
+    },
+    {
+      "sha": "",
+      "message": "test: 3f7a | cover email username extraction"
+    },
+    {
+      "sha": "ce6a14f7fd6d4254ec5103225043c41f9c1fc0be",
+      "message": "feat: 3f7a | render authenticated username in header"
+    }
+  ],
   "decisionLog": [],
   "relations": []
 }
