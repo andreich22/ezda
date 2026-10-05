@@ -3,7 +3,7 @@
   "title": "Добавить ссылку на авторизацию в hamburger menu",
   "status": "in_progress",
   "createdAt": "2026-10-05T13:21:31Z",
-  "updatedAt": "2026-10-05T13:21:31Z",
+  "updatedAt": "2026-10-05T13:30:00Z",
   "issue": {
     "number": 86,
     "url": "https://github.com/andreich22/ezda/issues/86",
@@ -39,9 +39,31 @@
       "at": "2026-10-05T13:21:31Z",
       "event": "implementation_started",
       "details": "Created task/6a3f-auth-menu-link from main for the hamburger menu auth link."
+    },
+    {
+      "at": "2026-10-05T13:30:00Z",
+      "event": "implementation_complete",
+      "details": "Added Sign in link to APP_MENU_ITEMS while preserving Routes."
     }
   ],
-  "commits": [],
+  "commits": [
+    {
+      "sha": "9339c0e03fafd4d8df5dc8a50136f287d08a4a44",
+      "message": "chore: 6a3f | add task metadata"
+    },
+    {
+      "sha": "43548cfde8463e12ea92c59532a2b49e01921f25",
+      "message": "chore: 6a3f | register task"
+    },
+    {
+      "sha": "1bd678a00295fba35a3228954c648cdf7e0a7f60",
+      "message": "chore: 6a3f | relate auth menu task"
+    },
+    {
+      "sha": "b69005b5316bca16916fac4941ef71f021e0edb0",
+      "message": "feat: 6a3f | add auth link to hamburger menu"
+    }
+  ],
   "decisionLog": [],
   "relations": []
 }
