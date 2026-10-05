@@ -155,6 +155,11 @@
       "id": "96a7",
       "title": "OAuth Google",
       "status": "in_progress"
+    },
+    {
+      "id": "3f7a",
+      "title": "Показывать имя пользователя в header из email",
+      "status": "in_progress"
     }
   ]
 }
