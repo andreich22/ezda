@@ -1,0 +1,63 @@
+{
+  "id": "74e5",
+  "title": "Защита собственных маршрутов",
+  "status": "in_progress",
+  "createdAt": "2026-10-05T00:00:00Z",
+  "updatedAt": "2026-10-05T00:00:00Z",
+  "issue": {
+    "number": 65,
+    "url": "https://github.com/andreich22/ezda/issues/65",
+    "title": "TASK-74e5 Защита собственных маршрутов"
+  },
+  "description": "Ограничить изменение и удаление маршрутов их владельцем и сохранить публичное чтение только для маршрутов с is_public=true.",
+  "requirements": [
+    "Требовать серверную auth-сессию для изменения и удаления маршрута.",
+    "Разрешать PATCH/изменение только если routes.author_id совпадает с текущим user.id.",
+    "Разрешать DELETE только если routes.author_id совпадает с текущим user.id.",
+    "Возвращать 401 без auth-сессии, 403 для чужого маршрута и 404 для отсутствующего или некорректного route id.",
+    "Не позволять клиенту выбирать владельца маршрута.",
+    "Публичное чтение продолжает возвращать только маршруты с is_public=true."
+  ],
+  "definitionOfReady": [
+    "TASK-63d4 реализована: новые маршруты получают author_id из серверной auth-сессии.",
+    "getCurrentUser() доступен server-side.",
+    "Существующий persistence layer использует Drizzle/PostgreSQL и public.routes.",
+    "Публичная страница маршрута уже фильтрует по is_public."
+  ],
+  "acceptanceCriteria": [
+    "PATCH /api/routes/:id возвращает 401 без auth-сессии.",
+    "PATCH /api/routes/:id возвращает 403 владельцу не принадлежащего ему маршрута.",
+    "PATCH /api/routes/:id успешно изменяет маршрут владельца и сохраняет author_id неизменным.",
+    "DELETE /api/routes/:id возвращает 401 без auth-сессии.",
+    "DELETE /api/routes/:id возвращает 403 для чужого маршрута.",
+    "DELETE /api/routes/:id удаляет собственный маршрут.",
+    "Отсутствующий или malformed UUID возвращает 404.",
+    "getPublicRoute/getPublicRoutes не раскрывают private routes.",
+    "Регрессионные тесты покрывают 401/403/404/owner/public visibility."
+  ],
+  "technicalApproach": [
+    "Добавить единый server-side ownership lookup по route id перед mutation.",
+    "Реализовать PATCH и DELETE в app/api/routes/[id]/route.ts с getCurrentUser().",
+    "В persistence layer добавить ownership-aware update/delete операции с WHERE id + author_id.",
+    "Сохранять существующую public read модель: публичный detail/list query требует is_public=true.",
+    "Использовать существующую UUID validation перед запросом к PostgreSQL."
+  ],
+  "definitionOfDone": [
+    "API mutation endpoints защищены серверной auth-сессией и owner check.",
+    "Persistence layer не позволяет mutation без совпадения author_id.",
+    "Тесты покрывают успешные и отказные сценарии.",
+    "npm run tasks:validate, npm run test:run и npm run build проходят.",
+    "Task metadata содержит историю и commit metadata.",
+    "Изменение доставлено через child implementation PR в umbrella branch после human review."
+  ],
+  "history": [
+    {
+      "at": "2026-10-05T00:00:00Z",
+      "event": "implementation_started",
+      "details": "Created task/74e5-route-protection from umbrella integration branch task/a11a-auth-users after TASK-63d4 ownership dependency."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": []
+}
