@@ -1,4 +1,4 @@
-import {NextResponse} from "next/server";
+import {NextResponse} from "next/server";\nimport {cookies} from "next/headers";
 import {getUser, updatePassword} from "../../../../lib/auth";
 import {ACCESS_TOKEN_COOKIE} from "../../../../lib/auth";
 
