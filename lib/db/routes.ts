@@ -165,15 +165,26 @@ export type PublicRouteListItem = {
   isPublic: boolean;
 };
 
+export type RouteCatalogPage = {
+  items: PublicRouteListItem[];
+  page: number;
+  pageSize: number;
+  total: number;
+  hasNextPage: boolean;
+};
+
 export async function getPublicRoutes(
+  page = 1,
   limit = 50,
   visibility: RouteVisibility = "public",
   authorId?: string | null,
-): Promise<PublicRouteListItem[]> {
+): Promise<RouteCatalogPage> {
   const {db} = await import("./index");
-  const safeLimit = Math.min(Math.max(Math.trunc(limit) || 50, 1), 100);
+  const safePage = Math.max(Math.trunc(page) || 1, 1);
+  const safeLimit = Math.min(Math.max(Math.trunc(limit) || 50, 1), 50);
   const canReadOwnRoutes = Boolean(authorId);
   const effectiveVisibility: RouteVisibility = canReadOwnRoutes ? visibility : "public";
+  const offset = (safePage - 1) * safeLimit;
 
   let visibilityCondition = sql`is_public = true`;
   if (effectiveVisibility === "my") {
@@ -193,12 +204,24 @@ export async function getPublicRoutes(
       duration_seconds as "durationSeconds",
       elevation_gain_meters as "elevationGainMeters",
       created_at as "createdAt",
-      is_public as "isPublic"
+      is_public as "isPublic",
+      count(*) over() as "total"
     from public.routes
     where ${visibilityCondition}
     order by created_at desc
     limit ${safeLimit}
+    offset ${offset}
   `);
 
-  return result as unknown as PublicRouteListItem[];
+  const rows = result as unknown as Array<PublicRouteListItem & {total: number | string}>;
+  const total = rows.length ? Number(rows[0].total) : 0;
+  const items = rows.map(({total: _total, ...item}) => item);
+
+  return {
+    items,
+    page: safePage,
+    pageSize: safeLimit,
+    total,
+    hasNextPage: safePage * safeLimit < total,
+  };
 }
