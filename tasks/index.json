@@ -130,6 +130,11 @@
       "id": "e7b4",
       "title": "Fix production password recovery redirect",
       "status": "review"
+    },
+    {
+      "id": "6a3f",
+      "title": "Добавить ссылку на авторизацию в hamburger menu",
+      "status": "in_progress"
     }
   ]
 }
