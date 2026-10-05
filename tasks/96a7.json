@@ -3,7 +3,7 @@
   "title": "OAuth Google",
   "status": "in_progress",
   "createdAt": "2026-10-05T00:00:00Z",
-  "updatedAt": "2026-10-05T18:20:00Z",
+  "updatedAt": "2026-10-05T18:35:00Z",
   "issue": {
     "number": 67,
     "url": "https://github.com/andreich22/ezda/issues/67",
@@ -61,8 +61,50 @@
       "date": "2026-10-05T18:20:00Z",
       "status": "in_progress",
       "action": "Created task/96a7-google-oauth from umbrella integration branch task/a11a-auth-users."
+    },
+    {
+      "date": "2026-10-05T18:35:00Z",
+      "status": "in_progress",
+      "action": "Implemented server-side Google OAuth authorize/callback with PKCE/state, profile provisioning, UI, and regression tests; opened child PR #93 into task/a11a-auth-users."
     }
   ],
-  "commits": [],
+  "commits": [
+    {
+      "sha": "a2b3456e9c6144bf6b0a56a5ec877249019fcee2",
+      "message": "chore: 96a7 | register Google OAuth task"
+    },
+    {
+      "sha": "d204044530649c385a8b48242b9dc0541d46d758",
+      "message": "chore: 96a7 | add task to index"
+    },
+    {
+      "sha": "49ced4d366c423ce824bc466e24fa36d58d19a94",
+      "message": "chore: 96a7 | add task relations"
+    },
+    {
+      "sha": "5f9a480724101eae3d6fbbef87b1f7ca0af82796",
+      "message": "feat: 96a7 | add PKCE OAuth helpers"
+    },
+    {
+      "sha": "ae974dc47d0ad9d42d71360bd79e10dddc0dd7f0",
+      "message": "feat: 96a7 | add Google OAuth authorize route"
+    },
+    {
+      "sha": "58542b8859fc7561d6089cf647b2956a97fe2c71",
+      "message": "feat: 96a7 | add OAuth callback"
+    },
+    {
+      "sha": "ae50425eee2c2d15b512bc75d8834405448d85c9",
+      "message": "feat: 96a7 | add Google sign-in button"
+    },
+    {
+      "sha": "23efc0c1dd9e483a2c82261a3c757bdaf2bdbefa",
+      "message": "feat: 96a7 | style Google sign-in button"
+    },
+    {
+      "sha": "e33ec85bfc948ccbaaf2b0111fe00a1be120c08a",
+      "message": "test: 96a7 | cover Google OAuth flow"
+    }
+  ],
   "relations": []
 }
