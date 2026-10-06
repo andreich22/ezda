@@ -5,7 +5,7 @@
   "priority": "P0",
   "dependencies": [],
   "createdAt": "2026-10-06T09:20:12Z",
-  "updatedAt": "2026-10-06T13:02:00+03:00",
+  "updatedAt": "2026-10-06T13:06:00+03:00",
   "issue": {
     "number": 114,
     "url": "https://github.com/andreich22/ezda/issues/114",
@@ -65,6 +65,11 @@
       "at": "2026-10-06T13:02:00+03:00",
       "event": "review_fix",
       "details": "Adjusted validator to require resolved dependencies for ready tasks only and made task-next side-effect free when imported by tests."
+    },
+    {
+      "at": "2026-10-06T13:06:00+03:00",
+      "event": "build_fix",
+      "details": "Moved the task queue test from TypeScript to ESM so Next.js type checking does not try to resolve the .mjs helper as TypeScript."
     }
   ],
   "commits": [
@@ -80,7 +85,9 @@
     "47f316b58be9ebdea3845c92f0008968e7f8cc47",
     "3efcf57f43ad9ea1058bbaf5276918c29fe1e866",
     "851035bce2baf590cd75b4169125822174183569",
-    "2b8eb861170fb9dea4d2748937a912375cc51735"
+    "2b8eb861170fb9dea4d2748937a912375cc51735",
+    "37e2a2391782974041152329d2677e0014542c24",
+    "c8ee1a1a0bda9690d549ddbeabadf56f149e4d5d"
   ],
   "decisionLog": [
     {
