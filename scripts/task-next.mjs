@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const index = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'tasks', 'index.json'), 'utf8'));
 const priorityRank = { P0: 0, P1: 1, P2: 2, P3: 3 };
@@ -17,6 +18,9 @@ export function selectNextTask(taskIndex) {
       a.id.localeCompare(b.id),
     )[0] ?? null;
 }
+
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (!isMain) process.exit(0);
 
 const next = selectNextTask(index);
 if (process.argv.includes('--json')) {
