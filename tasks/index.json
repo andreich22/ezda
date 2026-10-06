@@ -277,7 +277,7 @@
     {
       "id": "e101",
       "title": "Этап 1 — автономный Developer Pipeline",
-      "status": "in_progress",
+      "status": "review",
       "priority": "P0",
       "dependencies": []
     }
