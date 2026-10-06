@@ -1,0 +1,69 @@
+{
+  "id": "e101",
+  "title": "Этап 1 — автономный Developer Pipeline",
+  "status": "in_progress",
+  "priority": "P0",
+  "dependencies": [],
+  "createdAt": "2026-10-06T09:20:12Z",
+  "updatedAt": "2026-10-06T12:52:00+03:00",
+  "issue": {
+    "number": 114,
+    "url": "https://github.com/andreich22/ezda/issues/114",
+    "title": "TASK-e101 [P0] Этап 1 — автономный Developer Pipeline"
+  },
+  "description": "Сделать путь от GitHub Issue до готового PR максимально автономным и предсказуемым.",
+  "requirements": [
+    "Task metadata содержит machine-readable priority и dependencies.",
+    "Task validator проверяет registry, metadata, зависимости и lifecycle.",
+    "PR validator проверяет Task ID, task branch и статус review.",
+    "Существует детерминированный выбор следующей ready-задачи по приоритету и зависимостям.",
+    "Существующие CI и AI review workflows используются без дублирования orchestration.",
+    "Merge в main остаётся ручной операцией."
+  ],
+  "definitionOfReady": [
+    "GitHub Issue #114 содержит цель, acceptance criteria и ограничения.",
+    "Task ID e101 уникален и ветка task/e101-autonomous-developer-pipeline создана от main."
+  ],
+  "acceptanceCriteria": [
+    "Task Driven Development правила проверяются автоматически в CI.",
+    "PR без корректного Task ID, task branch или Task metadata не считается готовым.",
+    "Задача содержит machine-readable priority и dependencies.",
+    "Следующую ready-задачу можно однозначно определить по priority и незакрытым dependencies.",
+    "Merge в main не автоматизирован.",
+    "Существующие version/deploy workflows не изменены."
+  ],
+  "technicalApproach": [
+    "Расширить task registry machine-readable priority/dependencies.",
+    "Усилить tasks:validate и PR validator.",
+    "Добавить npm run tasks:next для детерминированного выбора следующей готовой задачи.",
+    "Оставить существующие CI и AI review workflows источниками проверок."
+  ],
+  "definitionOfDone": [
+    "npm run tasks:validate проходит.",
+    "npm run test:run проходит.",
+    "npm run build проходит.",
+    "PR содержит Task ID и закрывающую ссылку на Issue #114.",
+    "Task metadata history отражает реализацию и validation."
+  ],
+  "history": [
+    {
+      "at": "2026-10-06T09:20:12Z",
+      "event": "created_from_issue",
+      "details": "Task created from GitHub Issue #114."
+    },
+    {
+      "at": "2026-10-06T12:52:00+03:00",
+      "event": "implementation_started",
+      "details": "Started implementation on task/e101-autonomous-developer-pipeline."
+    }
+  ],
+  "commits": [],
+  "decisionLog": [
+    {
+      "at": "2026-10-06T12:52:00+03:00",
+      "decision": "Use tasks/index.json as the machine-readable queue projection while keeping tasks/<id>.json as the task source of truth.",
+      "reason": "Avoid a broad migration of every legacy task file while making priority/dependency selection deterministic."
+    }
+  ],
+  "relations": []
+}
