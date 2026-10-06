@@ -10,29 +10,6 @@ const NON_DEPLOY_PATHS = [
   /^README\.md$/,
   /^CLAUDE\.md$/,
 ];
-const VERSION_FILES = new Set(["package.json", "package-lock.json"]);
-
-function canonicalize(value) {
-  if (Array.isArray(value)) return value.map(canonicalize);
-  if (value && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([key, item]) => [key, canonicalize(item)]),
-    );
-  }
-  return value;
-}
-
-function withoutVersion(file, value) {
-  const copy = structuredClone(value);
-  if (file === "package.json") delete copy.version;
-  if (file === "package-lock.json") {
-    delete copy.version;
-    if (copy.packages?.[""]) delete copy.packages[""].version;
-  }
-  return canonicalize(copy);
-}
 
 function readJsonAtRevision(revision, file) {
   const result = spawnSync("git", ["show", revision + ":" + file], {
@@ -46,44 +23,53 @@ function readJsonAtRevision(revision, file) {
   }
 }
 
+function readCommitSubject(revision) {
+  const result = spawnSync("git", ["log", "-1", "--format=%s", revision], {
+    encoding: "utf8",
+  });
+  return result.status === 0 ? result.stdout.trim() : "";
+}
+
 export function isIgnoredPath(file) {
   return NON_DEPLOY_PATHS.some((pattern) => pattern.test(file));
 }
 
-export function isVersionOnlyChange(
+export function isChoreCommit(message = "") {
+  return /^chore:\s/i.test(message.trim());
+}
+
+export function isVersionBump(
   files,
-  { previousSha, currentSha = "HEAD" } = {},
+  { previousSha, currentSha = "HEAD", versionChanged } = {},
 ) {
+  if (typeof versionChanged === "boolean") return versionChanged;
   if (!previousSha || !files.includes("package.json")) return false;
-  if (!files.every((file) => VERSION_FILES.has(file))) return false;
 
   const previousPackage = readJsonAtRevision(previousSha, "package.json");
   const currentPackage = readJsonAtRevision(currentSha, "package.json");
   if (!previousPackage || !currentPackage) return false;
 
-  if (
-    JSON.stringify(withoutVersion("package.json", previousPackage)) !==
-    JSON.stringify(withoutVersion("package.json", currentPackage))
-  ) {
-    return false;
-  }
-
-  if (!files.includes("package-lock.json")) return true;
-
-  const previousLock = readJsonAtRevision(previousSha, "package-lock.json");
-  const currentLock = readJsonAtRevision(currentSha, "package-lock.json");
-  if (!previousLock || !currentLock) return false;
-
-  return (
-    JSON.stringify(withoutVersion("package-lock.json", previousLock)) ===
-    JSON.stringify(withoutVersion("package-lock.json", currentLock))
-  );
+  return previousPackage.version !== currentPackage.version;
 }
 
-export function shouldIgnore(files, options = {}) {
+export function shouldIgnore(
+  files,
+  {
+    previousSha,
+    currentSha = "HEAD",
+    commitMessage = "",
+    versionChanged,
+  } = {},
+) {
   if (files.length === 0) return false;
-  if (files.every(isIgnoredPath)) return true;
-  return isVersionOnlyChange(files, options);
+
+  // A version bump is intentionally deployable, including the automated chore commit.
+  if (isVersionBump(files, { previousSha, currentSha, versionChanged })) return false;
+
+  // Other chore commits are repository maintenance and can be skipped.
+  if (isChoreCommit(commitMessage)) return true;
+
+  return files.every(isIgnoredPath);
 }
 
 function gitChangedFiles(previousSha, currentSha) {
@@ -114,8 +100,9 @@ function main() {
   const files = gitChangedFiles(previousSha, currentSha);
   if (!files) process.exit(1);
 
-  if (shouldIgnore(files, { previousSha, currentSha })) {
-    console.log("Ignoring deployment for: " + files.join(", "));
+  const commitMessage = readCommitSubject(currentSha);
+  if (shouldIgnore(files, { previousSha, currentSha, commitMessage })) {
+    console.log("Ignoring deployment for: " + commitMessage);
     process.exit(0);
   }
 
