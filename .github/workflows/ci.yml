@@ -22,6 +22,12 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Validate Agentic Workflow compilation
+        run: |
+          curl -sL https://raw.githubusercontent.com/github/gh-aw/main/install-gh-aw.sh | bash -s v0.89.15
+          echo "$HOME/.local/share/gh/extensions/gh-aw" >> "$GITHUB_PATH"
+          gh aw compile .github/workflows/self-healing-ci-pr.md
+          test -s .github/workflows/self-healing-ci-pr.lock.yml
       - name: Validate application version
         run: npm run version:check
       - run: npm run tasks:validate
