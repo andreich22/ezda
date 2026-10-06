@@ -293,6 +293,17 @@ Before editing:
 10. Open/update the implementation PR with requirements, acceptance criteria, validation, risks, and the Task ID.
 11. Review the diff for regressions, security issues, data/privacy concerns, and unnecessary dependencies.
 
+## Autonomous Developer Pipeline
+
+Task queue metadata is machine-readable in `tasks/index.json`:
+
+- `priority` is one of `P0`–`P3`;
+- `dependencies` is an array of Task IDs and mirrors `depends_on` relations;
+- lifecycle is `draft → ready → in_progress → review → done`, with `blocked` and `cancelled` available when appropriate;
+- `npm run tasks:next` deterministically selects the highest-priority ready task whose dependencies are `done` or `cancelled`.
+
+CI validates task metadata and PR readiness. The existing AI review workflow remains the single AI-review orchestration layer. Human merge into `main` remains mandatory.
+
 ## Completion requirements
 
 A task is complete only when requirements and acceptance criteria are satisfied, relevant validation passes, task history/commit metadata are updated, PR checks pass, and the change is merged through the protected PR path.
