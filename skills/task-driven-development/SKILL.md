@@ -113,6 +113,19 @@ Before completion, record final status, relevant commit SHAs/messages, decisions
 
 Set the task to `done` only after all requirements and acceptance criteria are satisfied, relevant tests/build pass, `npm run tasks:validate` passes, history/commit metadata are complete, and the implementation PR has passed repository checks and is merged through the protected PR path.
 
+## Machine-readable queue
+
+Every task registry entry must expose `priority` (`P0`–`P3`) and `dependencies` (Task IDs). Dependencies are derived from `depends_on` relations and must remain synchronized with the registry.
+
+Use:
+
+```bash
+npm run tasks:next
+npm run tasks:next -- --json
+```
+
+A task is eligible only when it is `ready` and all dependencies are `done` or `cancelled`.
+
 ## Scope management
 
 The task is the unit of traceability. If a change is useful but not necessary to satisfy current acceptance criteria, create a separate Issue/task and relate it using `related`, `derived_from`, `parent`, or another appropriate relation.
