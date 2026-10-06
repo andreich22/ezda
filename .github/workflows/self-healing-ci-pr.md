@@ -39,6 +39,9 @@ safe-outputs:
   reply-to-pull-request-review-comment:
     max: 3
     target: "*"
+  resolve-pull-request-review-thread:
+    max: 3
+    target: "*"
   push-to-pull-request-branch:
     max: 1
     target: "*"
@@ -52,8 +55,6 @@ safe-outputs:
     allowed-refs: ["task/*"]
   create-issue:
     max: 1
-    labels: ["self-healing", "automation"]
-    create-if-missing: true
   noop:
 
 ---
