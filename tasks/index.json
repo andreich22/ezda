@@ -280,6 +280,15 @@
       "status": "review",
       "priority": "P0",
       "dependencies": []
+    },
+    {
+      "id": "e102",
+      "title": "Этап 2 — self-healing CI и PR",
+      "status": "in_progress",
+      "priority": "P1",
+      "dependencies": [
+        "e101"
+      ]
     }
   ]
 }
