@@ -5,7 +5,7 @@
   "priority": "P0",
   "dependencies": [],
   "createdAt": "2026-10-06T09:20:12Z",
-  "updatedAt": "2026-10-06T12:58:00+03:00",
+  "updatedAt": "2026-10-06T13:02:00+03:00",
   "issue": {
     "number": 114,
     "url": "https://github.com/andreich22/ezda/issues/114",
@@ -60,6 +60,11 @@
       "at": "2026-10-06T12:58:00+03:00",
       "event": "review_ready",
       "details": "Implementation complete; task metadata, validator, PR gate, deterministic next-task selection, documentation and tests are prepared for CI."
+    },
+    {
+      "at": "2026-10-06T13:02:00+03:00",
+      "event": "review_fix",
+      "details": "Adjusted validator to require resolved dependencies for ready tasks only and made task-next side-effect free when imported by tests."
     }
   ],
   "commits": [
@@ -73,7 +78,9 @@
     "5b8e540afd6af0d0cbb0e8450ac670f5a33383a6",
     "0f21dca6784f63ca3cd6700ad0f8c5bb9696b4aa",
     "47f316b58be9ebdea3845c92f0008968e7f8cc47",
-    "3efcf57f43ad9ea1058bbaf5276918c29fe1e866"
+    "3efcf57f43ad9ea1058bbaf5276918c29fe1e866",
+    "851035bce2baf590cd75b4169125822174183569",
+    "2b8eb861170fb9dea4d2748937a912375cc51735"
   ],
   "decisionLog": [
     {
