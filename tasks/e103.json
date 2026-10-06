@@ -1,11 +1,13 @@
 {
   "id": "e103",
   "title": "Этап 3 — автономный QA для Preview",
-  "status": "in_progress",
+  "status": "review",
   "priority": "P1",
-  "dependencies": ["e102"],
+  "dependencies": [
+    "e102"
+  ],
   "createdAt": "2026-10-06T09:20:22Z",
-  "updatedAt": "2026-10-06T15:05:00+03:00",
+  "updatedAt": "2026-10-06T15:12:00+03:00",
   "issue": {
     "number": 116,
     "url": "https://github.com/andreich22/ezda/issues/116",
@@ -51,10 +53,43 @@
     "PR содержит Task ID e103 и Closes #116."
   ],
   "history": [
-    {"date":"2026-10-06T09:20:22Z","status":"draft","action":"created_from_issue #116"},
-    {"date":"2026-10-06T15:05:00+03:00","status":"in_progress","action":"implementation_started on task/e103-preview-autonomous-qa"}
+    {
+      "date": "2026-10-06T09:20:22Z",
+      "status": "draft",
+      "action": "created_from_issue #116"
+    },
+    {
+      "date": "2026-10-06T15:05:00+03:00",
+      "status": "in_progress",
+      "action": "implementation_started on task/e103-preview-autonomous-qa"
+    },
+    {
+      "date": "2026-10-06T15:12:00+03:00",
+      "status": "review",
+      "action": "implementation_ready; Preview workflow, Playwright smoke coverage, diagnostics, artifacts, and self-healing integration prepared; local validation unavailable because network access to GitHub is unavailable in the execution environment"
+    }
   ],
-  "commits": [],
-  "decisionLog": [],
-  "relations": [{"type":"depends_on","to":"e102"}]
+  "commits": [
+    "07c373557d2de738643159fc63f07584aab88bab",
+    "1ae0fb7511be136209d4c8cfe2a094894b930f81",
+    "3cff46b48663beb2949bead38e97d46fe8e61005",
+    "46dc8d35ecc1167b4dcccff2e59d5ce3ca98d744",
+    "af4b6a4da9c00ef95bd0fcaf0f111e80a90705c2",
+    "301bc88ccc098669aeb4240dbcbf355def81f203",
+    "6e7f49d6115922f13a5064a0935a2f914bafcdc9",
+    "3ce2239a25b890d5c51df3922e277dc1853a6202"
+  ],
+  "decisionLog": [
+    {
+      "date": "2026-10-06T15:12:00+03:00",
+      "decision": "Use Vercel deployment_status as the Preview QA trigger and keep smoke tests read-only against production-like data.",
+      "reason": "The Vercel deployment status provides the exact Preview URL without storing deployment credentials, while avoiding destructive production operations."
+    }
+  ],
+  "relations": [
+    {
+      "type": "depends_on",
+      "to": "e102"
+    }
+  ]
 }
