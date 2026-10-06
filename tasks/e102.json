@@ -7,7 +7,7 @@
     "e101"
   ],
   "createdAt": "2026-10-06T09:20:17Z",
-  "updatedAt": "2026-10-06T14:45:00+03:00",
+  "updatedAt": "2026-10-06T14:50:00+03:00",
   "issue": {
     "number": 115,
     "url": "https://github.com/andreich22/ezda/issues/115",
@@ -72,6 +72,11 @@
       "date": "2026-10-06T14:45:00+03:00",
       "status": "review",
       "action": "implementation_ready; CI validation pending in PR"
+    },
+    {
+      "date": "2026-10-06T14:50:00+03:00",
+      "status": "review",
+      "action": "review_fix; removed unsupported create-issue label creation and enabled review-thread resolution safe output"
     }
   ],
   "commits": [
@@ -98,6 +103,10 @@
     {
       "sha": "1bc5e449b6ff24f6bffd96bc12d612aa5bb6809b",
       "message": "fix: e102 | scope self-healing to task branches"
+    },
+    {
+      "sha": "89d4b206495163bc050cbceb52e5eb659fdf1376",
+      "message": "fix: e102 | tighten review safe outputs"
     }
   ],
   "decisionLog": [
