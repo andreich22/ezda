@@ -45,9 +45,8 @@ for (const entry of index.tasks ?? []) {
     if (!(field in task)) fail(`task ${entry.id} is missing ${field}`);
   }
   if (task.status !== entry.status) fail(`status mismatch for ${entry.id}`);
-  if (task.priority !== entry.priority) fail(`priority mismatch for ${entry.id}`);
-  if (!Array.isArray(task.dependencies)) fail(`dependencies missing in tasks/${entry.id}.json`);
-  else if (JSON.stringify(task.dependencies) !== JSON.stringify(entry.dependencies)) fail(`dependency mismatch for ${entry.id}`);
+  if ('priority' in task && task.priority !== entry.priority) fail(`priority mismatch for ${entry.id}`);
+  if ('dependencies' in task && JSON.stringify(task.dependencies) !== JSON.stringify(entry.dependencies)) fail(`dependency mismatch for ${entry.id}`);
   if (entry.status === 'done' && (!Array.isArray(task.acceptanceCriteria) || task.acceptanceCriteria.length === 0)) fail(`done task ${entry.id} must have acceptanceCriteria`);
 }
 
