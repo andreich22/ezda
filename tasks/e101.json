@@ -1,11 +1,11 @@
 {
   "id": "e101",
   "title": "Этап 1 — автономный Developer Pipeline",
-  "status": "in_progress",
+  "status": "review",
   "priority": "P0",
   "dependencies": [],
   "createdAt": "2026-10-06T09:20:12Z",
-  "updatedAt": "2026-10-06T12:52:00+03:00",
+  "updatedAt": "2026-10-06T12:58:00+03:00",
   "issue": {
     "number": 114,
     "url": "https://github.com/andreich22/ezda/issues/114",
@@ -55,9 +55,26 @@
       "at": "2026-10-06T12:52:00+03:00",
       "event": "implementation_started",
       "details": "Started implementation on task/e101-autonomous-developer-pipeline."
+    },
+    {
+      "at": "2026-10-06T12:58:00+03:00",
+      "event": "review_ready",
+      "details": "Implementation complete; task metadata, validator, PR gate, deterministic next-task selection, documentation and tests are prepared for CI."
     }
   ],
-  "commits": [],
+  "commits": [
+    "cbfcc4d0129b772252e12f1d0811255329fb2550",
+    "2dc74ad27d9a67ae3f3c999938cf33e1cc270515",
+    "5f6f74e2de306c42cf781251ef1aa5c0d738957e",
+    "f4e5c4b9e44ee0e90287c4f6e11665db01fdd622",
+    "0594b75167da297c08e50e48d9e39d60cd8770dd",
+    "a65fef83683fdbb8c1959de41680aff89c4be8f9",
+    "5d447b1c01a02fca99af70bf524b5a1985f12ec4",
+    "5b8e540afd6af0d0cbb0e8450ac670f5a33383a6",
+    "0f21dca6784f63ca3cd6700ad0f8c5bb9696b4aa",
+    "47f316b58be9ebdea3845c92f0008968e7f8cc47",
+    "3efcf57f43ad9ea1058bbaf5276918c29fe1e866"
+  ],
   "decisionLog": [
     {
       "at": "2026-10-06T12:52:00+03:00",
