@@ -175,6 +175,11 @@
       "id": "4f8c",
       "title": "Пагинация каталога маршрутов page + limit 50 и фронтенд-кэш",
       "status": "in_progress"
+    },
+    {
+      "id": "ad3c",
+      "title": "Оптимизировать количество Vercel deployments",
+      "status": "in_progress"
     }
   ]
 }
