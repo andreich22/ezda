@@ -1,0 +1,60 @@
+{
+  "id": "e103",
+  "title": "Этап 3 — автономный QA для Preview",
+  "status": "in_progress",
+  "priority": "P1",
+  "dependencies": ["e102"],
+  "createdAt": "2026-10-06T09:20:22Z",
+  "updatedAt": "2026-10-06T15:05:00+03:00",
+  "issue": {
+    "number": 116,
+    "url": "https://github.com/andreich22/ezda/issues/116",
+    "title": "TASK-e103 [P1] Этап 3 — автономный QA для Preview"
+  },
+  "description": "Автоматически проверять поведение Ezda на Vercel Preview до merge через browser smoke/regression tests с диагностическими артефактами.",
+  "requirements": [
+    "Каждый Vercel Preview deployment для PR запускает browser smoke test.",
+    "Проверяются приложение, auth/session endpoint, построение маршрута, каталог маршрутов и mobile layout.",
+    "Console errors и HTTP 5xx/request failures собираются как диагностические данные.",
+    "При падении сохраняются screenshot, trace и video.",
+    "Production deployments не запускают destructive Preview QA.",
+    "QA остаётся отдельным check и не выполняет merge в main."
+  ],
+  "definitionOfReady": [
+    "GitHub Issue #116 существует и содержит acceptance criteria.",
+    "TASK-e102 (#115) является зависимостью; текущая реализация использует результаты этапа 2.",
+    "Playwright уже используется в проекте для E2E.",
+    "Vercel Preview deployments создаются для pull requests."
+  ],
+  "acceptanceCriteria": [
+    "Vercel Preview deployment автоматически запускает smoke suite.",
+    "Smoke suite открывает приложение и auth, строит маршрут по двум точкам, проверяет каталог и mobile sidebar.",
+    "API/session/catalog responses проверяются без destructive production operations.",
+    "Console errors и HTTP 5xx фиксируют причину падения.",
+    "Screenshot, trace и video загружаются как GitHub Actions artifacts при failure.",
+    "Workflow выполняется только для Preview environment и не запускается для production.",
+    "Merge в main остаётся ручным."
+  ],
+  "technicalApproach": [
+    "Расширить Playwright config отдельным preview mode через PREVIEW_BASE_URL без локального webServer.",
+    "Добавить preview smoke specs с диагностическими listeners.",
+    "Запускать workflow на deployment_status от Vercel, использовать target_url только для Preview.",
+    "Загружать test-results/preview и HTML report через actions/upload-artifact.",
+    "Не создавать тестовых пользователей и не сохранять маршруты в production; auth/session проверяется read-only."
+  ],
+  "definitionOfDone": [
+    "npm run tasks:validate проходит.",
+    "npm run test:run проходит.",
+    "npm run build проходит.",
+    "Preview QA workflow имеет только Preview guard.",
+    "Task metadata history и commits отражают реализацию и validation.",
+    "PR содержит Task ID e103 и Closes #116."
+  ],
+  "history": [
+    {"date":"2026-10-06T09:20:22Z","status":"draft","action":"created_from_issue #116"},
+    {"date":"2026-10-06T15:05:00+03:00","status":"in_progress","action":"implementation_started on task/e103-preview-autonomous-qa"}
+  ],
+  "commits": [],
+  "decisionLog": [],
+  "relations": [{"type":"depends_on","to":"e102"}]
+}
