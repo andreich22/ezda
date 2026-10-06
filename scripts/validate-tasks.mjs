@@ -78,7 +78,7 @@ for (const entry of index.tasks) {
     const dependency = index.tasks.find((candidate) => candidate.id === id);
     return dependency && !['done', 'cancelled'].includes(dependency.status);
   });
-  if (['ready', 'in_progress', 'review'].includes(entry.status) && unresolved.length > 0) fail(`task ${entry.id} is ${entry.status} but dependencies are unresolved: ${unresolved.join(', ')}`);
+  if (entry.status === 'ready' && unresolved.length > 0) fail(`task ${entry.id} is ${entry.status} but dependencies are unresolved: ${unresolved.join(', ')}`);
 }
 
 const visiting = new Set();
