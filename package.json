@@ -18,7 +18,8 @@
     "version:patch": "npm version patch --no-git-tag-version",
     "version:minor": "npm version minor --no-git-tag-version",
     "version:major": "npm version major --no-git-tag-version",
-    "test:e2e:auth": "npx playwright test -c playwright.config.mjs tests/e2e/auth-registration.spec.mjs"
+    "test:e2e:auth": "npx playwright test -c playwright.config.mjs tests/e2e/auth-registration.spec.mjs",
+    "tasks:next": "node scripts/task-next.mjs"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
