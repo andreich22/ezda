@@ -1,0 +1,62 @@
+{
+  "id": "ad3c",
+  "title": "Оптимизировать количество Vercel deployments",
+  "status": "in_progress",
+  "createdAt": "2026-10-06T07:32:51Z",
+  "updatedAt": "2026-10-06T07:40:00Z",
+  "description": "Снизить количество ненужных Vercel deployments, сохранив Preview для релевантных PR и Production для релевантных изменений в main. Исходный запрос: Issue #109.",
+  "requirements": [
+    "Добавить version-controlled Vercel Ignored Build Step.",
+    "Пропускать deployment для документации, тестов, task metadata, GitHub workflow и agent-only изменений.",
+    "Распознавать version-only bump package.json/package-lock.json и не создавать второй эквивалентный production deployment.",
+    "Не пропускать изменения приложения, зависимостей, Next.js-конфигурации, scripts и прочей runtime/build-конфигурации.",
+    "Сохранить Preview deployments для релевантных PR.",
+    "Сохранить Production deployments для релевантных изменений в main.",
+    "Документировать deployment-trigger'ы и правила ignore."
+  ],
+  "definitionOfReady": [
+    "Исходные требования зафиксированы в #109.",
+    "Создан TASK-ad3c (#111).",
+    "Проверены GitHub Actions и отсутствие отдельного Vercel deploy workflow.",
+    "Проверена возможность решить фильтрацию через vercel.json ignoreCommand."
+  ],
+  "acceptanceCriteria": [
+    "Изменения только в docs, tests, tasks, .github или skills не запускают Vercel build.",
+    "Version-only изменения package.json/package-lock.json не запускают отдельный deployment.",
+    "Изменения app, components, lib, public, scripts, dependencies и build/runtime config запускают deployment.",
+    "Preview deployment для релевантного PR сохраняется.",
+    "Production deployment из main для релевантного изменения сохраняется.",
+    "Документация описывает схему deployment-trigger'ов.",
+    "npm run tasks:validate проходит.",
+    "npm run test:run проходит.",
+    "npm run build проходит."
+  ],
+  "technicalApproach": [
+    "Добавить vercel.json с ignoreCommand.",
+    "Реализовать scripts/vercel-ignore.mjs для фильтрации changed files и узкого version-only diff.",
+    "Добавить unit-тесты для path filtering.",
+    "Добавить docs/vercel-deployments.md."
+  ],
+  "definitionOfDone": [
+    "Все изменения находятся в task/ad3c-vercel-deploy-optimization.",
+    "Task metadata обновлена.",
+    "Реализация, тесты и документация добавлены.",
+    "npm run tasks:validate, npm run test:run и npm run build выполнены.",
+    "Открыт PR в main с ссылкой на #109 и #111."
+  ],
+  "decisionLog": [],
+  "commits": [],
+  "history": [
+    {
+      "date": "2026-10-06T07:32:51Z",
+      "status": "draft",
+      "action": "Создан TASK-ad3c на основе Issue #109."
+    },
+    {
+      "date": "2026-10-06T07:40:00Z",
+      "status": "in_progress",
+      "action": "Создан task/ad3c-vercel-deploy-optimization и начата реализация."
+    }
+  ],
+  "relations": []
+}
