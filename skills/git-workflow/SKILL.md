@@ -50,7 +50,11 @@ Every AI implementation that changes the repository MUST be delivered through an
 
 The PR MUST:
 
-- reference the Task ID;
+- reference exactly one known Task ID;
+- use a head branch matching `task/<task-id>-<short-name>`;
+- keep `tasks/index.json` and `tasks/<id>.json` consistent;
+- put the task in `review` status before the PR is considered ready;
+- link the PR to its Issue with `Closes #<issue-number>`;
 - explain the change and motivation;
 - summarize requirements and acceptance criteria;
 - list tests/checks that were run;
