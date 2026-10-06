@@ -6,7 +6,7 @@ labels: ["automation", "ci", "self-healing"]
 
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: ["CI", "Preview QA"]
     types: [completed]
     branches: ["task/*"]
   pull_request_review_comment:
@@ -96,9 +96,9 @@ If the next attempt would be 4 or higher, stop automatic remediation and create 
 
 ## CI failure remediation
 
-When triggered by a failed CI run:
+When triggered by a failed CI or Preview QA run:
 
-1. Read the failed job names and logs. Focus on the actual root cause rather than secondary failures.
+1. Read the failed job names and logs. For Preview QA failures, inspect the Playwright diagnostic artifacts and identify whether the root cause is a browser regression, console error, first-party request failure, or external infrastructure failure. Focus on the actual root cause rather than secondary failures.
 2. Classify the failure as one of:
    - lint/format;
    - TypeScript/typecheck;
