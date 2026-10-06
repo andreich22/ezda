@@ -10,11 +10,15 @@ async function installDiagnostics(page) {
   });
 
   page.on("requestfailed", (request) => {
-    failedRequests.push({
-      method: request.method(),
-      url: request.url(),
-      error: request.failure()?.errorText || "request failed",
-    });
+    const url = new URL(request.url());
+    const baseOrigin = new URL(process.env.PREVIEW_BASE_URL || "http://localhost:3000").origin;
+    if (url.origin === baseOrigin) {
+      failedRequests.push({
+        method: request.method(),
+        url: request.url(),
+        error: request.failure()?.errorText || "request failed",
+      });
+    }
   });
 
   page.on("response", (response) => {
@@ -34,6 +38,10 @@ async function assertNoDiagnostics(diagnostics) {
   expect(
     diagnostics.apiFailures,
     "HTTP 5xx responses",
+  ).toEqual([]);
+  expect(
+    diagnostics.failedRequests,
+    "first-party request failures",
   ).toEqual([]);
 }
 
