@@ -47,45 +47,33 @@ TASK-a1b2 Short task title
 
 Do not start implementation merely because the Issue exists.
 
-### 3. Wait for automatic registration
+### 3. Create implementation branch
 
-The `Register task from Issue` workflow creates a registration PR containing:
-
-- `tasks/<id>.json`;
-- the corresponding entry in `tasks/index.json`.
-
-The registration PR is deliberately separate from the implementation PR. It must pass normal repository checks and be merged before implementation starts. The workflow never pushes directly to `main`, so branch protection remains authoritative.
-
-Registration is idempotent. Existing matching task metadata is not overwritten. A registry/task-file conflict fails loudly.
-
-### 4. Verify registration and Definition of Ready
-
-After registration is merged:
-
-- confirm the Task ID exists in `tasks/index.json`;
-- read `tasks/<id>.json`;
-- verify the Definition of Ready;
-- inspect `tasks/relations.json` and add required relationships.
-
-Move the task to `ready` only when its Definition of Ready is satisfied.
-
-### 5. Create implementation branch
-
-Only after registration is present in `main`, create:
+After the Task metadata exists, create:
 
 ```text
 task/<task-id>-<short-name>
 ```
 
-Never create the implementation PR before registration is merged.
+The implementation branch contains `tasks/<id>.json`, the corresponding `tasks/index.json` entry, and the implementation changes. There is no separate registration PR.
 
-### 6. Implement the smallest change
+### 4. Verify Definition of Ready
+
+Before implementation:
+
+- confirm the Task ID exists in `tasks/index.json`;
+- read `tasks/<id>.json`;
+- verify the Definition of Ready;
+- inspect `tasks/relations.json` and add required relationships;
+- move the task to `ready` only when its Definition of Ready is satisfied.
+
+### 5. Implement the smallest change
 
 Change only what the task requires. Preserve project invariants from `AGENTS.md`, especially local-first execution, privacy, browser-side inference, memory safety, streaming behavior, and minimal dependencies.
 
-If implementation reveals unrelated work, create a new Issue and let the registration workflow create its task metadata before implementation begins.
+If implementation reveals unrelated work, create a new Issue/task and relate it instead.
 
-### 7. Validate continuously
+### 6. Validate continuously
 
 Before completion, at minimum:
 
@@ -95,7 +83,7 @@ npm run tasks:validate
 
 Also run relevant unit/component/e2e tests and `npm run build` when production compilation can be affected. Do not claim a check passed unless it actually passed or an authoritative CI result confirms it.
 
-### 8. Commit with the task ID
+### 7. Commit with the task ID
 
 Every implementation commit must follow:
 
@@ -105,11 +93,11 @@ Every implementation commit must follow:
 
 Use the same Task ID for every commit belonging to the task.
 
-### 9. Update task history
+### 8. Update task history
 
 Before completion, record final status, relevant commit SHAs/messages, decisions, validation, and known limitations.
 
-### 10. Complete the task
+### 9. Complete the task
 
 Set the task to `done` only after all requirements and acceptance criteria are satisfied, relevant tests/build pass, `npm run tasks:validate` passes, history/commit metadata are complete, and the implementation PR has passed repository checks and is merged through the protected PR path.
 
@@ -124,7 +112,7 @@ npm run tasks:next
 npm run tasks:next -- --json
 ```
 
-A task is eligible only when it is `ready` and all dependencies are `done` or `cancelled`.
+`tasks:next` validates the task registry before selecting a task. A task is eligible only when it is `ready` and all dependencies are `done` or `cancelled`.
 
 ## Scope management
 
