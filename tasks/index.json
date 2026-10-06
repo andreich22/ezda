@@ -4,182 +4,282 @@
     {
       "id": "a89b",
       "title": "fix: extract haversine function to shared module",
-      "status": "draft"
+      "status": "draft",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "c4e7",
       "title": "адаптация интерфейса для мобильных устройств",
-      "status": "ready"
+      "status": "ready",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "7c31",
       "title": "feat: add collapsible sidebar",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "8f42",
       "title": "feat: hide mobile sidebar with swipe gesture",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "b6e4",
       "title": "production-ready automatic application versioning",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "b4e2",
       "title": "feat: add interactive route summary card",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "d91f",
       "title": "feat: add map quick actions",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "9e4a",
       "title": "Подключить Ezda к Supabase PostgreSQL через Transaction Pooler",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "7d3a",
       "title": "Автоматически повышать версию приложения после merge в main",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "5b7c",
       "title": "Реализовать сохранение и открытие сохранённых маршрутов",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "dbe1",
       "title": "Auto-apply migrations on Docker startup and fix migration drift",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "c0de",
       "title": "Покрыть тестами API построения маршрута /api/route",
-      "status": "draft"
+      "status": "draft",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "9c2f",
       "title": "APP_VERSION должен отображать текущую версию приложения",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "9a7c",
       "title": "Упростить Task-Driven workflow: Task и реализация в одном PR",
-      "status": "review"
+      "status": "review",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "d5e6",
       "title": "Валидация и безопасный API сохранения маршрута",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "f1a2",
       "title": "Публичная страница маршрута",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "b3c4",
       "title": "Каталог публичных маршрутов",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": [
+        "f1a2"
+      ]
     },
     {
       "id": "e6b1",
       "title": "feat: add hamburger menu with routes catalog link",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": [
+        "b3c4"
+      ]
     },
     {
       "id": "b7c8",
       "title": "Иерархический workflow для зонтичных задач",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "5d2a",
       "title": "Сделать проверку покрытия CI неблокирующей",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "a11a",
       "title": "Авторизация и поддержка пользователей",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "41b2",
       "title": "Авторизация пользователей",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "52c3",
       "title": "User profiles",
-      "status": "done"
+      "status": "done",
+      "priority": "P2",
+      "dependencies": [
+        "41b2"
+      ]
     },
     {
       "id": "63d4",
       "title": "Привязка routes к пользователям",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": [
+        "52c3"
+      ]
     },
     {
       "id": "c7e4",
       "title": "Production/local email confirmation redirects and E2E registration",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "e7b4",
       "title": "Fix production password recovery redirect",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "6a3f",
       "title": "Добавить ссылку на авторизацию в hamburger menu",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": [
+        "41b2"
+      ]
     },
     {
       "id": "9f2b",
       "title": "Исправить автоматическое повышение версии после merge в main",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "74e5",
       "title": "Защита собственных маршрутов",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": [
+        "63d4"
+      ]
     },
     {
       "id": "85f6",
       "title": "Публичные профили",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": [
+        "74e5"
+      ]
     },
     {
       "id": "96a7",
       "title": "OAuth Google",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": [
+        "85f6"
+      ]
     },
     {
       "id": "3f7a",
       "title": "Показывать имя пользователя в header из email",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "2a6d",
       "title": "Фильтр приватных маршрутов на странице маршрутов",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": [
+        "63d4",
+        "74e5"
+      ]
     },
     {
       "id": "d4f8",
       "title": "Уточнить правило дочерних PR для закрытых umbrella-задач",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     },
     {
       "id": "4f8c",
       "title": "Пагинация каталога маршрутов page + limit 50 и фронтенд-кэш",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": [
+        "2a6d"
+      ]
     },
     {
       "id": "ad3c",
       "title": "Оптимизировать количество Vercel deployments",
-      "status": "in_progress"
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
+    },
+    {
+      "id": "e101",
+      "title": "Этап 1 — автономный Developer Pipeline",
+      "status": "in_progress",
+      "priority": "P0",
+      "dependencies": []
     }
   ]
 }
