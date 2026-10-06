@@ -9,7 +9,7 @@ on:
     workflows: ["CI"]
     types: [completed]
     conclusion: [failure, timed_out]
-    branches: [main]
+    branches: ["task/*"]
   pull_request_review_comment:
     types: [created]
   workflow_dispatch:
