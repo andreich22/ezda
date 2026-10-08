@@ -1,0 +1,64 @@
+{
+  "id": "e3b9",
+  "title": "Add shared AI project context",
+  "status": "in_progress",
+  "priority": "P2",
+  "dependencies": [],
+  "createdAt": "2026-10-08T14:08:03Z",
+  "updatedAt": "2026-10-08T14:10:00Z",
+  "issue": {
+    "number": 123,
+    "url": "https://github.com/andreich22/ezda/issues/123",
+    "title": "TASK-e3b9 Add shared AI project context"
+  },
+  "description": "Create a durable, agent-independent project context document so coding agents can recover important current-state knowledge without relying on transient chat memory.",
+  "requirements": [
+    "Add docs/ai-context.md.",
+    "Document current architecture, infrastructure, authentication, database, deployment, CI/task workflow, and important product decisions.",
+    "Capture recent project decisions and operational lessons that are not fully represented in AGENTS.md.",
+    "Clearly distinguish informational context from mandatory rules; AGENTS.md remains authoritative."
+  ],
+  "definitionOfReady": [
+    "GitHub Issue #123 exists with goal and acceptance criteria.",
+    "Dedicated task branch task/e3b9-shared-ai-context created from main.",
+    "Existing AGENTS.md, README.md, task registry, and task workflow skills reviewed."
+  ],
+  "acceptanceCriteria": [
+    "docs/ai-context.md exists and is useful to an independent coding agent.",
+    "The document reflects the current repository state and active task areas without inventing implementation details.",
+    "Important Supabase Auth, Resend, Vercel, routing, route visibility, pagination, CI, and task-workflow context is recorded.",
+    "The document explicitly points agents to AGENTS.md for binding rules."
+  ],
+  "technicalApproach": [
+    "Use repository documentation as the durable source of project context.",
+    "Summarize current architecture and operational setup from README.md and repository task metadata.",
+    "Capture recent project history and known operational lessons from the established project workflow."
+  ],
+  "definitionOfDone": [
+    "npm run tasks:validate passes.",
+    "Relevant documentation checks/build validation pass or are reported if unavailable.",
+    "Task metadata records the implementation commit and validation.",
+    "Implementation PR targets main and references TASK-e3b9 / Closes #123."
+  ],
+  "history": [
+    {
+      "date": "2026-10-08T14:08:03Z",
+      "status": "draft",
+      "action": "created_from_issue #123"
+    },
+    {
+      "date": "2026-10-08T14:10:00Z",
+      "status": "in_progress",
+      "action": "implementation_started on task/e3b9-shared-ai-context"
+    }
+  ],
+  "commits": [],
+  "decisionLog": [
+    {
+      "date": "2026-10-08T14:10:00Z",
+      "decision": "Keep durable project memory in repository documentation rather than relying on ChatGPT conversation memory.",
+      "reason": "Independent agents and IDE assistants can read the repository; transient conversational memory is not shared across agents."
+    }
+  ],
+  "relations": []
+}
