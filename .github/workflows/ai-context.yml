@@ -1,0 +1,62 @@
+name: AI Context Freshness
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - AGENTS.md
+      - README.md
+      - package.json
+      - tasks/index.json
+      - tasks/relations.json
+      - tasks/*.json
+      - docs/ai-context.md
+      - scripts/validate-ai-context.mjs
+      - .github/workflows/ai-context.yml
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check AI context freshness
+        id: context
+        run: npm run ai-context:check
+
+      - name: Report stale context
+        if: failure() && steps.context.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          body_file="$(mktemp)"
+          cat > "$body_file" <<'EOF'
+          The repository-side AI project context is stale.
+
+          Run `npm run ai-context:check` locally to see which authoritative source changed, then:
+          1. Create/use a normal `TASK-<4 lowercase hex-id>` task for the context update if one does not already exist.
+          2. Run `npm run ai-context:refresh`.
+          3. Review `docs/ai-context.md` for substantive changes that the fingerprint alone cannot detect.
+          4. Commit and merge the update through the normal protected PR workflow.
+
+          This issue is an automated signal; it does not authorize direct changes to `main`.
+          EOF
+
+          existing="$(gh issue list --repo "$REPO" --state open --search '"[AI context] stale" in:title' --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body-file "$body_file"
+          else
+            gh issue create               --repo "$REPO"               --title "[AI context] stale — refresh docs/ai-context.md"               --body-file "$body_file"
+          fi
