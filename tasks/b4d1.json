@@ -1,11 +1,11 @@
 {
   "id": "b4d1",
   "title": "Automate shared AI context freshness",
-  "status": "in_progress",
+  "status": "review",
   "priority": "P2",
   "dependencies": [],
   "createdAt": "2026-10-08T14:14:39Z",
-  "updatedAt": "2026-10-08T14:14:39Z",
+  "updatedAt": "2026-10-08T14:22:00Z",
   "issue": {
     "number": 126,
     "url": "https://github.com/andreich22/ezda/issues/126",
@@ -57,9 +57,43 @@
       "date": "2026-10-08T14:16:00Z",
       "status": "in_progress",
       "action": "implementation_started on task/b4d1-ai-context-freshness"
+    },
+    {
+      "date": "2026-10-08T14:22:00Z",
+      "status": "review",
+      "action": "implementation_ready; validator, package commands, workflow, documentation, and fingerprint refresh added"
     }
   ],
-  "commits": [],
+  "commits": [
+    {
+      "sha": "9172e30c3560d3b712abe39c5e8ab93fd4b8ed05",
+      "message": "feat: b4d1 | add AI context freshness task metadata"
+    },
+    {
+      "sha": "f3c452358717c16fa27cc5a6100d368cec3fedb5",
+      "message": "feat: b4d1 | add AI context freshness validator"
+    },
+    {
+      "sha": "4409a9ac4b05920dac099d0df80a94693d01437f",
+      "message": "feat: b4d1 | add scheduled AI context freshness workflow"
+    },
+    {
+      "sha": "23b920be22cf89139365bac0fa1985c8fc8cd7ca",
+      "message": "docs: b4d1 | document AI context maintenance"
+    },
+    {
+      "sha": "0cbd4bf4f933ed68e20c1d05cdfd4804f2761508",
+      "message": "chore: b4d1 | add AI context maintenance commands"
+    },
+    {
+      "sha": "77255adfdf0322fbdd4a4ffd098c6e7b6731cd79",
+      "message": "feat: b4d1 | register AI context freshness task"
+    },
+    {
+      "sha": "5b026321a20c8c725c1a3b4784aafe3c8a2c8165",
+      "message": "docs: b4d1 | refresh AI context fingerprints"
+    }
+  ],
   "decisionLog": [
     {
       "date": "2026-10-08T14:16:00Z",
