@@ -47,7 +47,7 @@ jobs:
         run: npm run ai-context:check
 
       - name: Report stale context
-        if: failure() && steps.context.outcome == 'failure'
+        if: failure() && steps.context.outcome == 'failure' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
