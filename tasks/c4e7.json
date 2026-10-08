@@ -1,9 +1,9 @@
 {
   "id": "c4e7",
   "title": "адаптация интерфейса для мобильных устройств",
-  "status": "ready",
+  "status": "review",
   "createdAt": "2026-09-20T12:10:16.843Z",
-  "updatedAt": "2026-09-20T13:00:09.100Z",
+  "updatedAt": "2026-10-08T15:07:00Z",
   "issue": {
     "number": 5,
     "url": "https://github.com/andreich22/ezda/issues/5",
@@ -45,9 +45,21 @@
       "at": "2026-09-20T13:00:09.100Z",
       "event": "registration_pr_created",
       "details": "Task registration completed; implementation may proceed after registration PR merge."
+    },
+    {
+      "at": "2026-09-20T13:01:15Z",
+      "event": "implementation_merged",
+      "details": "Mobile layout adaptation (bottom sheet route panel, safe-area insets, touch targets, narrow-screen map) implemented in app/globals.css and merged into main via PR #7 on branch task/c4e7-mobile (commit 7ae7932). Build and vitest pass."
+    },
+    {
+      "at": "2026-10-08T15:07:00Z",
+      "event": "review_ready",
+      "details": "Task metadata corrected from stale 'ready' to reflect merged implementation (PR #7 / commit 7ae7932). Status set to review awaiting CI gates and human merge; becomes done after PR merges into main."
     }
   ],
-  "commits": [],
+  "commits": [
+    "7ae793248b343870ee15b04c16c7468e0c099732"
+  ],
   "decisionLog": [],
   "relations": []
 }
