@@ -5,7 +5,7 @@
   "priority": "P2",
   "dependencies": [],
   "createdAt": "2026-10-08T14:14:39Z",
-  "updatedAt": "2026-10-08T14:28:00Z",
+  "updatedAt": "2026-10-08T14:29:00Z",
   "issue": {
     "number": 126,
     "url": "https://github.com/andreich22/ezda/issues/126",
@@ -116,6 +116,10 @@
     {
       "sha": "41e37b7dcdb6f2ee9dfb60beda162e628e5cd06e",
       "message": "feat: b4d1 | validate AI context in pull requests"
+    },
+    {
+      "sha": "f70f8ce5d9d1d1885ffe364962c442dbeaf652c1",
+      "message": "fix: b4d1 | guard issue reporting for fork pull requests"
     }
   ],
   "decisionLog": [
