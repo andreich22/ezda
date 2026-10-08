@@ -19,7 +19,9 @@
     "version:minor": "npm version minor --no-git-tag-version",
     "version:major": "npm version major --no-git-tag-version",
     "test:e2e:auth": "npx playwright test -c playwright.config.mjs tests/e2e/auth-registration.spec.mjs",
-    "tasks:next": "node scripts/task-next.mjs"
+    "tasks:next": "node scripts/task-next.mjs",
+    "ai-context:check": "node scripts/validate-ai-context.mjs check",
+    "ai-context:refresh": "node scripts/validate-ai-context.mjs refresh"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
