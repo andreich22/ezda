@@ -289,6 +289,13 @@
       "dependencies": [
         "e101"
       ]
+    },
+    {
+      "id": "e3b9",
+      "title": "Add shared AI project context",
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     }
   ]
 }
