@@ -307,7 +307,7 @@
     {
       "id": "c5d8",
       "title": "Fix quick actions placement in route sidebar",
-      "status": "in_progress",
+      "status": "review",
       "priority": "P2",
       "dependencies": []
     }
