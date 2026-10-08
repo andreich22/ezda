@@ -5,7 +5,7 @@
   "priority": "P2",
   "dependencies": [],
   "createdAt": "2026-10-08T14:14:39Z",
-  "updatedAt": "2026-10-08T14:22:00Z",
+  "updatedAt": "2026-10-08T14:24:00Z",
   "issue": {
     "number": 126,
     "url": "https://github.com/andreich22/ezda/issues/126",
@@ -92,6 +92,18 @@
     {
       "sha": "5b026321a20c8c725c1a3b4784aafe3c8a2c8165",
       "message": "docs: b4d1 | refresh AI context fingerprints"
+    },
+    {
+      "sha": "2ff3a1449585ba82beae756fcf0ed83037b253fa",
+      "message": "docs: b4d1 | mark context freshness task ready for review"
+    },
+    {
+      "sha": "21525805db7319dad41f1a30cbcf200ab6255068",
+      "message": "docs: b4d1 | mark context freshness task ready for review"
+    },
+    {
+      "sha": "730acc411892ec9766e578320283df58a7ac1dd4",
+      "message": "docs: b4d1 | refresh AI context fingerprints after task state update"
     }
   ],
   "decisionLog": [
