@@ -104,6 +104,10 @@
     {
       "sha": "730acc411892ec9766e578320283df58a7ac1dd4",
       "message": "docs: b4d1 | refresh AI context fingerprints after task state update"
+    },
+    {
+      "sha": "d6736f099aaedb627d120ea8db1fe782edb664d7",
+      "message": "docs: b4d1 | record final implementation commits"
     }
   ],
   "decisionLog": [
