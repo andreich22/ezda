@@ -296,6 +296,13 @@
       "status": "review",
       "priority": "P2",
       "dependencies": []
+    },
+    {
+      "id": "b4d1",
+      "title": "Automate shared AI context freshness",
+      "status": "in_progress",
+      "priority": "P2",
+      "dependencies": []
     }
   ]
 }
