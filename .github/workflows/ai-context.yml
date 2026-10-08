@@ -1,6 +1,19 @@
 name: AI Context Freshness
 
 on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - AGENTS.md
+      - README.md
+      - package.json
+      - tasks/index.json
+      - tasks/relations.json
+      - tasks/*.json
+      - docs/ai-context.md
+      - scripts/validate-ai-context.mjs
+      - .github/workflows/ai-context.yml
   push:
     branches:
       - main
