@@ -5,7 +5,7 @@
   "priority": "P2",
   "dependencies": [],
   "createdAt": "2026-10-08T14:14:39Z",
-  "updatedAt": "2026-10-08T14:26:00Z",
+  "updatedAt": "2026-10-08T14:28:00Z",
   "issue": {
     "number": 126,
     "url": "https://github.com/andreich22/ezda/issues/126",
@@ -112,6 +112,10 @@
     {
       "sha": "9fc1574909e2056d7bb1784b18c0c86a07aad1a1",
       "message": "chore: b4d1 | pin workflow checkout action"
+    },
+    {
+      "sha": "41e37b7dcdb6f2ee9dfb60beda162e628e5cd06e",
+      "message": "feat: b4d1 | validate AI context in pull requests"
     }
   ],
   "decisionLog": [
