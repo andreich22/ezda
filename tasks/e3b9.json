@@ -1,11 +1,11 @@
 {
   "id": "e3b9",
   "title": "Add shared AI project context",
-  "status": "in_progress",
+  "status": "review",
   "priority": "P2",
   "dependencies": [],
   "createdAt": "2026-10-08T14:08:03Z",
-  "updatedAt": "2026-10-08T14:10:00Z",
+  "updatedAt": "2026-10-08T14:15:00Z",
   "issue": {
     "number": 123,
     "url": "https://github.com/andreich22/ezda/issues/123",
@@ -50,9 +50,27 @@
       "date": "2026-10-08T14:10:00Z",
       "status": "in_progress",
       "action": "implementation_started on task/e3b9-shared-ai-context"
+    },
+    {
+      "date": "2026-10-08T14:15:00Z",
+      "status": "review",
+      "action": "implementation_ready; docs/ai-context.md added; repository-side validation deferred to CI"
     }
   ],
-  "commits": [],
+  "commits": [
+    {
+      "sha": "e0aca2806e52206da83301017b4267774a79e8d5",
+      "message": "feat: e3b9 | add shared context task metadata"
+    },
+    {
+      "sha": "85d6a3396e2edf65c86712abad829d818c05b474",
+      "message": "feat: e3b9 | register shared context task"
+    },
+    {
+      "sha": "e9801cda119e89f9f5ed958407bef3c28bf1a5f9",
+      "message": "docs: e3b9 | add shared AI project context"
+    }
+  ],
   "decisionLog": [
     {
       "date": "2026-10-08T14:10:00Z",
