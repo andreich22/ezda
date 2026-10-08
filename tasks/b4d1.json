@@ -1,0 +1,71 @@
+{
+  "id": "b4d1",
+  "title": "Automate shared AI context freshness",
+  "status": "in_progress",
+  "priority": "P2",
+  "dependencies": [],
+  "createdAt": "2026-10-08T14:14:39Z",
+  "updatedAt": "2026-10-08T14:14:39Z",
+  "issue": {
+    "number": 126,
+    "url": "https://github.com/andreich22/ezda/issues/126",
+    "title": "TASK-b4d1 Automate shared AI context freshness"
+  },
+  "description": "Keep docs/ai-context.md trustworthy through deterministic source fingerprints, a maintainer refresh command, and scheduled/triggered CI freshness checks.",
+  "requirements": [
+    "Add a deterministic repository-side AI context freshness validator.",
+    "Track fingerprints of authoritative source files used by the context.",
+    "Add a GitHub Actions workflow that validates context on relevant changes and on a weekly schedule.",
+    "Detect stale context and create or update an actionable GitHub issue instead of silently passing.",
+    "Provide a maintainer-friendly command to refresh the context fingerprint after intentional context updates.",
+    "Document the automation and source-of-truth hierarchy.",
+    "Do not bypass the protected main branch or auto-merge changes."
+  ],
+  "definitionOfReady": [
+    "GitHub Issue #126 exists with goal and acceptance criteria.",
+    "Dedicated branch task/b4d1-ai-context-freshness created from main.",
+    "AGENTS.md, README.md, package.json, task registry, and current AI context reviewed."
+  ],
+  "acceptanceCriteria": [
+    "scripts/validate-ai-context.mjs can check and refresh the generated fingerprint block.",
+    "package.json exposes ai-context:check and ai-context:refresh.",
+    ".github/workflows/ai-context.yml runs on relevant pushes and weekly schedule.",
+    "Stale context produces a clear CI failure and an actionable GitHub issue without changing main.",
+    "docs/ai-context.md documents the maintenance workflow.",
+    "Task metadata is valid and the implementation PR targets main."
+  ],
+  "technicalApproach": [
+    "Use Git blob SHA fingerprints for a small, explicit set of authoritative repository sources.",
+    "Keep the substantive AI context human-readable; only the fingerprint block is generated.",
+    "Use GitHub Actions schedule and path triggers for proactive freshness checks.",
+    "Use the GitHub CLI with GITHUB_TOKEN only to report an existing/new stale-context issue."
+  ],
+  "definitionOfDone": [
+    "npm run tasks:validate passes.",
+    "npm run ai-context:check passes on the final branch.",
+    "Relevant workflow/config validation passes or is reported if unavailable.",
+    "Task history and commit metadata are updated.",
+    "Implementation PR references TASK-b4d1 / Closes #126."
+  ],
+  "history": [
+    {
+      "date": "2026-10-08T14:14:39Z",
+      "status": "draft",
+      "action": "created_from_issue #126"
+    },
+    {
+      "date": "2026-10-08T14:16:00Z",
+      "status": "in_progress",
+      "action": "implementation_started on task/b4d1-ai-context-freshness"
+    }
+  ],
+  "commits": [],
+  "decisionLog": [
+    {
+      "date": "2026-10-08T14:16:00Z",
+      "decision": "Use deterministic source fingerprints rather than trying to infer semantic freshness automatically.",
+      "reason": "The repository can reliably detect that authoritative inputs changed; semantic context edits still require an intentional human/agent refresh and review."
+    }
+  ],
+  "relations": []
+}
