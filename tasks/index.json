@@ -299,6 +299,15 @@
       ]
     },
     {
+      "id": "e103",
+      "title": "\u042d\u0442\u0430\u043f 3 \u2014 \u0430\u0432\u0442\u043e\u043d\u043e\u043c\u043d\u044b\u0439 QA \u0434\u043b\u044f Preview",
+      "status": "review",
+      "priority": "P1",
+      "dependencies": [
+        "e102"
+      ]
+    },
+    {
       "id": "e3b9",
       "title": "Add shared AI project context",
       "status": "review",
