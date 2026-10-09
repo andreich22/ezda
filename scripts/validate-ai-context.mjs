@@ -9,8 +9,6 @@ const sources = [
   "AGENTS.md",
   "README.md",
   "package.json",
-  "tasks/index.json",
-  "tasks/relations.json",
 ];
 
 const begin = "<!-- BEGIN:ai-context-fingerprint -->";
