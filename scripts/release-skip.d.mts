@@ -1,7 +1,8 @@
-export interface ShouldSkipReleaseOptions {
-  body?: string;
-  tasksDir?: string;
+export interface FetchIssueLabelOptions {
+  repository?: string;
+  token?: string;
 }
 
-export function extractTaskId(body: string | undefined): string | null;
-export function shouldSkipRelease(options?: ShouldSkipReleaseOptions): boolean;
+export function extractIssueNumber(body: string | undefined): string | null;
+export function shouldSkipReleaseByLabels(labels: unknown[]): boolean;
+export function fetchIssueLabelNames(issueNumber: string, options?: FetchIssueLabelOptions): string[];
