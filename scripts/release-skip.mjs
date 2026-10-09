@@ -18,7 +18,7 @@ export function shouldSkipRelease({ body, tasksDir: scopeDir } = {}) {
   const taskId = extractTaskId(body);
   if (!taskId) return false;
 
-  const taskFile = path.join(scopeDir, `${taskId}.json`);
+  const taskFile = path.join(resolvedDir, `${taskId}.json`);
   if (!fs.existsSync(taskFile)) return false;
 
   try {
