@@ -61,6 +61,26 @@ export default async function RoutePage({params}: Props) {
               <div className="value">{new Date(route.createdAt).toLocaleDateString()}</div>
             </div>
           </div>
+          <div className="waypoints card">
+            <div className="label">Route points</div>
+            {route.waypoints && route.waypoints.length > 0 ? (
+              <ol>
+                {route.waypoints.map((point: number[], index: number) => (
+                  <li key={point[0] + "-" + point[1] + "-" + index}>
+                    <span className={"point-dot " + (index === 0 ? "start" : index === route.waypoints!.length - 1 ? "finish" : "")} />
+                    <span>
+                      <strong>
+                        {index === 0 ? "Start" : index === route.waypoints.length - 1 ? "Finish" : "Waypoint " + index}
+                      </strong>
+                      <small>{point[1].toFixed(5)}, {point[0].toFixed(5)}</small>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <div className="empty">No points yet</div>
+            )}
+          </div>
         </section>
         <SavedRouteMap
           geometry={{
