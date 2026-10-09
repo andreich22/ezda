@@ -22,7 +22,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-          test -s .github/workflows/self-healing-ci-pr.lock.yml
+      - run: test -s .github/workflows/self-healing-ci-pr.lock.yml
       - name: Validate application version
         run: npm run version:check
       - name: Run unit tests with coverage
