@@ -55,9 +55,17 @@
       "at": "2026-10-09T13:40:00.000Z",
       "event": "validation",
       "details": "docker compose config validated; vitest 119/119 green per implementation notes. Full E2E auth run pending on the merged branch CI."
+    },
+    {
+      "at": "2026-10-09T14:03:00.000Z",
+      "event": "review_feedback_addressed",
+      "details": "Refreshed docs/ai-context.md fingerprint (AI Context Freshness check); corrected stale .env.example auth URL comment; populated commits array. PR body still needs 'Closes #138' for validate-pr-task."
     }
   ],
-  "commits": [],
+  "commits": [
+    "e2182de32bd26cc898973d6979aacd2638a49f92",
+    "cd5551d0c7ea6e6b391aa4e81cb7966f37f95e40"
+  ],
   "decisionLog": [
     {
       "decision": "Use nginx proxy to map /auth/v1 -> GoTrue root instead of changing lib/auth.ts.",
