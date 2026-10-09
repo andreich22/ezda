@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  issues: read
 
 concurrency:
   group: application-release-${{ github.event.pull_request.number }}
@@ -29,6 +30,7 @@ jobs:
         env:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
           PR_BODY: ${{ github.event.pull_request.body }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           node scripts/release-skip.mjs > "$GITHUB_OUTPUT"
 
