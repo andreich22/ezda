@@ -284,6 +284,6 @@ This is deliberately a deterministic freshness signal rather than an attempt to 
 - `AGENTS.md`: `830972215f824236d247e551da47c264c94d40aa`
 - `README.md`: `6dd1242b746188ebb64d491ee7d0d523f35d13ef`
 - `package.json`: `c4c825fd94322acb2787230eb478167c87003b9a`
-- `tasks/index.json`: `36f048fc735d801d2bbb61237c7fd7d4ff21c36f`
-- `tasks/relations.json`: `80b7a6301c1fbab08191b73fc94519a718f9f5c7`
+- `tasks/index.json`: `a41140d394e2e132f1d7b71cc280186c2c382fec`
+- `tasks/relations.json`: `cb523913f62c51c30cea66bcda1e753645dbeb36`
 <!-- END:ai-context-fingerprint -->
