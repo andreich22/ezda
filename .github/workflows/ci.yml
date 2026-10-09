@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  issues: read
 
 jobs:
   validate:
@@ -23,6 +24,58 @@ jobs:
           cache: npm
       - run: npm ci
       - run: test -s .github/workflows/self-healing-ci-pr.md
+      - name: Validate pull request links to a GitHub Issue
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          body="$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")"
+          issue_number="$(printf '%s' "$body" | grep -Eio '(closes|fixes|resolves)[[:space:]]+#?[0-9]+' | head -n 1 | grep -Eo '[0-9]+        run: npm run version:check
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+      - name: Upload coverage HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-coverage-report
+          path: coverage/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Check coverage regression
+        if: github.event_name == 'pull_request'
+        run: |
+          git worktree add --detach /tmp/ezda-base origin/main
+          trap 'git worktree remove --force /tmp/ezda-base' EXIT
+          cd /tmp/ezda-base
+          npm ci
+          npm run test:coverage
+          cd -
+          if node scripts/check-coverage.mjs coverage/coverage-summary.json /tmp/ezda-base/coverage/coverage-summary.json; then
+            echo "Coverage regression check passed."
+          else
+            echo "::warning::Coverage regression detected. This is informational and does not block CI."
+          fi
+      - run: npm run build
+      - name: Install pinned Playwright test runner
+        run: npm install --no-save --no-package-lock @playwright/test@1.54.2
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run registration E2E
+        run: npm run test:e2e:auth
+ || true)"
+          if [ -z "$issue_number" ]; then
+            echo "::error::PR body must link its primary GitHub Issue with Closes #<number>."
+            exit 1
+          fi
+          gh issue view "$issue_number" --repo "$GITHUB_REPOSITORY" --json number,title,state >/dev/null
+          head_branch="$(jq -r '.pull_request.head.ref' "$GITHUB_EVENT_PATH")"
+          if [[ ! "$head_branch" =~ ^task/${issue_number}-[a-z0-9][a-z0-9-]*$ ]]; then
+            echo "::error::PR branch must match task/<issue-number>-<short-name>; got: $head_branch"
+            exit 1
+          fi
       - name: Validate application version
         run: npm run version:check
       - name: Run unit tests with coverage
