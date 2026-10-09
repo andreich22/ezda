@@ -159,6 +159,16 @@
       "from": "a7c3",
       "type": "related",
       "to": "9e4a"
+    },
+    {
+      "from": "8ab3",
+      "type": "replaces",
+      "to": "ad3c"
+    },
+    {
+      "from": "8ab3",
+      "type": "related",
+      "to": "9f2b"
     }
   ]
 }
