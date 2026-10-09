@@ -87,4 +87,36 @@ describe("parseCreateRouteInput", () => {
       geometry: {...valid.geometry, geometry: {type: "LineString", coordinates: [[0, 0, NaN], [1, 1]]}},
     })).toEqual({error: "geometry contains invalid elevation coordinates"});
   });
+
+  it("accepts valid waypoints as [lon, lat] pairs and preserves order", () => {
+    expect(parseCreateRouteInput({
+      ...valid,
+      waypoints: [[-73.9, 40.6], [-73.8, 40.7]],
+    })).toMatchObject({
+      waypoints: [[-73.9, 40.6], [-73.8, 40.7]],
+    });
+  });
+
+  it("defaults waypoints to undefined when absent", () => {
+    const result = parseCreateRouteInput(valid);
+    if ('error' in result) throw new Error("unexpected validation error");
+    expect(result.waypoints).toBeUndefined();
+  });
+
+  it("rejects waypoints outside longitude/latitude bounds", () => {
+    expect(parseCreateRouteInput({
+      ...valid,
+      waypoints: [[181, 0], [0, 0]],
+    })).toEqual({error: "waypoints contain invalid coordinates"});
+  });
+
+  it("rejects malformed or oversized waypoints", () => {
+    expect(parseCreateRouteInput({...valid, waypoints: [[0]]})).toEqual({
+      error: "waypoints contain invalid coordinates",
+    });
+    const tooMany = Array.from({length: 501}, (_, index) => [0, index % 90]);
+    expect(parseCreateRouteInput({...valid, waypoints: tooMany})).toEqual({
+      error: "waypoints must contain 500 points or fewer",
+    });
+  });
 });
