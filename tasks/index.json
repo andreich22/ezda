@@ -330,7 +330,7 @@
     {
       "id": "8ab3",
       "title": "Disable automatic Vercel deployments completely",
-      "status": "in_progress",
+      "status": "review",
       "priority": "P1",
       "dependencies": []
     }
