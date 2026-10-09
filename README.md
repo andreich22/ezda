@@ -128,6 +128,14 @@ Ezda должен развиваться от простого планиров�
 При реализации новых функций приоритетом остаётся основной пользовательский сценарий MVP, простота интерфейса и возможность дальнейшего масштабирования архитектуры.
 
 
+## Task management and AI development
+
+GitHub Issues are the single source of truth for task descriptions, priorities, statuses, dependencies, and acceptance criteria. Start from an Issue, implement on `task/<issue-number>-<short-name>`, and deliver changes through a PR that includes `Closes #<issue-number>`. Keep the default branch protected and require checks before human merge.
+
+Do not maintain duplicate task registries in repository JSON files. Record task relationships in GitHub Issues (native relationships where available, otherwise explicit links in Issue bodies). Agents must inspect the Issue and its dependencies before implementation and report actual CI/test results before completion.
+
+
+
 ## Supabase + Vercel production database
 
 Ezda uses PostgreSQL/PostGIS through Drizzle. Supabase provides the production PostgreSQL database; Vercel runs the Next.js application.
