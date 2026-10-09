@@ -1,112 +1,27 @@
 # Git Workflow Skill
 
-## Purpose
-
-This Skill defines the mandatory Git/GitHub workflow for AI agents working in `Ezda` or repositories that adopt this Skill.
-
-The Skill is vendor-neutral and applies to any coding agent.
-
 ## Core rule
+AI-generated changes must never be committed or pushed directly to the default branch.
 
-AI-generated implementation changes MUST NOT be committed or pushed directly to the repository default branch.
+Required path: `GitHub Issue → task/<issue-number>-<short-name> → implementation → PR → checks/review → human merge`.
 
-For new work, the required path is:
-
-```text
-GitHub Issue → implementation task branch → Task metadata + commits → implementation PR → checks → human merge
-```
-
-Task metadata (`tasks/<id>.json` and the corresponding `tasks/index.json` entry) is committed in the same branch and implementation PR as the work. There is no separate registration PR.
-
-Repository policy is authoritative. Instructions in this Skill MUST NOT be used to justify bypassing GitHub branch protection, required checks, reviews, or permissions.
+GitHub Issues are the only task database. Do not add task metadata files or maintain a second status/dependency registry in the repository.
 
 ## Before changing files
-
-1. Identify the GitHub Issue and Task ID.
-2. For a new task, ensure the Issue title uses `TASK-<4 lowercase hex-id>`.
-3. Create a dedicated implementation branch from the current default branch.
-4. Create/update `tasks/<id>.json` and `tasks/index.json` on that same branch.
-5. Use a branch name based on the task ID:
-
-```text
-task/<task-id>-<short-name>
-```
-
-6. Do all implementation work on that branch.
-
-## Commit policy
-
-Every implementation commit MUST use the task ID:
-
-```text
-<type>: <task-id> | <description>
-```
-
-Do not mix unrelated tasks in one commit.
+1. Identify the primary Issue and read requirements, acceptance criteria, labels, comments, and dependencies.
+2. Search for duplicates before creating an Issue.
+3. Create a branch named `task/<issue-number>-<short-name>` from the current default branch.
+4. Use commits formatted as `<type>: #<issue-number> | <description>`.
+5. Keep unrelated changes in separate Issues and PRs.
 
 ## Pull Request policy
-
-Every AI implementation that changes the repository MUST be delivered through an implementation Pull Request targeting the default branch.
-
-The PR MUST:
-
-- reference exactly one known Task ID;
-- use a head branch matching `task/<task-id>-<short-name>`;
-- keep `tasks/index.json` and `tasks/<id>.json` consistent;
-- put the task in `review` status before the PR is considered ready;
-- link the PR to its Issue with `Closes #<issue-number>`;
-- explain the change and motivation;
-- summarize requirements and acceptance criteria;
-- list tests/checks that were run;
-- identify known limitations or risks;
-- preserve the task/commit traceability chain.
-
-Recommended PR title:
-
-```text
-<type>: <task-id> | <short description>
-```
+Every implementation change must be delivered through a PR. The PR must target the protected branch, reference exactly one primary Issue with `Closes #<issue-number>`, describe the implementation and acceptance criteria, list actual check results, and state known risks.
 
 ## Protected branch policy
+Never commit directly to the default branch, force-push it, rewrite history, disable branch protection, or bypass required checks/reviews. Do not merge your own PR unless explicitly authorized and repository policy permits it.
 
-AI agents MUST NOT:
-
-- commit directly to the default branch;
-- push directly to the default branch;
-- force-push the default branch;
-- rewrite default-branch history;
-- disable or bypass branch protection;
-- use administrative privileges to circumvent repository rules;
-- merge a PR solely to circumvent a required review or check.
-
-If a tool offers a bypass option, the AI agent MUST NOT use it.
-
-## Solo maintainer policy
-
-A solo maintainer does not need artificial self-approval. Automated checks plus the PR boundary replace artificial self-approval; the human maintainer remains the final merge authority.
-
-The AI agent MAY create/update the implementation branch and implementation PR, including Task metadata, and inspect CI results. It MUST NOT merge its own PR unless the user explicitly instructs it to merge and repository policy permits it.
-
-## Validation before implementation PR
-
-Before creating or updating an implementation PR, verify:
-
-```bash
-npm run tasks:validate
-npm run test:run
-npm run build
-```
-
-Do not claim a check passed unless it actually passed or an authoritative CI result confirms it.
-
-## AI review
-
-AI review is an additional automated signal, not a replacement for repository policy. It MUST inspect the PR diff, read the linked task, compare requirements/acceptance criteria, identify correctness/security/privacy/regression/scope risks, and never grant itself a bypass.
+## Validation
+Run relevant tests, type checks, and build before opening/updating the PR. CI is authoritative for required repository checks. Never claim a check passed without evidence.
 
 ## Completion
-
-A task is not complete merely because a PR exists. Completion requires implementation complete, task history updated, task validator and relevant tests/build passing, PR checks passing, required review, and final merge through the protected PR path.
-
-## Emergency changes
-
-If an emergency requires changing the default branch directly, stop and ask the user to perform or explicitly authorize the exceptional operation. Do not silently bypass repository policy.
+An Issue is complete only when acceptance criteria are satisfied and the implementation PR is merged through the protected path. A created PR alone does not mean the task is done.
