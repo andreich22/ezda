@@ -24,16 +24,27 @@ jobs:
           ref: ${{ github.event.pull_request.merge_commit_sha }}
           fetch-depth: 0
 
+      - name: Determine whether release checks should be skipped
+        id: release_skip
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          node scripts/release-skip.mjs > "$GITHUB_OUTPUT"
+
       - name: Setup Node.js
+        if: steps.release_skip.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
 
       - name: Install dependencies
+        if: steps.release_skip.outputs.skip != 'true'
         run: npm ci
 
       - name: Validate merge version
+        if: steps.release_skip.outputs.skip != 'true'
         env:
           MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
         run: |
@@ -60,6 +71,7 @@ jobs:
           node scripts/validate-merge-version.mjs "$BASE_VERSION" "$MERGE_VERSION"
 
       - name: Check tag and release state
+        if: steps.release_skip.outputs.skip != 'true'
         id: release_state
         env:
           MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
@@ -104,7 +116,7 @@ jobs:
           echo "release_exists=$RELEASE_EXISTS" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
-        if: steps.release_state.outputs.release_exists != 'true'
+        if: steps.release_skip.outputs.skip != 'true' && steps.release_state.outputs.release_exists != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.release_state.outputs.tag }}
@@ -113,7 +125,7 @@ jobs:
           gh release create "$TAG" --target "$MERGE_SHA" --title "$TAG" --generate-notes
 
       - name: Verify existing release
-        if: steps.release_state.outputs.release_exists == 'true'
+        if: steps.release_skip.outputs.skip != 'true' && steps.release_state.outputs.release_exists == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.release_state.outputs.tag }}

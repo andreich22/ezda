@@ -48,6 +48,9 @@ for (const entry of index.tasks ?? []) {
   if ('priority' in task && task.priority !== entry.priority) fail(`priority mismatch for ${entry.id}`);
   if ('dependencies' in task && JSON.stringify(task.dependencies) !== JSON.stringify(entry.dependencies)) fail(`dependency mismatch for ${entry.id}`);
   if (entry.status === 'done' && (!Array.isArray(task.acceptanceCriteria) || task.acceptanceCriteria.length === 0)) fail(`done task ${entry.id} must have acceptanceCriteria`);
+  if ('skipRelease' in entry && typeof entry.skipRelease !== 'boolean') fail(`skipRelease must be a boolean for ${entry.id}`);
+  if ('skipRelease' in task && typeof task.skipRelease !== 'boolean') fail(`skipRelease must be a boolean in tasks/${entry.id}.json`);
+  if (task.skipRelease === true && entry.skipRelease === false) fail(`skipRelease mismatch for ${entry.id} between index and task file`);
 }
 
 if (!Array.isArray(relationsDoc.relations)) fail('tasks/relations.json must contain a relations array');

@@ -2,6 +2,7 @@
   "id": "a7c3",
   "title": "Self-host Supabase Auth in Docker for local development",
   "status": "review",
+  "skipRelease": true,
   "createdAt": "2026-10-09T13:37:00.000Z",
   "updatedAt": "2026-10-09T13:40:00.000Z",
   "issue": {
