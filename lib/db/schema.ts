@@ -7,6 +7,7 @@ import {
   timestamp,
   index,
   customType,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 const geography = customType<{
@@ -39,6 +40,7 @@ export const routes = pgTable(
     elevationGainMeters: doublePrecision("elevation_gain_meters"),
     durationSeconds: doublePrecision("duration_seconds"),
     isPublic: boolean("is_public").notNull().default(true),
+    waypoints: jsonb("waypoints"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
