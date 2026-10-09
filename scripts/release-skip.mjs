@@ -13,8 +13,8 @@ export function extractTaskId(body) {
   return match ? match[1].toLowerCase() : null;
 }
 
-export function shouldSkipRelease({ body, dir } = {}) {
-  const scopeDir = dir ?? tasksDir;
+export function shouldSkipRelease({ body, tasksDir: scopeDir } = {}) {
+  const resolvedDir = scopeDir ?? tasksDir;
   const taskId = extractTaskId(body);
   if (!taskId) return false;
 
