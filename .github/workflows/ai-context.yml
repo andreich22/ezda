@@ -8,9 +8,6 @@ on:
       - AGENTS.md
       - README.md
       - package.json
-      - tasks/index.json
-      - tasks/relations.json
-      - tasks/*.json
       - docs/ai-context.md
       - scripts/validate-ai-context.mjs
       - .github/workflows/ai-context.yml
@@ -59,7 +56,7 @@ jobs:
           The repository-side AI project context is stale.
 
           Run `npm run ai-context:check` locally to see which authoritative source changed, then:
-          1. Create/use a normal `TASK-<4 lowercase hex-id>` task for the context update if one does not already exist.
+          1. Find or create a GitHub Issue for the context update.
           2. Run `npm run ai-context:refresh`.
           3. Review `docs/ai-context.md` for substantive changes that the fingerprint alone cannot detect.
           4. Commit and merge the update through the normal protected PR workflow.
