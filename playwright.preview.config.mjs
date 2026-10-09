@@ -4,7 +4,7 @@ const previewBaseURL = process.env.PREVIEW_BASE_URL;
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  testMatch: "**/*.preview.spec.mjs",
+  testMatch: "**/*preview*.spec.mjs",
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: 1,
