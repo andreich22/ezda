@@ -67,17 +67,32 @@
       "date": "2026-10-06T15:12:00+03:00",
       "status": "review",
       "action": "implementation_ready; Preview workflow, Playwright smoke coverage, diagnostics, artifacts, and self-healing integration prepared; local validation unavailable because network access to GitHub is unavailable in the execution environment"
+    },
+    {
+      "date": "2026-10-09T22:45:00Z",
+      "status": "review",
+      "action": "fixed testMatch glob (preview-smoke.spec.mjs), added SSO-protected Preview detection in preview-qa.yml, restored e103 task entry in tasks/index.json after rebase conflict, refreshed AI context fingerprint"
     }
   ],
   "commits": [
-    "07c373557d2de738643159fc63f07584aab88bab",
-    "1ae0fb7511be136209d4c8cfe2a094894b930f81",
-    "3cff46b48663beb2949bead38e97d46fe8e61005",
-    "46dc8d35ecc1167b4dcccff2e59d5ce3ca98d744",
-    "af4b6a4da9c00ef95bd0fcaf0f111e80a90705c2",
-    "301bc88ccc098669aeb4240dbcbf355def81f203",
-    "6e7f49d6115922f13a5064a0935a2f914bafcdc9",
-    "3ce2239a25b890d5c51df3922e277dc1853a6202"
+    "0552b3c",
+    "3e71626",
+    "1483a9f",
+    "dcf340f",
+    "3a8048b",
+    "c0d1b6d",
+    "4d950bf",
+    "bbf3a34",
+    "c12e2f5",
+    "124a159",
+    "afa3cef",
+    "301bc88",
+    "6e7f49d",
+    "3ce2239",
+    "46dc8d3",
+    "3cff46b",
+    "1ae0fb7",
+    "07c3735"
   ],
   "decisionLog": [
     {
