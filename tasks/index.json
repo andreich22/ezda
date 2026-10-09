@@ -310,6 +310,13 @@
       "status": "review",
       "priority": "P2",
       "dependencies": []
+    },
+    {
+      "id": "a7c3",
+      "title": "Self-host Supabase Auth in Docker for local development",
+      "status": "review",
+      "priority": "P2",
+      "dependencies": []
     }
   ]
 }
