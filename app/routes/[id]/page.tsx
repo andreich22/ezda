@@ -1,5 +1,6 @@
 import {notFound} from "next/navigation";
 import CopyRouteLink from "../../../components/CopyRouteLink";
+import DeleteRouteButton from "../../../components/DeleteRouteButton";
 import SavedRouteMap from "../../../components/SavedRouteMap";
 import {getRouteForViewer, getRouteOwnership} from "../../../lib/db/routes";
 import {getCurrentUser} from "../../../lib/current-user";
@@ -50,6 +51,7 @@ export default async function RoutePage({params}: Props) {
           {isOwner && (
             <a href={`/routes/${route.id}/edit`} className="route-edit-link">Edit route</a>
           )}
+          {isOwner && <DeleteRouteButton routeId={route.id} />}
           <div className="stat">
             <div className="card">
               <div className="label">Distance</div>

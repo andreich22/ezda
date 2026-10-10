@@ -157,7 +157,11 @@ test("core flow: save persists and the public page + catalog expose the route", 
   // The route is public: an unauthenticated request can open the same page.
   const publicPage = await request.get(saved.url);
   expect(publicPage.ok()).toBeTruthy();
-  expect(await publicPage.text()).toContain(title);
+  const publicHtml = await publicPage.text();
+  expect(publicHtml).toContain(title);
+  // Guests never see owner actions in the server-rendered HTML.
+  expect(publicHtml).not.toContain("Delete route");
+  expect(publicHtml).not.toContain("Edit route");
 
   // The owner sees the edit entry point and the edit page preloads saved values.
   await expect(page.getByRole("link", {name: "Edit route"})).toBeVisible();
@@ -168,6 +172,23 @@ test("core flow: save persists and the public page + catalog expose the route", 
   await expect(page.getByRole("button", {name: "Save changes"}).first()).toBeVisible();
 
   // The catalog exposes the saved route.
+  const titleLink = page.getByRole("link", {name: new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))});
   await page.goto("/routes");
-  await expect(page.getByRole("link", {name: new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))})).toBeVisible({timeout: 30_000});
+  await expect(titleLink).toBeVisible({timeout: 30_000});
+
+  // The owner can delete the route: a single click only arms the
+  // confirmation, the second click deletes and lands on the catalog.
+  await page.goto(saved.url);
+  await expect(page.getByRole("button", {name: "Delete route"})).toBeVisible();
+  await page.getByRole("button", {name: "Delete route"}).click();
+  await expect(page).toHaveURL(saved.url);
+  await expect(page.getByRole("button", {name: "Confirm delete"})).toBeVisible();
+  await page.getByRole("button", {name: "Confirm delete"}).click();
+  await page.waitForURL("/routes", {timeout: 30_000});
+
+  // The deleted route is gone: catalog no longer lists it, detail and edit
+  // pages return 404.
+  await expect(titleLink).toHaveCount(0);
+  expect((await request.get(saved.url)).status()).toBe(404);
+  expect((await request.get(`${saved.url}/edit`)).status()).toBe(404);
 });

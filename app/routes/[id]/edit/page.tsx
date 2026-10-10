@@ -1,4 +1,5 @@
 import {notFound} from "next/navigation";
+import DeleteRouteButton from "../../../../components/DeleteRouteButton";
 import MapClient from "../../../../components/MapClient";
 import {getCurrentUser} from "../../../../lib/current-user";
 import {getEditableRoute} from "../../../../lib/db/routes";
@@ -49,6 +50,7 @@ export default async function RouteEditPage({params}: Props) {
             initialIsPublic={initial.isPublic}
             editRouteId={id}
           />
+          <DeleteRouteButton routeId={id} />
         </aside>
         <div className="map-wrap"><div id="map-host" className="map" /></div>
       </div>
