@@ -84,7 +84,7 @@ if (mode === "refresh") {
 }
 
 if (mode !== "check") {
-  console.error("Usage: node scripts/validate-ai-context.mjs [check|refresh]");
+  console.error("Usage: node scripts/validate-ai-context.mjs [check|refresh] [--warning]");
   process.exit(2);
 }
 
@@ -111,7 +111,7 @@ if (errors.length > 0) {
   if (warningMode) {
     for (const error of errors) console.log(`::warning title=AI context stale::${error}`);
     if (process.env.GITHUB_OUTPUT) {
-      fs.appendFileSync(process.env.GITHUB_OUTPUT, "stale=true\\n");
+      fs.appendFileSync(process.env.GITHUB_OUTPUT, "stale=true\n");
     }
     console.log("AI context is stale; reported as a warning. Review the shared context and refresh it when appropriate.");
     process.exit(0);
