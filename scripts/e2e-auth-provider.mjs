@@ -10,6 +10,11 @@ function json(res, status, body) {
   res.end(JSON.stringify(body));
 }
 
+function deterministicUuid(email) {
+  const hex = Buffer.from(`ezda-e2e:${email}`).toString("hex").padEnd(32, "0").slice(0, 32);
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+}
+
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let data = "";
@@ -29,7 +34,7 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "POST" && url.pathname === "/auth/v1/signup") {
     const body = await readBody(req);
     const email = body.email;
-    const id = `e2e-${Buffer.from(email).toString("hex").slice(0, 24)}`;
+    const id = deterministicUuid(email);
     const token = `e2e-confirm-${Buffer.from(email).toString("hex")}`;
     users.set(email, {id, email, confirmed: false, password: body.password});
     tokens.set(token, email);
