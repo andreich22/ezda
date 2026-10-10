@@ -47,7 +47,7 @@ export default function MapClient() {
     const map = new Map({
       container: "map-host",
       style: osmStyle as any,
-      center: [-74.006, 40.7128],
+      center: [37.6173, 55.7558],
       zoom: 11,
       attributionControl: {},
     });
