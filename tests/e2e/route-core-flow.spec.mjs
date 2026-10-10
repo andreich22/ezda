@@ -149,6 +149,14 @@ test("core flow: save persists and the public page + catalog expose the route", 
   expect(publicPage.ok()).toBeTruthy();
   expect(await publicPage.text()).toContain(title);
 
+  // The owner sees the edit entry point and the edit page preloads saved values.
+  await expect(page.getByRole("link", {name: "Edit route"})).toBeVisible();
+  await page.goto(`${saved.url}/edit`);
+  await expect(page.getByRole("heading", {name: "Edit route"})).toBeVisible();
+  await expect(page.getByLabel("Title")).toHaveValue(title);
+  await expect(page.getByLabel("Description")).toHaveValue(description);
+  await expect(page.getByRole("button", {name: "Save changes"}).first()).toBeVisible();
+
   // The catalog exposes the saved route.
   await page.goto("/routes");
   await expect(page.getByRole("link", {name: new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))})).toBeVisible({timeout: 30_000});

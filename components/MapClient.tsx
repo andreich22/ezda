@@ -8,6 +8,14 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 type Point = [number, number];
 
+type MapClientProps = {
+  initialPoints?: Point[];
+  initialTitle?: string;
+  initialDescription?: string;
+  initialIsPublic?: boolean;
+  editRouteId?: string;
+};
+
 const osmStyle = {
   version: 8,
   sources: {
@@ -29,17 +37,25 @@ const osmStyle = {
   ],
 };
 
-export default function MapClient() {
+export default function MapClient({
+  initialPoints,
+  initialTitle,
+  initialDescription,
+  initialIsPublic,
+  editRouteId,
+}: MapClientProps = {}) {
+  const isEditMode = Boolean(editRouteId);
   const mapRef = useRef<Map | null>(null);
   const markers = useRef<Marker[]>([]);
-  const [points, setPoints] = useState<Point[]>([]);
+  const [points, setPoints] = useState<Point[]>(() => [...(initialPoints ?? [])]);
   const [route, setRoute] = useState<any>(null);
   const [error, setError] = useState("");
   const [actionFeedback, setActionFeedback] = useState("");
-  const [saveTitle, setSaveTitle] = useState("");
-  const [saveDescription, setSaveDescription] = useState("");
+  const [saveTitle, setSaveTitle] = useState(initialTitle ?? "");
+  const [saveDescription, setSaveDescription] = useState(initialDescription ?? "");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const visibility = initialIsPublic ?? true;
   const historyRef = useRef<Point[][]>([]);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -278,8 +294,8 @@ export default function MapClient() {
     setSaveError("");
 
     try {
-      const response = await fetch("/api/routes", {
-        method: "POST",
+      const response = await fetch(isEditMode ? `/api/routes/${editRouteId}` : "/api/routes", {
+        method: isEditMode ? "PATCH" : "POST",
         headers: {"content-type": "application/json"},
         body: JSON.stringify({
           title: saveTitle,
@@ -296,6 +312,7 @@ export default function MapClient() {
           durationSeconds: route.durationSeconds,
           elevationGainMeters: route.elevationGainMeters,
           waypoints: points,
+          ...(isEditMode ? {isPublic: visibility} : {}),
         }),
       });
       const data = await response.json();
@@ -451,7 +468,7 @@ export default function MapClient() {
 
       {route && (
         <div className="save-route card">
-          <div className="route-summary-title">Save route</div>
+          <div className="route-summary-title">{isEditMode ? "Save changes" : "Save route"}</div>
           <label className="field">
             <span className="label">Title</span>
             <input
@@ -480,7 +497,7 @@ export default function MapClient() {
             />
           </label>
           <button className="button" type="button" onClick={saveRoute} disabled={saving || !saveTitle.trim()}>
-            {saving ? "Saving…" : "Save route"}
+            {saving ? "Saving…" : isEditMode ? "Save changes" : "Save route"}
           </button>
           {saveError && <div className="error" role="alert">{saveError}</div>}
         </div>

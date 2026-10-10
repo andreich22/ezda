@@ -186,6 +186,74 @@ export async function getRouteForViewer(id: string, authorId?: string | null) {
   };
 }
 
+export type EditableRoute = {
+  id: string;
+  authorId: string;
+  title: string;
+  description: string | null;
+  distanceMeters: number;
+  durationSeconds: number | null;
+  elevationGainMeters: number | null;
+  createdAt: string;
+  isPublic: boolean;
+  waypoints: number[][] | null;
+  geometry: {
+    type: "Feature";
+    properties: Record<string, never>;
+    geometry: GeoJSON.Geometry | null;
+  };
+};
+
+export async function getEditableRoute(id: string, authorId: string): Promise<EditableRoute | null> {
+  const {db} = await import("./index");
+  const result = await db.execute(sql`
+    select
+      id,
+      author_id as "authorId",
+      title,
+      description,
+      distance_meters as "distanceMeters",
+      duration_seconds as "durationSeconds",
+      elevation_gain_meters as "elevationGainMeters",
+      created_at as "createdAt",
+      is_public as "isPublic",
+      waypoints,
+      gis.ST_AsGeoJSON(geometry::gis.geometry) as geometry
+    from public.routes
+    where id = ${id}::uuid
+      and author_id = ${authorId}::uuid
+    limit 1
+  `);
+
+  const row = result[0] as
+    | {
+        id: string;
+        authorId: string;
+        title: string;
+        description: string | null;
+        distanceMeters: number;
+        durationSeconds: number | null;
+        elevationGainMeters: number | null;
+        createdAt: string;
+        isPublic: boolean;
+        waypoints: string | unknown[] | null;
+        geometry: string;
+      }
+    | undefined;
+
+  if (!row) return null;
+
+  return {
+    ...row,
+    waypoints: parseWaypoints(row.waypoints),
+    geometry: {
+      type: "Feature",
+      properties: {},
+      geometry: parseGeometry(row.geometry),
+    },
+  };
+}
+
 export type RouteVisibility = "all" | "my" | "public" | "private";
 
 export type PublicRouteListItem = {

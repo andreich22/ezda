@@ -1,7 +1,7 @@
 import {notFound} from "next/navigation";
 import CopyRouteLink from "../../../components/CopyRouteLink";
 import SavedRouteMap from "../../../components/SavedRouteMap";
-import {getRouteForViewer} from "../../../lib/db/routes";
+import {getRouteForViewer, getRouteOwnership} from "../../../lib/db/routes";
 import {getCurrentUser} from "../../../lib/current-user";
 import {isValidRouteId} from "../../../lib/route-id";
 
@@ -25,6 +25,16 @@ export default async function RoutePage({params}: Props) {
 
   if (!route) notFound();
 
+  let isOwner = false;
+  if (user) {
+    try {
+      const ownership = await getRouteOwnership(id);
+      isOwner = ownership?.authorId === user.id;
+    } catch (error) {
+      console.error("Route ownership lookup failed", error);
+    }
+  }
+
   return (
     <main className="route-page">
       <header className="route-page-header">
@@ -37,6 +47,9 @@ export default async function RoutePage({params}: Props) {
           <h1>{route.title}</h1>
           {route.description && <p className="route-description">{route.description}</p>}
           <CopyRouteLink path={`/routes/${route.id}`} />
+          {isOwner && (
+            <a href={`/routes/${route.id}/edit`} className="route-edit-link">Edit route</a>
+          )}
           <div className="stat">
             <div className="card">
               <div className="label">Distance</div>
