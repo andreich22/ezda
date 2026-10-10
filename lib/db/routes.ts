@@ -96,7 +96,7 @@ export async function getPublicRoute(id: string) {
         durationSeconds: number | null;
         elevationGainMeters: number | null;
         createdAt: string;
-        waypoints: string | null;
+        waypoints: string | unknown[] | null;
         geometry: string;
       }
     | undefined;
@@ -105,7 +105,7 @@ export async function getPublicRoute(id: string) {
 
   return {
     ...row,
-    waypoints: row.waypoints != null ? JSON.parse(row.waypoints) : null,
+    waypoints: typeof row.waypoints === "string" ? JSON.parse(row.waypoints) : (row.waypoints ?? null),
     geometry: {
       type: "Feature",
       properties: {},
@@ -142,7 +142,7 @@ export async function getRouteForViewer(id: string, authorId?: string | null) {
         durationSeconds: number | null;
         elevationGainMeters: number | null;
         createdAt: string;
-        waypoints: string | null;
+        waypoints: string | unknown[] | null;
         geometry: string;
       }
     | undefined;
@@ -151,7 +151,7 @@ export async function getRouteForViewer(id: string, authorId?: string | null) {
 
   return {
     ...row,
-    waypoints: row.waypoints != null ? JSON.parse(row.waypoints) : null,
+    waypoints: typeof row.waypoints === "string" ? JSON.parse(row.waypoints) : (row.waypoints ?? null),
     geometry: {
       type: "Feature",
       properties: {},
