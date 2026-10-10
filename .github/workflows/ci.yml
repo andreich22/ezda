@@ -18,6 +18,35 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.sha }}
+      - name: Verify PR branch is based on the latest target branch
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+        run: |
+          set -euo pipefail
+          base_ref="$(jq -r '.pull_request.base.ref' "$GITHUB_EVENT_PATH")"
+          head_sha="$(jq -r '.pull_request.head.sha' "$GITHUB_EVENT_PATH")"
+          if [[ -z "$base_ref" || "$base_ref" == "null" || -z "$head_sha" || "$head_sha" == "null" ]]; then
+            echo "::error::Could not determine PR target branch or head SHA; refusing to pass freshness check."
+            exit 1
+          fi
+
+          git fetch --no-tags origin "+refs/heads/${base_ref}:refs/remotes/origin/${base_ref}"
+          base_sha="$(git rev-parse "refs/remotes/origin/${base_ref}^{commit}")"
+          if ! git cat-file -e "${head_sha}^{commit}"; then
+            echo "::error::PR head commit ${head_sha} is unavailable locally; refusing to pass freshness check."
+            exit 1
+          fi
+
+          echo "Target branch: ${base_ref}"
+          echo "Current target SHA: ${base_sha}"
+          echo "PR head SHA: ${head_sha}"
+          if git merge-base --is-ancestor "$base_sha" "$head_sha"; then
+            echo "PR head includes the current target branch."
+          else
+            echo "::error::PR branch is behind the current target branch or cannot be proven up to date. Update/rebase the task branch from ${base_ref} and rerun CI."
+            exit 1
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: 24
