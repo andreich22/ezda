@@ -18,6 +18,11 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.sha }}
+      - name: Verify PR branch is based on the latest target branch
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+        run: node scripts/check-pr-freshness.mjs
       - uses: actions/setup-node@v4
         with:
           node-version: 24
