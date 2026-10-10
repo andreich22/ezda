@@ -41,5 +41,6 @@ test("registration confirms email through the server callback and creates a sess
 
   const sessionResponse = await page.request.get("/api/auth/session");
   expect(sessionResponse.ok()).toBeTruthy();
-  await expect(sessionResponse.json()).resolves.toMatchObject({user: null});
+  const sessionBody = await sessionResponse.json();
+  expect(sessionBody.user).toBeNull();
 });
