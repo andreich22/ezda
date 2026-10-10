@@ -46,6 +46,7 @@ async function buildRouteOnMap(page) {
 
   await expect(page.getByText("Start", {exact: true})).toBeVisible();
   await expect(page.getByText("Finish", {exact: true})).toBeVisible();
+  await expect(page.getByRole("button", {name: /Remove .* point/})).toHaveCount(2);
   await expect(page.getByText(/Routing:/)).toBeVisible({timeout: 15_000});
 }
 
@@ -71,6 +72,15 @@ test("core flow: two points calculate a route and expose save validation states"
   // friendly message (mapped from the AUTH_REQUIRED error code).
   await saveButton.click();
   await expect(page.getByText("Please sign in to save routes.")).toBeVisible({timeout: 15_000});
+
+  // Each route point has a remove button; removing the finish leaves the
+  // start behind, and undo restores the removed point with a recalculated route.
+  await page.getByRole("button", {name: "Remove finish point"}).click();
+  await expect(page.getByText("Finish", {exact: true})).toHaveCount(0);
+  await expect(page.getByText("Start", {exact: true})).toBeVisible();
+  await page.getByRole("button", {name: /Undo/}).click();
+  await expect(page.getByText("Finish", {exact: true})).toBeVisible();
+  await expect(page.getByText(/Routing:/)).toBeVisible({timeout: 15_000});
 });
 
 test("core flow: mobile layout keeps route building reachable", async ({page}) => {
