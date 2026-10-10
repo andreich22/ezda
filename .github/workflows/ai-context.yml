@@ -41,10 +41,10 @@ jobs:
 
       - name: Check AI context freshness
         id: context
-        run: npm run ai-context:check
+        run: node scripts/validate-ai-context.mjs check --warning
 
       - name: Report stale context
-        if: failure() && steps.context.outcome == 'failure' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        if: steps.context.outputs.stale == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
