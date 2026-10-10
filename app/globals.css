@@ -78,6 +78,19 @@
 .route-edit-link{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin-top:10px;padding:12px;border:1px solid #171717;border-radius:10px;background:#fff;color:#171717;text-decoration:none;font-weight:700;touch-action:manipulation}
 .route-edit-link:hover{background:#f5f5f5}
 .route-edit-link:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+.route-delete{margin:14px 0 0}
+.route-delete-button{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:44px;padding:12px;border:1px solid #b42318;border-radius:10px;background:#fff;color:#b42318;font-weight:700;cursor:pointer;touch-action:manipulation}
+.route-delete-button:hover{background:#fef2f2}
+.route-delete-button:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+.route-delete-prompt{margin:0 0 8px;font-size:14px;line-height:1.4;color:#7a271a}
+.route-delete-actions{display:flex;gap:8px}
+.route-delete-confirm{flex:1;min-height:44px;padding:12px;border:0;border-radius:10px;background:#b42318;color:#fff;font-weight:700;cursor:pointer;touch-action:manipulation}
+.route-delete-confirm:hover:not(:disabled){background:#912018}
+.route-delete-confirm:disabled{opacity:.6;cursor:wait}
+.route-delete-confirm:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+.route-delete-cancel{flex:1;min-height:44px;padding:12px;border:1px solid #171717;border-radius:10px;background:#fff;color:#171717;font-weight:700;cursor:pointer;touch-action:manipulation}
+.route-delete-cancel:hover:not(:disabled){background:#f5f5f5}
+.route-delete-cancel:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
 .waypoint-remove{margin-left:auto;flex:none;width:32px;height:32px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#555;font-size:16px;line-height:1;cursor:pointer;touch-action:manipulation;display:grid;place-items:center}
 .waypoint-remove:hover{background:#fef2f2;color:#b42318;border-color:#f0c0c0}
 .waypoint-remove:focus-visible{outline:3px solid #2563eb;outline-offset:1px}
