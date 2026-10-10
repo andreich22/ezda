@@ -119,6 +119,49 @@ describe("PATCH /api/routes/:id", () => {
     expect(updateRouteMock).toHaveBeenCalledWith(routeId, "user-1", expect.anything());
     expect(updateRouteMock.mock.calls[0]?.[2]).not.toHaveProperty("author_id");
   });
+
+  it("rejects invalid input without touching the database", async () => {
+    getRouteOwnershipMock.mockResolvedValue({id: routeId, authorId: "user-1"});
+
+    const response = expectResponse(
+      await PATCH(request({title: "  "}), {params: Promise.resolve({id: routeId})}),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({error: "title is required", code: "VALIDATION_ERROR"});
+    expect(updateRouteMock).not.toHaveBeenCalled();
+  });
+
+  it("returns the stable route url on success", async () => {
+    getRouteOwnershipMock.mockResolvedValue({id: routeId, authorId: "user-1"});
+    updateRouteMock.mockResolvedValue({id: routeId});
+
+    const response = expectResponse(await PATCH(request(requestBody), {params: Promise.resolve({id: routeId})}));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({id: routeId, url: `/routes/${routeId}`});
+  });
+
+  it("returns 404 when the route disappears before the update", async () => {
+    getRouteOwnershipMock.mockResolvedValue({id: routeId, authorId: "user-1"});
+    updateRouteMock.mockResolvedValue(null as never);
+
+    const response = expectResponse(await PATCH(request(requestBody), {params: Promise.resolve({id: routeId})}));
+
+    expect(response.status).toBe(404);
+  });
+
+  it("hides database internals on update failure", async () => {
+    getRouteOwnershipMock.mockResolvedValue({id: routeId, authorId: "user-1"});
+    updateRouteMock.mockRejectedValue(new Error("connection reset"));
+
+    const response = expectResponse(await PATCH(request(requestBody), {params: Promise.resolve({id: routeId})}));
+
+    expect(response.status).toBe(500);
+    const body = await response.json();
+    expect(body).toEqual({error: "Unable to update route", code: "UPDATE_FAILED"});
+    expect(JSON.stringify(body)).not.toContain("connection reset");
+  });
 });
 
 describe("DELETE /api/routes/:id", () => {
