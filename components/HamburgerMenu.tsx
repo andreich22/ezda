@@ -8,6 +8,8 @@ import { APP_MENU_ITEMS, AUTHENTICATED_APP_MENU_ITEMS } from "../lib/app-menu";
 export default function HamburgerMenu() {
   const [open, setOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,6 +38,22 @@ export default function HamburgerMenu() {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [open]);
+
+  async function signOut() {
+    if (signingOut) return;
+    setSigningOut(true);
+    setSignOutError("");
+
+    try {
+      const response = await fetch("/api/auth/logout", {method: "POST"});
+      if (!response.ok) throw new Error("Could not sign out. Please try again.");
+      setAuthenticated(false);
+      window.location.assign("/auth");
+    } catch {
+      setSignOutError("Could not sign out. Please try again.");
+      setSigningOut(false);
+    }
+  }
 
   const items = authenticated
     ? [...APP_MENU_ITEMS.filter((item) => item.label !== "Sign in"), ...AUTHENTICATED_APP_MENU_ITEMS]
@@ -70,6 +88,17 @@ export default function HamburgerMenu() {
               {item.label}
             </Link>
           ))}
+          {authenticated && (
+            <button
+              type="button"
+              className="hamburger-link hamburger-signout"
+              onClick={signOut}
+              disabled={signingOut}
+            >
+              {signingOut ? "Signing out…" : "Sign out"}
+            </button>
+          )}
+          {signOutError && <p className="hamburger-error" role="alert">{signOutError}</p>}
         </nav>
       )}
     </div>

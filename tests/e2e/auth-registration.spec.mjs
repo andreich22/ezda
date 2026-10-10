@@ -31,4 +31,16 @@ test("registration confirms email through the server callback and creates a sess
   await expect(page).toHaveURL(/\/auth\?confirmed=1$/);
   await expect(page.getByRole("heading", {name: "You are signed in"})).toBeVisible();
   await expect(page.getByText(email)).toBeVisible();
+
+  await page.goto("/");
+  await page.getByRole("button", {name: "Open menu"}).click();
+  await page.getByRole("button", {name: "Sign out"}).click();
+
+  await expect(page).toHaveURL(/\/auth$/);
+  await expect(page.getByRole("heading", {name: "Sign in"})).toBeVisible();
+
+  const sessionResponse = await page.request.get("/api/auth/session");
+  expect(sessionResponse.ok()).toBeTruthy();
+  const sessionBody = await sessionResponse.json();
+  expect(sessionBody.user).toBeNull();
 });

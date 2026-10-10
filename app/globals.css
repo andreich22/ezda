@@ -72,3 +72,5 @@
 .route-catalog-pagination .button{width:auto;min-width:120px}
 .route-catalog-pagination span{min-width:110px;text-align:center;font-size:13px;font-weight:700;color:#555}
 @media (max-width:767px){.route-catalog-pagination{gap:8px}.route-catalog-pagination .button{min-width:0;flex:1}.route-catalog-pagination span{min-width:86px;font-size:12px}}
+
+.hamburger-signout{border:0;background:transparent;text-align:left;width:100%;font:inherit;cursor:pointer}.hamburger-signout:hover:not(:disabled){background:#f5f5f5}.hamburger-signout:disabled{opacity:.6;cursor:wait}.hamburger-signout:focus-visible{outline:3px solid #2563eb;outline-offset:-1px}.hamburger-error{margin:6px 10px;color:#b42318;font-size:12px;line-height:1.4}
