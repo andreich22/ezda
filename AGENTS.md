@@ -202,6 +202,30 @@ Future directions include route discovery/search, profiles, follows, likes, comm
 
 New features should not make the core flow unnecessarily complicated.
 
+## Mandatory agent preflight and postflight
+
+This protocol applies to primary agents, delegated agents, and subagents. Follow it in order; do not treat memory or a previously opened checkout as proof that the branch is current.
+
+### Before editing (preflight)
+
+1. Read this file, the task's GitHub Issue and linked dependencies, README.md, relevant documentation, and the code/workflows affected by the task.
+2. Fetch the latest remote refs. Determine the repository's default branch from GitHub/repository metadata; this project currently uses `main`. Do not silently assume a branch name if metadata disagrees.
+3. Record the current base commit SHA. Verify the worktree and branch before changing anything. If uncommitted work exists, preserve it and understand its ownership; never discard it to make an update easier.
+4. Work on `task/<issue-number>-<short-name>`, created from the latest base. For an existing task branch, compare it with the freshly fetched base and update/rebase it safely before editing if needed. Do not use destructive resets or force-push as a shortcut. If safe reconciliation is impossible, stop and report the blocker.
+5. Confirm the branch is not based on a stale snapshot and that its intended Issue/PR relationship is clear. The base SHA used to start work should be recorded in the task notes or PR description when useful.
+
+### Before opening/updating a PR (postflight)
+
+1. Fetch the target base again and compare its current SHA with the task branch. If the branch is behind or has conflicts, update it safely and rerun affected checks before claiming it is ready.
+2. Ensure the PR targets the correct base, uses the required branch naming convention, and includes `Closes #<issue-number>`. Keep the GitHub Issue as the single source of truth; do not create task registries in repository JSON files.
+3. After every push/update, wait for CI to finish for the exact current PR head SHA. A green run on an earlier SHA is stale evidence and must not be reported as success.
+4. Inspect all required check conclusions, not just the aggregate UI badge. Distinguish required checks from explicitly informational warnings. A missing, skipped unexpectedly, queued, in-progress, cancelled, or failed required check is not a pass.
+5. Do not claim the task is fully complete while required checks are pending/failed, the PR is stale, or required review/merge remains outstanding. Report implementation, verification, review, and merge as separate states. Human merge remains the normal release boundary unless explicit authorization and repository policy say otherwise.
+
+### Required completion report
+
+Include the Issue and PR links; branch and target base; base SHA used for final freshness verification and final PR head SHA; required CI check names and final statuses tied to that head SHA; local commands actually run and results; review/merge state; and any unavailable checks, secrets, infrastructure limitations, or remaining blockers. Never imply a check passed if it was not run or its result could not be verified.
+
 ## GitHub Issues as the single source of truth
 
 GitHub Issues are the only canonical task database. Do not maintain task status, priority, acceptance criteria, dependencies, or queue state in repository JSON files.
@@ -210,7 +234,7 @@ GitHub Issues are the only canonical task database. Do not maintain task status,
 - Keep goal, requirements, acceptance criteria, Definition of Ready/Done, priority, and dependency links in the Issue body/labels/relationships.
 - PRs and commits reference the Issue number (for example `fix: #140 | description`). PR bodies must contain `Closes #N`.
 - Do not create or update `tasks/index.json`, `tasks/<id>.json`, or `tasks/relations.json` as task databases. Do not require local Task IDs, task registry validators, or a local queue.
-- Before starting work, inspect the Issue and linked dependencies in GitHub. Before reporting completion, verify acceptance criteria, CI checks, and PR merge state.
+- Before starting work, follow the mandatory agent preflight and postflight protocol above. Before reporting completion, verify acceptance criteria and CI checks against the latest PR head SHA.
 - Keep the protected workflow: issue → task branch → PR → checks/review → human merge. Never commit directly to `main`, bypass protection, or merge your own PR without explicit authorization and repository policy permitting it.
 - If legacy task records are encountered, migrate useful requirements and relationships into canonical GitHub Issues before removing them. Do not create duplicate Issues.
 
