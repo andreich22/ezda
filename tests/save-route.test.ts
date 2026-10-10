@@ -41,7 +41,7 @@ describe("POST /api/routes", () => {
     const response = await POST(request(validRoute));
 
     expect(response.status).toBe(401);
-    await expect(response.json()).resolves.toEqual({error: "authentication required"});
+    await expect(response.json()).resolves.toEqual({error: "authentication required", code: "AUTH_REQUIRED"});
     expect(createRoute).not.toHaveBeenCalled();
   });
 
@@ -66,6 +66,7 @@ describe("POST /api/routes", () => {
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
       error: "geometry must be a LineString",
+      code: "VALIDATION_ERROR",
     });
     expect(createRoute).not.toHaveBeenCalled();
   });
@@ -75,7 +76,7 @@ describe("POST /api/routes", () => {
     const response = await POST(request(body));
 
     expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({error: "title is required"});
+    await expect(response.json()).resolves.toEqual({error: "title is required", code: "VALIDATION_ERROR"});
   });
 
   it("rejects malformed JSON", async () => {
@@ -85,7 +86,7 @@ describe("POST /api/routes", () => {
     }));
 
     expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({error: "invalid JSON body"});
+    await expect(response.json()).resolves.toEqual({error: "invalid JSON body", code: "INVALID_JSON"});
   });
 
   it("rejects invalid request values", async () => {
@@ -118,7 +119,7 @@ describe("POST /api/routes", () => {
     for (const [body, error] of cases) {
       const response = await POST(request(body));
       expect(response.status).toBe(400);
-      await expect(response.json()).resolves.toEqual({error});
+      await expect(response.json()).resolves.toEqual({error, code: "VALIDATION_ERROR"});
     }
   });
 
@@ -129,7 +130,7 @@ describe("POST /api/routes", () => {
     }));
 
     expect(response.status).toBe(413);
-    await expect(response.json()).resolves.toEqual({error: "request body is too large"});
+    await expect(response.json()).resolves.toEqual({error: "request body is too large", code: "BODY_TOO_LARGE"});
     expect(createRoute).not.toHaveBeenCalled();
   });
 
@@ -192,6 +193,7 @@ describe("POST /api/routes", () => {
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
       error: "description must be 2000 characters or fewer",
+      code: "VALIDATION_ERROR",
     });
   });
 
@@ -215,7 +217,7 @@ describe("POST /api/routes", () => {
     const response = await POST(request(validRoute));
 
     expect(response.status).toBe(500);
-    await expect(response.json()).resolves.toEqual({error: "Unable to save route"});
+    await expect(response.json()).resolves.toEqual({error: "Unable to save route", code: "SAVE_FAILED"});
   });
 
   it("creates a route and returns its public URL", async () => {

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { pushHistory, undoHistory } from "../lib/route-history";
 import { invalidateRouteCatalogCache } from "../lib/route-catalog-cache";
+import { friendlyRoutingError, friendlySaveError } from "../lib/route-error-messages";
 import { LngLatBounds, Map, Marker, NavigationControl, setWorkerUrl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -123,9 +124,9 @@ export default function MapClient() {
         body: JSON.stringify({points: routePoints}),
       });
       const data = await r.json();
-      if (!r.ok) throw new Error(data.error || "Routing failed");
+      if (!r.ok) throw new Error(friendlyRoutingError(data?.code));
       if (!data.geometry?.geometry?.coordinates?.length) {
-        throw new Error("Routing service returned no route geometry");
+        throw new Error(friendlyRoutingError(data?.code));
       }
 
       setRoute(data);
@@ -190,12 +191,8 @@ export default function MapClient() {
             ),
           );
           map.fitBounds(lngLatBounds, {padding: 80, duration: 700, maxZoom: 15});
-        } catch (drawError) {
-          setError(
-            drawError instanceof Error
-              ? `Route drawing failed: ${drawError.message}`
-              : "Route drawing failed",
-          );
+        } catch {
+          setError("Couldn't display the route. Try again.");
         }
       };
 
@@ -205,7 +202,14 @@ export default function MapClient() {
         map.once("idle", drawRoute);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Routing failed");
+      const message = e instanceof Error ? e.message : "";
+      setError(
+        message.includes("Try again") ||
+          message.includes("Check the") ||
+          message.includes("sign in")
+          ? message
+          : friendlyRoutingError(undefined),
+      );
     }
   }
 
@@ -297,13 +301,23 @@ export default function MapClient() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Unable to save route");
+        throw new Error(friendlySaveError(data?.code));
       }
 
       invalidateRouteCatalogCache();
       window.location.assign(data.url);
     } catch (e) {
-      setSaveError(e instanceof Error ? e.message : "Unable to save route");
+      const message = e instanceof Error ? e.message : "";
+      setSaveError(
+        message.includes("Try again") ||
+          message.includes("Check the") ||
+          message.includes("sign in") ||
+          message.includes("too large") ||
+          message.includes("permission") ||
+          message.includes("not found")
+          ? message
+          : friendlySaveError(undefined),
+      );
       setSaving(false);
     }
   }

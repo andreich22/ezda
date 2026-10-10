@@ -37,6 +37,7 @@ describe("POST /api/route", () => {
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
       error: "at least two route points are required",
+      code: "ROUTING_REQUEST_INVALID",
     });
   });
 
@@ -221,6 +222,7 @@ describe("POST /api/route fallback branches", () => {
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({
       error: "Invalid routing request",
+      code: "ROUTING_REQUEST_INVALID",
     });
   });
 
