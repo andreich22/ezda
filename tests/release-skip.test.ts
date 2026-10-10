@@ -1,53 +1,30 @@
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
-import os from "node:os";
-import path from "node:path";
-import { describe, expect, it, beforeEach, afterEach } from "vitest";
-import { shouldSkipRelease, extractTaskId } from "../scripts/release-skip.mjs";
+import { describe, expect, it } from "vitest";
+import { extractIssueNumber, shouldSkipReleaseByLabels } from "../scripts/release-skip.mjs";
 
 describe("release skip detection", () => {
-  let tasksDir: string;
-
-  beforeEach(() => {
-    tasksDir = mkdtempSync(path.join(os.tmpdir(), "ezda-release-skip-"));
+  it("extracts an issue number from the PR body (case-insensitive)", () => {
+    expect(extractIssueNumber("Closes #138")).toBe("138");
+    expect(extractIssueNumber("fixes #42")).toBe("42");
+    expect(extractIssueNumber("Resolves  #7 | docs")).toBe("7");
+    expect(extractIssueNumber("no issue here")).toBeNull();
   });
 
-  afterEach(() => {
-    rmSync(tasksDir, { recursive: true, force: true });
+  it("skips release when the linked issue carries a skip-release label", () => {
+    const labels = ["bug", "skip-release"];
+    expect(shouldSkipReleaseByLabels(labels)).toBe(true);
   });
 
-  function writeTask(id: string, skipRelease?: boolean) {
-    const file = path.join(tasksDir, `${id}.json`);
-    writeFileSync(
-      file,
-      JSON.stringify({ id, title: "x", status: "review", ...(skipRelease ? { skipRelease: true } : {}) }),
-    );
-    return file;
-  }
-
-  it("extracts a task id from the PR body (case-insensitive)", () => {
-    expect(extractTaskId("Closes TASK-A7C3 #138")).toBe("a7c3");
-    expect(extractTaskId("chore: TASK-B6E4 | bump")).toBe("b6e4");
-    expect(extractTaskId("no task here")).toBeNull();
+  it("runs release when the linked issue has no skip-release label", () => {
+    const labels = ["enhancement", "P2"];
+    expect(shouldSkipReleaseByLabels(labels)).toBe(false);
   });
 
-  it("skips release when the referenced task has skipRelease=true", () => {
-    writeTask("a7c3", true);
-    const body = "chore: a7c3 | bump\nCloses TASK-A7C3 #138";
-    expect(shouldSkipRelease({ body, tasksDir })).toBe(true);
+  it("runs release when the PR body has no issue number", () => {
+    expect(extractIssueNumber("just a chore")).toBeNull();
   });
 
-  it("runs release when the task has no skipRelease flag", () => {
-    writeTask("b6e4");
-    const body = "chore: b6e4 | bump\nCloses TASK-B6E4 #17";
-    expect(shouldSkipRelease({ body, tasksDir })).toBe(false);
-  });
-
-  it("runs release when the PR body has no task id", () => {
-    expect(shouldSkipRelease({ body: "just a chore" })).toBe(false);
-  });
-
-  it("runs release when the referenced task file is missing", () => {
-    const body = "chore: c0de | bump\nCloses TASK-C0DE #1";
-    expect(shouldSkipRelease({ body, tasksDir })).toBe(false);
+  it("is safe when labels are missing or malformed", () => {
+    expect(shouldSkipReleaseByLabels([])).toBe(false);
+    expect(shouldSkipReleaseByLabels(null as never)).toBe(false);
   });
 });
