@@ -24,7 +24,7 @@ describe("release skip detection", () => {
   });
 
   it("is safe when labels are missing or malformed", () => {
-    expect(shouldSkipReleaseByLabels(undefined)).toBe(false);
     expect(shouldSkipReleaseByLabels([])).toBe(false);
+    expect(shouldSkipReleaseByLabels(null as never)).toBe(false);
   });
 });

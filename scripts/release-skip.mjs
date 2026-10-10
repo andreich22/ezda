@@ -11,6 +11,9 @@ export function extractIssueNumber(body) {
   return match ? match[1] : null;
 }
 
+/**
+ * @param labels {unknown[] | undefined}
+ */
 export function shouldSkipReleaseByLabels(labels) {
   if (!Array.isArray(labels)) return false;
   return labels.some((label) => String(label).toLowerCase() === "skip-release");
