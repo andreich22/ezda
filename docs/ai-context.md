@@ -151,24 +151,21 @@ Do not regress the mobile navigation behavior while changing route/catalog UI.
 
 ## 10. Task-driven development
 
-Ezda uses a machine-readable task workflow.
+GitHub Issues are the only canonical task database. Task goals, requirements, priority, acceptance criteria, dependencies, and status belong in Issues, labels, and GitHub relationships. Do not use `tasks/index.json`, `tasks/<id>.json`, or `tasks/relations.json` as a task registry, and do not require local task-registry validators.
 
-A task begins as a GitHub Issue: TASK-<4 lowercase hex-id> <title>.
+The protected workflow is:
 
-Task metadata lives in:
-- tasks/index.json
-- tasks/<id>.json
-- tasks/relations.json
+1. GitHub Issue
+2. Fresh `task/<issue-number>-<short-name>` branch
+3. Pull request targeting the current default branch (currently `main`)
+4. Required CI and review
+5. Human merge
 
-The implementation branch and task metadata are part of the same implementation PR.
+PR bodies must contain `Closes #<issue-number>`. The CI validates the Issue link and branch naming. Never commit directly to `main`, bypass branch protection, or merge without explicit authorization and repository policy permitting it.
 
-Task branches use task/<task-id>-<short-name>.
+All primary agents and subagents must follow the mandatory preflight/postflight protocol in `AGENTS.md`: fetch current refs before editing, safely reconcile an existing branch, compare against the latest target branch again before PR readiness, and verify CI against the exact latest PR head SHA. Never discard uncommitted work to update a branch; stop and report if safe reconciliation is impossible.
 
-Commits use <type>: <task-id> | <description>.
-
-The default branch is protected. AI work goes through a task branch and PR; human merge remains the normal release boundary.
-
-Umbrella tasks have a dedicated integration branch while the umbrella issue is open. Child PRs target the umbrella branch, and the umbrella PR targets main. Once an umbrella task is closed, new child tasks/PRs must not be created for it; subsequent work uses the ordinary task workflow or a new umbrella.
+The CI freshness check fetches the current PR target branch and fails if that exact base SHA is not an ancestor of the PR head, or if the comparison cannot be completed. A green run for an earlier head SHA does not validate later commits. Human merge remains the normal release boundary.
 
 ## 11. Autonomous developer pipeline
 
@@ -208,22 +205,9 @@ The catalog was initially simple enough for a small result set. It is now expect
 
 ## 13. Current task landscape
 
-The task registry is the authoritative current list. At the time this context was written, notable active/review work includes:
-- a11a — umbrella: authentication and user support
-- 63d4 — attach routes to users
-- c7e4 — production/local email confirmation redirects and registration E2E
-- e7b4 — production password recovery redirect
-- 74e5 — protect own routes
-- 85f6 — public profiles
-- 96a7 — Google OAuth
-- 2a6d — private-route filtering
-- 4f8c — route catalog pagination and frontend cache
-- ad3c — optimize Vercel deployment count
-- e101 — autonomous Developer Pipeline
-- e102 — self-healing CI and PR
-- e3b9 — this shared AI project context task
+GitHub Issues and pull requests are the live source of truth for work in progress. Always search the repository's open Issues and linked PRs before starting work or creating a new Issue. Check dependencies, duplicate work, target branches, and whether related umbrella work is still open.
 
-Task status and dependencies can change; always inspect tasks/index.json and tasks/relations.json before acting.
+Related reliability work includes self-healing CI/PR automation (#115–#117), stale AI-context signaling (#132), and warning-only stale-context behavior (#161). Avoid duplicating these scopes when implementing fresh-branch and latest-head completion gates.
 
 ## 14. Known operational risks
 
@@ -232,20 +216,20 @@ Task status and dependencies can change; always inspect tasks/index.json and tas
 3. Email delivery: Supabase Auth configuration and Resend/provider delivery both matter.
 4. Route privacy: authorization must be enforced server-side, not only through filters.
 5. Large route catalogs: do not revert to fetching an assumed small fixed set of routes.
-6. Task metadata drift: task status/dependencies must remain synchronized and pass npm run tasks:validate.
-7. Umbrella lifecycle: never create child work against a closed umbrella.
+6. Agent branch drift: always compare against the freshly fetched target branch before editing and before PR readiness.
+7. Stale CI evidence: required check results must belong to the exact latest PR head SHA.
 8. Migration drift: applied database migrations are immutable; add new migrations for changes.
 
 ## 15. How a new agent should start
 
-1. Read AGENTS.md completely enough to follow its mandatory rules.
-2. Read this file for project context.
-3. Read README.md and the relevant implementation files.
-4. Inspect the relevant GitHub Task and its metadata.
-5. Check tasks/relations.json for dependencies/parent relationships.
-6. Verify the target branch and whether an umbrella task is still open.
-7. Make the smallest task-scoped change.
-8. Run the relevant validation and report exactly what was run.
+1. Read `AGENTS.md` and follow its mandatory preflight/postflight protocol.
+2. Read this file, README.md, and relevant implementation/workflow documentation.
+3. Inspect the canonical GitHub Issue and linked dependencies; search for duplicate or overlapping Issues/PRs.
+4. Fetch the latest remote refs and determine the repository's default branch from GitHub metadata.
+5. Verify the worktree, task branch name, base SHA, and whether the branch is current before editing. Preserve local changes; do not use destructive resets.
+6. Before opening/updating a PR, fetch the target base again and reconcile stale commits/conflicts safely.
+7. After every push, wait for required CI checks on the exact current PR head SHA.
+8. Report the Issue/PR, branch/base/head SHAs, actual test commands/results, required check statuses, review/merge state, and any blockers. Do not call work fully complete while required checks or review/merge are outstanding.
 
 ## 16. Source of truth hierarchy
 
@@ -275,14 +259,12 @@ The fingerprint covers:
 - `AGENTS.md`
 - `README.md`
 - `package.json`
-- `tasks/index.json`
-- `tasks/relations.json`
 
 This is deliberately a deterministic freshness signal rather than an attempt to have an LLM infer semantic correctness automatically.
 
 <!-- BEGIN:ai-context-fingerprint -->
 <!-- Generated by npm run ai-context:refresh. Do not edit manually. -->
-- `AGENTS.md`: `00529c2252133294d73933a100712272171cd209`
+- `AGENTS.md`: `01143d532fd51eb688031d82d0d7cd7dbd72f6c3`
 - `README.md`: `da000c5afd562f8d1778cd1c51c05c32514b5b8a`
 - `package.json`: `8b37b6ffe7a2b2dbe48cc547e2b95f0cb501211f`
 <!-- END:ai-context-fingerprint -->
