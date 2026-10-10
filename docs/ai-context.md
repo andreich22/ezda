@@ -266,7 +266,8 @@ Freshness is automated:
 - `npm run ai-context:check` verifies fingerprints of the authoritative repository sources.
 - `npm run ai-context:refresh` updates only the generated fingerprint block after an intentional context review.
 - GitHub Actions checks freshness on relevant pushes to `main` and weekly on Monday.
-- A stale check fails and creates/updates an actionable `[AI context] stale` GitHub Issue; it does not modify or merge `main`.
+- In GitHub Actions, stale fingerprints are emitted as warnings and create/update an actionable `[AI context] stale` GitHub Issue; this informational drift does not fail the workflow or modify/merge `main`.
+- Running `npm run ai-context:check` locally remains strict and exits non-zero when the context is stale; use the workflow's `check --warning` mode for warning-only reporting.
 
 A changed fingerprint means the context should be reviewed, not that the prose is automatically wrong. After a source change, review the affected sections, update the prose when needed, then run the refresh command and submit the normal task/PR.
 
