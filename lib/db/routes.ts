@@ -19,6 +19,7 @@ export async function createRoute(input: CreateRouteInput, authorId: string) {
       durationSeconds: input.durationSeconds,
       elevationGainMeters: input.elevationGainMeters,
       isPublic: input.isPublic,
+      waypoints: input.waypoints ?? null,
     })
     .returning({id: routes.id});
 
@@ -49,6 +50,7 @@ export async function updateRoute(id: string, authorId: string, input: CreateRou
       durationSeconds: input.durationSeconds,
       elevationGainMeters: input.elevationGainMeters,
       isPublic: input.isPublic,
+      ...(input.waypoints != null ? {waypoints: input.waypoints} : {}),
     })
     .where(and(eq(routes.id, id), eq(routes.authorId, authorId)))
     .returning({id: routes.id});
@@ -77,6 +79,7 @@ export async function getPublicRoute(id: string) {
       duration_seconds as "durationSeconds",
       elevation_gain_meters as "elevationGainMeters",
       created_at as "createdAt",
+      waypoints,
       gis.ST_AsGeoJSON(geometry::gis.geometry) as geometry
     from public.routes
     where id = ${id}::uuid
@@ -93,6 +96,7 @@ export async function getPublicRoute(id: string) {
         durationSeconds: number | null;
         elevationGainMeters: number | null;
         createdAt: string;
+        waypoints: string | null;
         geometry: string;
       }
     | undefined;
@@ -101,6 +105,7 @@ export async function getPublicRoute(id: string) {
 
   return {
     ...row,
+    waypoints: row.waypoints != null ? JSON.parse(row.waypoints) : null,
     geometry: {
       type: "Feature",
       properties: {},
@@ -120,6 +125,7 @@ export async function getRouteForViewer(id: string, authorId?: string | null) {
       duration_seconds as "durationSeconds",
       elevation_gain_meters as "elevationGainMeters",
       created_at as "createdAt",
+      waypoints,
       gis.ST_AsGeoJSON(geometry::gis.geometry) as geometry
     from public.routes
     where id = ${id}::uuid
@@ -136,6 +142,7 @@ export async function getRouteForViewer(id: string, authorId?: string | null) {
         durationSeconds: number | null;
         elevationGainMeters: number | null;
         createdAt: string;
+        waypoints: string | null;
         geometry: string;
       }
     | undefined;
@@ -144,6 +151,7 @@ export async function getRouteForViewer(id: string, authorId?: string | null) {
 
   return {
     ...row,
+    waypoints: row.waypoints != null ? JSON.parse(row.waypoints) : null,
     geometry: {
       type: "Feature",
       properties: {},

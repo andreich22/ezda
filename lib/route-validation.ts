@@ -14,11 +14,13 @@ export type CreateRouteInput = {
   durationSeconds: number | null;
   elevationGainMeters: number | null;
   isPublic: boolean;
+  waypoints?: Point[];
 };
 
 const MAX_TITLE_LENGTH = 120;
 const MAX_DESCRIPTION_LENGTH = 2000;
 const MAX_COORDINATES = 10_000;
+const MAX_WAYPOINTS = 500;
 const MAX_DISTANCE_METERS = 100_000_000;
 const MAX_DURATION_SECONDS = 31_536_000;
 const MAX_ELEVATION_GAIN_METERS = 10_000_000;
@@ -127,6 +129,31 @@ export function parseCreateRouteInput(body: unknown): CreateRouteInput | {error:
     return {error: "elevationGainMeters must be between 0 and 10000000"};
   }
 
+  let waypoints: Point[] | undefined = undefined;
+  if (value.waypoints != null) {
+    if (!Array.isArray(value.waypoints)) return {error: "waypoints must be an array of [lon, lat]"};
+    if (value.waypoints.length > MAX_WAYPOINTS) {
+      return {error: "waypoints must contain 500 points or fewer"};
+    }
+    const parsedWaypoints: Point[] = [];
+    for (const waypoint of value.waypoints) {
+      if (
+        !Array.isArray(waypoint) ||
+        waypoint.length < 2 ||
+        !isFiniteNumber(waypoint[0]) ||
+        !isFiniteNumber(waypoint[1]) ||
+        waypoint[0] < -180 ||
+        waypoint[0] > 180 ||
+        waypoint[1] < -90 ||
+        waypoint[1] > 90
+      ) {
+        return {error: "waypoints contain invalid coordinates"};
+      }
+      parsedWaypoints.push([waypoint[0], waypoint[1]]);
+    }
+    waypoints = parsedWaypoints;
+  }
+
   return {
     title,
     description,
@@ -139,5 +166,6 @@ export function parseCreateRouteInput(body: unknown): CreateRouteInput | {error:
     durationSeconds: durationSeconds ?? null,
     elevationGainMeters: elevationGainMeters ?? null,
     isPublic,
+    waypoints,
   };
 }

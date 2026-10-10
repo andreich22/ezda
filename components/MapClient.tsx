@@ -291,6 +291,7 @@ export default function MapClient() {
           distanceMeters: route.distanceMeters,
           durationSeconds: route.durationSeconds,
           elevationGainMeters: route.elevationGainMeters,
+          waypoints: points,
         }),
       });
       const data = await response.json();
