@@ -202,111 +202,17 @@ Future directions include route discovery/search, profiles, follows, likes, comm
 
 New features should not make the core flow unnecessarily complicated.
 
-## Mandatory Task-Driven Development
+## GitHub Issues as the single source of truth
 
-The development workflow is based on the agent-governance rules adopted from `andreich22/privateAI`, adapted to Ezda's Next.js/TypeScript stack.
+GitHub Issues are the only canonical task database. Do not maintain task status, priority, acceptance criteria, dependencies, or queue state in repository JSON files.
 
-**Mandatory rule:** AI MUST NOT modify project code, configuration, tests, or documentation without an associated Task ID. New tasks MUST begin as a GitHub Issue titled `TASK-<4 lowercase hex-id> <title>`. The Task metadata (`tasks/<id>.json` and `tasks/index.json`) is part of the same implementation branch and Pull Request as the change; there is no separate registration PR.
-
-Task IDs are exactly four lowercase hexadecimal characters. Every implementation commit MUST use `<type>: <task-id> | <description>`. All commits for the same task use the same ID. Do not mix unrelated tasks in one commit.
-
-Task relationships are stored in `tasks/relations.json`. Use `depends_on` and `parent` for dependency/structure; use `related`, `duplicates`, `derived_from`, `replaces`, and `implements` for other relationships. Do not duplicate reverse edges. Circular `depends_on`/ `parent` graphs are invalid.
-
-Before marking a task `done`, run `npm run tasks:validate` and the relevant tests/build.
-
-## Protected Git workflow for AI
-
-The repository default branch is `main`. AI agents MUST NOT commit directly to `main`, push directly to `main`, force-push it, rewrite its history, or bypass branch protection.
-
-### Ordinary task
-
-For a task that is not a child of an umbrella task, use:
-
-```text
-Issue → task/<task-id>-<short-name> → Task metadata + implementation commits → PR → main → checks → human merge
-```
-
-The implementation PR targets `main).
-
-### Umbrella task
-
-An umbrella task is a parent task that has one or more child/subtasks in its task relationships.
-
-**This umbrella workflow applies only while the umbrella task is open.** Before creating a new child task or opening a child-task PR, AI MUST verify that the umbrella GitHub Issue is open. If the umbrella task is closed, AI MUST NOT create new child tasks for it and MUST NOT open new PRs targeting its umbrella branch. New work after an umbrella task is closed MUST use the ordinary task workflow or a new open umbrella task.
-
-For an open umbrella task:
-
-1. Create a dedicated umbrella branch from `main`:
-   `task/<umbrella-task-id>-<short-name>`.
-2. The umbrella branch is the integration branch for all child tasks.
-3. Every child task MUST have its own task branch.
-4. A child-task PR MUST target the umbrella branch, never `main`.
-5. Child-task PRs may be merged only into the umbrella branch.
-6. A child task MUST NOT create or merge a PR directly into `main`.
-7. The umbrella branch MUST NOT be merged into `main` until every child task is either:
-   - completed and its PR merged into the umbrella branch; or
-   - explicitly closed/cancelled according to the task's lifecycle.
-8. Only after all child tasks are resolved is the umbrella branch considered ready for the umbrella PR.
-9. The umbrella PR targets `main`.
-10. The umbrella PR is the only PR that delivers the umbrella task's integrated child work into `main`.
-
-The required umbrella lifecycle is:
-
-```text
-Umbrella Issue
-  ↓
-task/<umbrella-id>-<short-name>
-  ↓
-Child Task Issues
-  ↓
-task/<child-id>-<short-name>
-  ↓
-Child PR → umbrella branch
-  ↓
-merge child PR into umbrella branch
-  ↓
-repeat until all children are resolved
-  ↓
-Umbrella PR → main
-  ↓
-checks → human merge
-```
-
-When an umbrella task has unresolved child tasks, its branch MUST be treated as not ready for merge into `main`. The child-task PRs are integration PRs only; they are not release-to-`main` PRs.
-
-AI MUST NOT merge its own implementation PR unless the user explicitly instructs it and repository policy permits it.
-
-If implementation reveals unrelated work, create a separate Issue/task instead of silently expanding scope.
-
-## Development procedure
-
-Before editing:
-1. Load `skills/task-driven-development/SKILL.md` and `skills/git-workflow/SKILL.md`.
-2. Identify the associated GitHub Task Issue.
-3. Create/use a task-specific branch: `task/<task-id>-<short-name>`, and add the Task metadata to that branch before or alongside implementation.
-4. Verify the Task metadata is complete enough for implementation.
-5. Inspect relevant files, tests, existing patterns, lifecycle, persistence, API, database, and browser implications.
-6. Make the smallest reasonable change.
-7. Avoid unrelated refactors.
-8. Use the Task ID in every implementation commit.
-9. Run relevant tests, build, and `npm run tasks:validate`.
-10. Open/update the implementation PR with requirements, acceptance criteria, validation, risks, and the Task ID.
-11. Review the diff for regressions, security issues, data/privacy concerns, and unnecessary dependencies.
-
-## Autonomous Developer Pipeline
-
-Task queue metadata is machine-readable in `tasks/index.json`:
-
-- `priority` is one of `P0`–`P3`;
-- `dependencies` is an array of Task IDs and mirrors `depends_on` relations;
-- lifecycle is `draft → ready → in_progress → review → done`, with `blocked` and `cancelled` available when appropriate;
-- `npm run tasks:next` deterministically selects the highest-priority ready task whose dependencies are `done` or `cancelled`.
-
-CI validates task metadata and PR readiness. The existing AI review workflow remains the single AI-review orchestration layer. Human merge into `main` remains mandatory.
-
-## Completion requirements
-
-A task is complete only when requirements and acceptance criteria are satisfied, relevant validation passes, task history/commit metadata are updated, PR checks pass, and the change is merged through the protected PR path.
+- Every unit of work starts with one GitHub Issue. Search for duplicates before creating one; use the Issue number as the durable identifier.
+- Keep goal, requirements, acceptance criteria, Definition of Ready/Done, priority, and dependency links in the Issue body/labels/relationships.
+- PRs and commits reference the Issue number (for example `fix: #140 | description`). PR bodies must contain `Closes #N`.
+- Do not create or update `tasks/index.json`, `tasks/<id>.json`, or `tasks/relations.json` as task databases. Do not require local Task IDs, task registry validators, or a local queue.
+- Before starting work, inspect the Issue and linked dependencies in GitHub. Before reporting completion, verify acceptance criteria, CI checks, and PR merge state.
+- Keep the protected workflow: issue → task branch → PR → checks/review → human merge. Never commit directly to `main`, bypass protection, or merge your own PR without explicit authorization and repository policy permitting it.
+- If legacy task records are encountered, migrate useful requirements and relationships into canonical GitHub Issues before removing them. Do not create duplicate Issues.
 
 ## Decision priority
 
