@@ -72,6 +72,7 @@ function replaceBlock(content, block) {
 }
 
 const mode = process.argv[2] ?? "check";
+const warningMode = process.argv.includes("--warning");
 const context = readContext();
 const expected = currentFingerprints();
 
@@ -83,7 +84,7 @@ if (mode === "refresh") {
 }
 
 if (mode !== "check") {
-  console.error("Usage: node scripts/validate-ai-context.mjs [check|refresh]");
+  console.error("Usage: node scripts/validate-ai-context.mjs [check|refresh] [--warning]");
   process.exit(2);
 }
 
@@ -107,6 +108,15 @@ if (!context.includes("AGENTS.md is authoritative")) {
 }
 
 if (errors.length > 0) {
+  if (warningMode) {
+    for (const error of errors) console.log(`::warning title=AI context stale::${error}`);
+    if (process.env.GITHUB_OUTPUT) {
+      fs.appendFileSync(process.env.GITHUB_OUTPUT, "stale=true\n");
+    }
+    console.log("AI context is stale; reported as a warning. Review the shared context and refresh it when appropriate.");
+    process.exit(0);
+  }
+
   console.error("AI context freshness check failed:");
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
