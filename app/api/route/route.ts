@@ -1,7 +1,15 @@
 import {NextResponse} from "next/server";
 import {hav} from "../../../lib/geo";
+import {
+  API_ERROR_CODES,
+  errorResponse,
+  logServerWarning,
+} from "../../../lib/api-errors";
 
 type Point = [number, number];
+
+const ROUTING_TIMEOUT_MS = 10_000;
+const MAX_ROUTE_POINTS = 500;
 
 function responseFromLine(
   coordinates: number[][],
@@ -26,12 +34,34 @@ function isPoint(value: unknown): value is Point {
   return (
     Array.isArray(value) &&
     value.length === 2 &&
-    value.every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate))
+    value.every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate)) &&
+    (value as number[])[0] >= -180 &&
+    (value as number[])[0] <= 180 &&
+    (value as number[])[1] >= -90 &&
+    (value as number[])[1] <= 90
   );
 }
 
 function isPointList(value: unknown): value is Point[] {
   return Array.isArray(value) && value.length >= 2 && value.every(isPoint);
+}
+
+function timeoutSignal(ms: number): AbortSignal | undefined {
+  try {
+    if (typeof AbortSignal !== "undefined" && "timeout" in AbortSignal) {
+      return AbortSignal.timeout(ms);
+    }
+  } catch {
+    return undefined;
+  }
+  return undefined;
+}
+
+function isTimeoutError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    (error.name === "TimeoutError" || error.name === "AbortError")
+  );
 }
 
 export async function POST(req: Request) {
@@ -44,9 +74,18 @@ export async function POST(req: Request) {
         : [];
 
     if (points.length < 2) {
-      return NextResponse.json(
-        {error: "at least two route points are required"},
-        {status: 400},
+      return errorResponse(
+        API_ERROR_CODES.ROUTING_REQUEST_INVALID,
+        "at least two route points are required",
+        400,
+      );
+    }
+
+    if (points.length > MAX_ROUTE_POINTS) {
+      return errorResponse(
+        API_ERROR_CODES.ROUTING_REQUEST_INVALID,
+        "too many route points",
+        400,
       );
     }
 
@@ -56,7 +95,6 @@ export async function POST(req: Request) {
     // accepts an ordered list of coordinates, so intermediate waypoints
     // are visited in exactly the order selected by the user.
     if (key) {
-      console.log("Using OpenRouteService API key for routing.");
       try {
         const response = await fetch(
           "https://api.openrouteservice.org/v2/directions/cycling-regular/geojson",
@@ -72,6 +110,7 @@ export async function POST(req: Request) {
               elevation: true,
             }),
             cache: "no-store",
+            signal: timeoutSignal(ROUTING_TIMEOUT_MS),
           },
         );
 
@@ -102,10 +141,23 @@ export async function POST(req: Request) {
               source: "OpenRouteService",
               pointCount: points.length,
             });
+          } else {
+            logServerWarning(
+              "routing",
+              `OpenRouteService returned no usable route (status ok, ${coords.length} coords)`,
+            );
           }
+        } else {
+          logServerWarning("routing", `OpenRouteService request failed with status ${response.status}`);
         }
-      } catch {
+      } catch (error) {
         // Continue to the public OSM bicycle router.
+        logServerWarning(
+          "routing",
+          isTimeoutError(error)
+            ? "OpenRouteService request timed out"
+            : "OpenRouteService request failed",
+        );
       }
     }
 
@@ -115,7 +167,7 @@ export async function POST(req: Request) {
       const coordinates = points.map(([lon, lat]) => `${lon},${lat}`).join(";");
       const response = await fetch(
         `https://routing.openstreetmap.de/routed-bike/route/v1/driving/${coordinates}?overview=full&geometries=geojson&steps=false`,
-        {cache: "no-store"},
+        {cache: "no-store", signal: timeoutSignal(ROUTING_TIMEOUT_MS)},
       );
 
       if (response.ok) {
@@ -130,12 +182,20 @@ export async function POST(req: Request) {
             "OpenStreetMap bicycle routing",
           );
         }
+        logServerWarning("routing", "OSM router returned no usable route");
+      } else {
+        logServerWarning("routing", `OSM router request failed with status ${response.status}`);
       }
-    } catch {
+    } catch (error) {
       // Continue to the deterministic fallback below.
+      logServerWarning(
+        "routing",
+        isTimeoutError(error) ? "OSM router request timed out" : "OSM router request failed",
+      );
     }
 
     // Last-resort fallback: connect every selected point in order.
+    logServerWarning("routing", "using straight-line fallback");
     const coordinates = points as number[][];
     const distance = points.slice(1).reduce(
       (sum, point, index) => sum + hav(points[index], point),
@@ -148,6 +208,10 @@ export async function POST(req: Request) {
       "Straight-line fallback",
     );
   } catch {
-    return NextResponse.json({error: "Invalid routing request"}, {status: 400});
+    return errorResponse(
+      API_ERROR_CODES.ROUTING_REQUEST_INVALID,
+      "Invalid routing request",
+      400,
+    );
   }
 }

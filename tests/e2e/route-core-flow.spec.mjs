@@ -67,9 +67,10 @@ test("core flow: two points calculate a route and expose save validation states"
   await page.getByLabel("Title").fill("E2E validation probe");
   await expect(saveButton).toBeEnabled();
 
-  // Without a session the API rejects with 401 and the UI surfaces it plainly.
+  // Without a session the API rejects with 401 and the UI surfaces a short
+  // friendly message (mapped from the AUTH_REQUIRED error code).
   await saveButton.click();
-  await expect(page.getByText("authentication required")).toBeVisible({timeout: 15_000});
+  await expect(page.getByText("Please sign in to save routes.")).toBeVisible({timeout: 15_000});
 });
 
 test("core flow: mobile layout keeps route building reachable", async ({page}) => {
