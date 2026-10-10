@@ -182,3 +182,208 @@ describe("POST /api/route", () => {
     expect(body.geometry.geometry.coordinates).toEqual([start, end]);
   });
 });
+
+describe("POST /api/route fallback branches", () => {
+  const points: [number, number][] = [
+    [-73.9, 40.6],
+    [-73.85, 40.65],
+    [-73.8, 40.7],
+  ];
+
+  const postPoints = (body: string) =>
+    POST(
+      new Request("http://localhost/api/route", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body,
+      }),
+    );
+
+  const osmRoute = {
+    routes: [
+      {
+        geometry: {
+          coordinates: [
+            [-73.9, 40.6],
+            [-73.85, 40.62],
+            [-73.8, 40.7],
+          ],
+        },
+        distance: 2500,
+        duration: 600,
+      },
+    ],
+  };
+
+  it("rejects a malformed JSON body as an invalid routing request", async () => {
+    const response = await postPoints("not-json{");
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      error: "Invalid routing request",
+    });
+  });
+
+  it("falls back to OSM when the ORS request throws", async () => {
+    vi.stubEnv("ORS_API_KEY", "test-key");
+    const fetchMock = vi.spyOn(globalThis, "fetch")
+      .mockRejectedValueOnce(new Error("ors network down"))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify(osmRoute), {status: 200}),
+      );
+
+    const response = await postPoints(JSON.stringify({points}));
+
+    expect(response.status).toBe(200);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    await expect(response.json()).resolves.toMatchObject({
+      distanceMeters: 2500,
+      source: "OpenStreetMap bicycle routing",
+    });
+  });
+
+  it("falls back to OSM when ORS returns no features", async () => {
+    vi.stubEnv("ORS_API_KEY", "test-key");
+    const fetchMock = vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({features: []}), {status: 200}),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify(osmRoute), {status: 200}),
+      );
+
+    const response = await postPoints(JSON.stringify({points}));
+
+    expect(response.status).toBe(200);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    await expect(response.json()).resolves.toMatchObject({
+      source: "OpenStreetMap bicycle routing",
+    });
+  });
+
+  it("falls back to OSM when the ORS geometry is too short", async () => {
+    vi.stubEnv("ORS_API_KEY", "test-key");
+    const fetchMock = vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            features: [
+              {
+                type: "Feature",
+                properties: {summary: {distance: 10, duration: 5}},
+                geometry: {type: "LineString", coordinates: [[-73.9, 40.6, 10]]},
+              },
+            ],
+          }),
+          {status: 200},
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify(osmRoute), {status: 200}),
+      );
+
+    const response = await postPoints(JSON.stringify({points}));
+
+    expect(response.status).toBe(200);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    await expect(response.json()).resolves.toMatchObject({
+      source: "OpenStreetMap bicycle routing",
+    });
+  });
+
+  it("falls back to a straight line when OSM returns no routes", async () => {
+    vi.stubEnv("ORS_API_KEY", "");
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify({routes: []}), {status: 200}),
+    );
+
+    const response = await postPoints(JSON.stringify({points}));
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.source).toBe("Straight-line fallback");
+    expect(body.geometry.geometry.coordinates).toEqual(points);
+  });
+
+  it("falls back to a straight line when OSM responds with an error", async () => {
+    vi.stubEnv("ORS_API_KEY", "");
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response("osm unavailable", {status: 503}),
+    );
+
+    const response = await postPoints(JSON.stringify({points}));
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.source).toBe("Straight-line fallback");
+    expect(body.geometry.geometry.coordinates).toEqual(points);
+  });
+
+  it("defaults distance and duration when ORS omits the summary", async () => {
+    vi.stubEnv("ORS_API_KEY", "test-key");
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          features: [
+            {
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "LineString",
+                coordinates: [
+                  [-73.9, 40.6, 10],
+                  [-73.8, 40.7, 15],
+                ],
+              },
+            },
+          ],
+        }),
+        {status: 200},
+      ),
+    );
+
+    const response = await postPoints(JSON.stringify({points}));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      distanceMeters: 0,
+      durationSeconds: null,
+      elevationGainMeters: 5,
+      source: "OpenRouteService",
+    });
+  });
+
+  it("treats coordinates without elevation as zero gain", async () => {
+    vi.stubEnv("ORS_API_KEY", "test-key");
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          features: [
+            {
+              type: "Feature",
+              properties: {summary: {distance: 3000, duration: 900}},
+              geometry: {
+                type: "LineString",
+                coordinates: [
+                  [-73.9, 40.6],
+                  [-73.8, 40.7],
+                ],
+              },
+            },
+          ],
+        }),
+        {status: 200},
+      ),
+    );
+
+    const response = await postPoints(JSON.stringify({points}));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      distanceMeters: 3000,
+      durationSeconds: 900,
+      elevationGainMeters: 0,
+      source: "OpenRouteService",
+    });
+  });
+});
