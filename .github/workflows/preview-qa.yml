@@ -1,0 +1,64 @@
+name: Preview QA
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: preview-qa-${{ github.event.deployment.id }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment_status.environment == 'Preview' &&
+      github.event.deployment_status.target_url != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Install pinned Playwright test runner
+        run: npm install --no-save --no-package-lock @playwright/test@1.54.2
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Check if Preview is publicly accessible
+        id: check-access
+        run: |
+          target_url="${{ github.event.deployment_status.target_url }}"
+          status=$(curl -s -o /dev/null -w "%{http_code}" "$target_url" 2>/dev/null)
+          location=$(curl -s -D - -o /dev/null "$target_url" 2>/dev/null | grep -i "^location:" | head -1)
+          if echo "$location" | grep -qi "sso"; then
+            echo "Vercel Preview is SSO-protected; skipping smoke tests."
+            echo "sso_protected=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Preview accessible (HTTP $status)."
+            echo "sso_protected=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run Preview smoke tests
+        if: steps.check-access.outputs.sso_protected != 'true'
+        env:
+          CI: true
+          PREVIEW_BASE_URL: ${{ github.event.deployment_status.target_url }}
+        run: npx playwright test -c playwright.preview.config.mjs
+      - name: Report SSO-protected Preview
+        if: steps.check-access.outputs.sso_protected == 'true'
+        run: |
+          echo "The Vercel Preview deployment is SSO-protected."
+          echo "Smoke tests are skipped; deployment itself succeeded."
+      - name: Upload Preview QA diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-qa-diagnostics-${{ github.event.deployment.id }}
+          path: test-results/preview/
+          if-no-files-found: warn
+          retention-days: 14
