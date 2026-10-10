@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  issues: read
 
 jobs:
   validate:
@@ -22,10 +23,30 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-          test -s .github/workflows/self-healing-ci-pr.lock.yml
+      - name: Verify self-healing CI prompt exists
+        run: test -s .github/workflows/self-healing-ci-pr.md
+      - name: Validate pull request links to a GitHub Issue
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          body="$(jq -r '.pull_request.body // ""' "$GITHUB_EVENT_PATH")"
+          issue_number="$(printf '%s\n' "$body" | grep -Eio '(closes|fixes|resolves)[[:space:]]+#[0-9]+' | head -n 1 | tr -cd '0-9' || true)"
+          if [ -z "$issue_number" ]; then
+            echo "::error::PR body must link its primary GitHub Issue with Closes #<number>."
+            exit 1
+          fi
+          gh issue view "$issue_number" --repo "$GITHUB_REPOSITORY" --json number,title,state >/dev/null
+          head_branch="$(jq -r '.pull_request.head.ref' "$GITHUB_EVENT_PATH")"
+          if [[ ! "$head_branch" =~ ^task/${issue_number}-[a-z0-9][a-z0-9-]*$ ]]; then
+            echo "::error::PR branch must match task/<issue-number>-<short-name>; got: $head_branch"
+            exit 1
+          fi
       - name: Validate application version
         run: npm run version:check
-      - run: npm run tasks:validate
       - name: Run unit tests with coverage
         run: npm run test:coverage
       - name: Upload coverage HTML report
@@ -57,8 +78,3 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Run registration E2E
         run: npm run test:e2e:auth
-      - name: Validate pull request task
-        if: github.event_name == 'pull_request'
-        run: node scripts/validate-pr-task.mjs
-        env:
-          GITHUB_EVENT_PATH: ${{ github.event_path }}

@@ -27,8 +27,8 @@ Review the pull request as an independent engineering reviewer for `Ezda`.
 1. Read `AGENTS.md`.
 2. Read `skills/task-driven-development/SKILL.md`.
 3. Read `skills/git-workflow/SKILL.md`.
-4. Identify the Task ID referenced by the pull request title/body and branch name.
-5. Read `tasks/index.json` and the matching `tasks/<id>.json`.
+4. Identify the primary GitHub Issue linked by `Closes #N` in the PR body.
+5. Read the Issue body, labels, comments, and linked dependency Issues.
 6. Inspect the complete pull request diff.
 
 ## Review criteria
