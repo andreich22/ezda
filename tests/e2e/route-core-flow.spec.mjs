@@ -140,6 +140,7 @@ test("core flow: save persists and the public page + catalog expose the route", 
 
   await expect(page).toHaveURL(saved.url, {timeout: 30_000});
   await expect(page.getByRole("heading", {name: title})).toBeVisible();
+  await expect(page.getByRole("button", {name: "Copy link"})).toBeVisible();
   await expect(page.getByText(description)).toBeVisible();
   await expect(page.getByText("5.0 km")).toBeVisible();
 

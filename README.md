@@ -150,6 +150,29 @@ For local Docker development, keep:
 DATABASE_URL=postgres://ezda:ezda@localhost:5432/ezda
 ```
 
+### Подключение к базе через GUI-клиент
+
+Параметры подключения к основной базе приложения (контейнер `db`, PostGIS 17-3.5 из `docker-compose.yml`, порт `5432` проброшен на хост) для DBeaver, pgAdmin, TablePlus или DataGrip:
+
+| Параметр | Значение |
+|---|---|
+| Host | `localhost` (127.0.0.1) |
+| Port | `5432` |
+| Database | `ezda` |
+| User | `ezda` |
+| Password | `ezda` |
+
+Источник — `.env.example`: `DATABASE_URL=postgres://ezda:ezda@localhost:5432/ezda`.
+
+Проверка соединения перед подключением:
+
+```bash
+docker compose up -d db
+psql postgres://ezda:ezda@localhost:5432/ezda -c "select 1"
+```
+
+Обратите внимание: база аутентификации Supabase (`auth-db`) **не** проброшена наружу через `ports`. Для работы с ней через GUI нужен отдельный порт (например, добавить `-p 5433:5432` в сервис `auth-db`).
+
 ### PostGIS
 
 Migrations in `supabase/migrations/` are the single source of truth for the database schema:

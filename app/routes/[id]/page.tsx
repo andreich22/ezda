@@ -1,4 +1,5 @@
 import {notFound} from "next/navigation";
+import CopyRouteLink from "../../../components/CopyRouteLink";
 import SavedRouteMap from "../../../components/SavedRouteMap";
 import {getRouteForViewer} from "../../../lib/db/routes";
 import {getCurrentUser} from "../../../lib/current-user";
@@ -35,6 +36,7 @@ export default async function RoutePage({params}: Props) {
           <div className="label">{user?.id ? "Saved cycling route" : "Public cycling route"}</div>
           <h1>{route.title}</h1>
           {route.description && <p className="route-description">{route.description}</p>}
+          <CopyRouteLink path={`/routes/${route.id}`} />
           <div className="stat">
             <div className="card">
               <div className="label">Distance</div>
