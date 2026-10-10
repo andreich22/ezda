@@ -14,3 +14,8 @@ export function undoHistory(history: RoutePoint[][]): { history: RoutePoint[][];
   const points = next.pop() ?? null;
   return {history: next, points: points?.length ? snapshotPoints(points) : null};
 }
+
+export function removePointAt(points: RoutePoint[], index: number): RoutePoint[] {
+  if (index < 0 || index >= points.length) return snapshotPoints(points);
+  return snapshotPoints(points.filter((_, i) => i !== index));
+}

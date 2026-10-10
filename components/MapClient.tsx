@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { pushHistory, undoHistory } from "../lib/route-history";
+import { pushHistory, removePointAt, undoHistory } from "../lib/route-history";
 import { invalidateRouteCatalogCache } from "../lib/route-catalog-cache";
 import { friendlyRoutingError, friendlySaveError } from "../lib/route-error-messages";
 import { LngLatBounds, Map, Marker, NavigationControl, setWorkerUrl } from "maplibre-gl";
@@ -274,6 +274,24 @@ export default function MapClient({
     showActionFeedback("Route cleared");
   }
 
+  function removePoint(index: number) {
+    if (index < 0 || index >= points.length) return;
+    historyRef.current = pushHistory(historyRef.current, points);
+    const next = removePointAt(points, index);
+    setError("");
+    setRoute(null);
+    setPoints(next);
+    if (next.length < 2) {
+      const map = mapRef.current;
+      if (map) {
+        if (map.getLayer("route-line")) map.removeLayer("route-line");
+        if (map.getLayer("route-casing")) map.removeLayer("route-casing");
+        if (map.getSource("route")) map.removeSource("route");
+      }
+    }
+    showActionFeedback("Route point removed");
+  }
+
   function undoLastAction() {
     const result = undoHistory(historyRef.current);
     if (!result.points) {
@@ -460,6 +478,15 @@ export default function MapClient({
                   </strong>
                   <small>{point[1].toFixed(5)}, {point[0].toFixed(5)}</small>
                 </span>
+                <button
+                  type="button"
+                  className="waypoint-remove"
+                  onClick={() => removePoint(index)}
+                  aria-label={"Remove " + (index === 0 ? "start" : index === points.length - 1 ? "finish" : "waypoint " + index) + " point"}
+                  title="Remove point"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
               </li>
             ))}
           </ol>
