@@ -70,7 +70,7 @@ export default async function RoutePage({params}: Props) {
                     <span className={"point-dot " + (index === 0 ? "start" : index === route.waypoints!.length - 1 ? "finish" : "")} />
                     <span>
                       <strong>
-                        {index === 0 ? "Start" : index === route.waypoints.length - 1 ? "Finish" : "Waypoint " + index}
+                        {index === 0 ? "Start" : index === route.waypoints!.length - 1 ? "Finish" : "Waypoint " + index}
                       </strong>
                       <small>{point[1].toFixed(5)}, {point[0].toFixed(5)}</small>
                     </span>
