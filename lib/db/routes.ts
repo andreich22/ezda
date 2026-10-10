@@ -109,7 +109,7 @@ export async function getPublicRoute(id: string) {
     geometry: {
       type: "Feature",
       properties: {},
-      geometry: JSON.parse(row.geometry),
+      geometry: parseGeometry(row.geometry),
     },
   };
 }
@@ -123,6 +123,21 @@ function parseWaypoints(value: string | unknown[] | null): number[][] | null {
   } catch {
     return null;
   }
+}
+
+function parseGeometry(value: string | unknown): GeoJSON.Geometry | null {
+  if (value == null) return null;
+  let parsed: unknown;
+  try {
+    parsed = typeof value === "string" ? JSON.parse(value) : value;
+  } catch {
+    return null;
+  }
+  if (!parsed || typeof parsed !== "object" || !(parsed as GeoJSON.Geometry).type) {
+    return null;
+  }
+  const geometry = (parsed as GeoJSON.Feature).geometry ?? (parsed as GeoJSON.Geometry);
+  return geometry as GeoJSON.Geometry;
 }
 
 export async function getRouteForViewer(id: string, authorId?: string | null) {
@@ -166,7 +181,7 @@ export async function getRouteForViewer(id: string, authorId?: string | null) {
     geometry: {
       type: "Feature",
       properties: {},
-      geometry: JSON.parse(row.geometry),
+      geometry: parseGeometry(row.geometry),
     },
   };
 }

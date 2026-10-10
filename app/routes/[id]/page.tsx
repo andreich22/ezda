@@ -81,18 +81,20 @@ export default async function RoutePage({params}: Props) {
               <div className="empty">No points yet</div>
             )}
           </div>
-        </section>
-        <SavedRouteMap
-          geometry={{
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "LineString",
-              coordinates: route.geometry.geometry.coordinates as number[][],
-            },
-          }}
-        />
-      </div>
-    </main>
-  );
-}
+         </section>
+         {route.geometry?.geometry && (
+           <SavedRouteMap
+             geometry={{
+               type: "Feature",
+               properties: {},
+               geometry: {
+                 type: "LineString",
+                 coordinates: route.geometry.geometry.coordinates as number[][],
+               },
+             }}
+           />
+         )}
+       </div>
+     </main>
+   );
+ }
