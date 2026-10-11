@@ -87,11 +87,11 @@ export async function POST(req: Request) {
   }
 
   try {
-    const elements = await fetchBikeWays(bbox, {
+    const {elements, endpoint} = await fetchBikeWays(bbox, {
       signal: timeoutSignal(OVERPASS_TIMEOUT_MS),
     });
     const {infra, surface} = wayElementsToLayers(elements);
-    return NextResponse.json({infra, surface});
+    return NextResponse.json({infra, surface, source: endpoint});
   } catch (error) {
     logServerWarning(
       "bike-layers",

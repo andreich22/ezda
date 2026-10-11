@@ -182,7 +182,7 @@ describe("wayElementsToLayers", () => {
 });
 
 describe("fetchBikeWays", () => {
-  it("posts the query and returns way elements", async () => {
+  it("posts the query and returns way elements with the serving mirror", async () => {
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(
         JSON.stringify({
@@ -191,23 +191,56 @@ describe("fetchBikeWays", () => {
         {status: 200},
       ),
     );
-    const ways = await fetchBikeWays(bbox);
-    expect(ways).toHaveLength(1);
+    const {elements, endpoint} = await fetchBikeWays(bbox);
+    expect(elements).toHaveLength(1);
+    expect(endpoint).toMatch(/overpass/);
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("overpass"),
       expect.objectContaining({method: "POST"}),
     );
   });
 
-  it("throws on upstream errors and unusable payloads", async () => {
-    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
-      new Response("busy", {status: 429}),
+  it("falls through to the next mirror on fast upstream errors", async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response("busy", {status: 429}))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({elements: []}), {status: 200}),
+      );
+    const {elements, endpoint} = await fetchBikeWays(bbox);
+    expect(elements).toEqual([]);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(endpoint).toContain("kumi");
+  });
+
+  it("throws the last error when every mirror fails", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response("down", {status: 500}),
     );
-    await expect(fetchBikeWays(bbox)).rejects.toThrow(/status 429/);
-    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+    await expect(
+      fetchBikeWays(bbox, {endpoints: ["https://a.test/x", "https://b.test/x"]}),
+    ).rejects.toThrow(/status 500/);
+  });
+
+  it("does not fall through on abort", async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockRejectedValueOnce(
+        Object.assign(new Error("aborted"), {name: "AbortError"}),
+      );
+    await expect(fetchBikeWays(bbox)).rejects.toMatchObject({
+      name: "AbortError",
+    });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("throws on unusable payloads", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({elements: "nope"}), {status: 200}),
     );
-    await expect(fetchBikeWays(bbox)).rejects.toThrow(/unusable/);
+    await expect(
+      fetchBikeWays(bbox, {endpoints: ["https://a.test/x"]}),
+    ).rejects.toThrow(/unusable/);
   });
 
   it("describes failures without blaming the route", () => {

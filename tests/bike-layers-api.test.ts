@@ -91,6 +91,7 @@ describe("POST /api/bike-layers", () => {
     const data = await response.json();
     expect(data.infra).toHaveLength(1);
     expect(data.infra[0].properties.kind).toBe("cycleway");
+    expect(data.source).toMatch(/overpass/);
     expect(data.surface).toHaveLength(2);
     expect(data.surface.map((f: {properties: {surface: string}}) => f.properties.surface)).toEqual([
       "asphalt",
@@ -99,11 +100,12 @@ describe("POST /api/bike-layers", () => {
   });
 
   it("maps upstream failures to a predictable 502 without internals", async () => {
-    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response("busy", {status: 429}),
     );
     const response = await POST(request({bbox}));
     expect(response.status).toBe(502);
+    expect(fetchMock.mock.calls.length).toBeGreaterThan(1);
     await expect(response.json()).resolves.toEqual({
       error: "Bike data is temporarily unavailable",
       code: "LOAD_FAILED",
@@ -116,7 +118,7 @@ describe("POST /api/bike-layers", () => {
     );
     const empty = await POST(request({bbox}));
     expect(empty.status).toBe(200);
-    await expect(empty.json()).resolves.toEqual({infra: [], surface: []});
+    await expect(empty.json()).resolves.toMatchObject({infra: [], surface: []});
 
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
       new Response(JSON.stringify({nope: true}), {status: 200}),

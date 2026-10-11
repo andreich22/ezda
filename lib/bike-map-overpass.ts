@@ -6,6 +6,16 @@
 // Unknown (untagged) data is never presented as absence of infrastructure.
 
 export const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
+/**
+ * Public Overpass instances tried in order. The main instance often
+ * throttles datacenter IPs (fast 429/5xx), so a single hard-coded endpoint
+ * makes layers fail where the route itself works fine.
+ */
+export const OVERPASS_MIRRORS = [
+  OVERPASS_URL,
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://overpass.private.coffee/api/interpreter",
+];
 export const OVERPASS_TIMEOUT_MS = 20_000;
 /** Route bbox padding in degrees (~1.1 km at the equator). */
 export const BBOX_PAD_DEG = 0.01;
@@ -243,27 +253,51 @@ function timeoutSignal(ms: number): AbortSignal | undefined {
 
 export async function fetchBikeWays(
   bbox: OverpassBbox,
-  options: {signal?: AbortSignal} = {},
-): Promise<OverpassWay[]> {
-  const response = await fetch(OVERPASS_URL, {
-    method: "POST",
-    headers: {"Content-Type": "application/x-www-form-urlencoded"},
-    body: `data=${encodeURIComponent(buildOverpassQuery(bbox))}`,
-    signal: options.signal ?? timeoutSignal(OVERPASS_TIMEOUT_MS),
-  });
-  if (!response.ok) {
-    throw new Error(`Overpass request failed with status ${response.status}`);
+  options: {signal?: AbortSignal; endpoints?: string[]} = {},
+): Promise<{elements: OverpassWay[]; endpoint: string}> {
+  const endpoints =
+    options.endpoints && options.endpoints.length > 0
+      ? options.endpoints
+      : OVERPASS_MIRRORS;
+  const signal = options.signal ?? timeoutSignal(OVERPASS_TIMEOUT_MS);
+  let lastError: unknown = new Error("No Overpass endpoints configured");
+  for (const endpoint of endpoints) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: `data=${encodeURIComponent(buildOverpassQuery(bbox))}`,
+        signal,
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Overpass request failed with status ${response.status}`,
+        );
+      }
+      const data = (await response.json()) as OverpassResponse;
+      if (!data || !Array.isArray(data.elements)) {
+        throw new Error("Overpass returned an unusable response");
+      }
+      return {elements: data.elements, endpoint};
+    } catch (error) {
+      // Aborts and overall-budget timeouts must not spill over to the next
+      // mirror: the caller is gone (or out of time), stop immediately.
+      if (
+        error instanceof Error &&
+        (error.name === "AbortError" || error.name === "TimeoutError")
+      ) {
+        throw error;
+      }
+      lastError = error;
+    }
   }
-  const data = (await response.json()) as OverpassResponse;
-  if (!data || !Array.isArray(data.elements)) {
-    throw new Error("Overpass returned an unusable response");
-  }
-  return data.elements;
+  throw lastError;
 }
 
 export interface BikeLayersResult {
   infra: LayerFeature[];
   surface: LayerFeature[];
+  source?: string;
 }
 
 /**
