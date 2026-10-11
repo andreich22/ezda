@@ -261,6 +261,37 @@ export async function fetchBikeWays(
   return data.elements;
 }
 
+export interface BikeLayersResult {
+  infra: LayerFeature[];
+  surface: LayerFeature[];
+}
+
+/**
+ * Browser entry point for #203 layers. Same-origin call to
+ * POST /api/bike-layers — the browser never talks to Overpass directly,
+ * so CORS and third-party quota handling stay server-side.
+ * Throws on any failure; callers map it with describeOverpassFailure().
+ */
+export async function requestBikeLayers(
+  bbox: OverpassBbox,
+  options: {signal?: AbortSignal} = {},
+): Promise<BikeLayersResult> {
+  const response = await fetch("/api/bike-layers", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({bbox}),
+    signal: options.signal,
+  });
+  if (!response.ok) {
+    throw new Error(`Bike layers request failed with status ${response.status}`);
+  }
+  const data = (await response.json()) as Partial<BikeLayersResult>;
+  if (!data || !Array.isArray(data.infra) || !Array.isArray(data.surface)) {
+    throw new Error("Bike layers returned an unusable response");
+  }
+  return {infra: data.infra, surface: data.surface};
+}
+
 /** User-facing failure text. Always stresses that routing is unaffected. */
 export function describeOverpassFailure(error: unknown): string {
   if (

@@ -11,6 +11,7 @@ import {
   fetchBikeWays,
   formatBbox,
   isBboxTooLarge,
+  requestBikeLayers,
   wayElementsToLayers,
   type OverpassBbox,
   type OverpassWay,
@@ -216,5 +217,43 @@ describe("fetchBikeWays", () => {
     expect(describeOverpassFailure(new Error("500"))).toMatch(
       /temporarily unavailable.*route is unaffected/i,
     );
+  });
+});
+
+describe("requestBikeLayers (same-origin proxy)", () => {
+  it("posts the bbox to /api/bike-layers and returns parsed layers", async () => {
+    const payload = {
+      infra: [
+        {
+          type: "Feature",
+          properties: {kind: "cycleway", surface: "asphalt"},
+          geometry: {type: "LineString", coordinates: [[37.6, 55.75]]},
+        },
+      ],
+      surface: [],
+    };
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify(payload), {status: 200}),
+    );
+    const result = await requestBikeLayers(bbox);
+    expect(result).toEqual(payload);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/bike-layers",
+      expect.objectContaining({
+        method: "POST",
+        body: expect.stringContaining('"bbox"'),
+      }),
+    );
+  });
+
+  it("throws on proxy errors and unusable payloads", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response("unavailable", {status: 502}),
+    );
+    await expect(requestBikeLayers(bbox)).rejects.toThrow(/status 502/);
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response(JSON.stringify({infra: "nope"}), {status: 200}),
+    );
+    await expect(requestBikeLayers(bbox)).rejects.toThrow(/unusable/);
   });
 });

@@ -11,9 +11,8 @@ import {
   bboxKey,
   bboxOfCoordinates,
   describeOverpassFailure,
-  fetchBikeWays,
   isBboxTooLarge,
-  wayElementsToLayers,
+  requestBikeLayers,
   type LayerFeature,
 } from "../lib/bike-map-overpass";
 import {
@@ -325,10 +324,9 @@ export default function MapClient({
     let cancelled = false;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), OVERPASS_TIMEOUT_MS);
-    fetchBikeWays(bbox, {signal: controller.signal})
-      .then((elements) => {
+    requestBikeLayers(bbox, {signal: controller.signal})
+      .then(({infra, surface}) => {
         if (cancelled) return;
-        const {infra, surface} = wayElementsToLayers(elements);
         layersCache.current.set(key, {infra, surface});
         while (layersCache.current.size > LAYER_CACHE_SIZE) {
           const oldest = layersCache.current.keys().next();
