@@ -68,6 +68,17 @@ test("core flow: two points calculate a route and expose save validation states"
   await page.getByLabel("Title").fill("E2E validation probe");
   await expect(saveButton).toBeEnabled();
 
+  // Visibility defaults to Public and can be switched to Private and back.
+  const visibility = page.getByRole("group", {name: "Visibility"});
+  await expect(visibility.getByRole("button", {name: "Public"})).toHaveAttribute("aria-pressed", "true");
+  await expect(visibility.getByRole("button", {name: "Private"})).toHaveAttribute("aria-pressed", "false");
+  await visibility.getByRole("button", {name: "Private"}).click();
+  await expect(visibility.getByRole("button", {name: "Private"})).toHaveAttribute("aria-pressed", "true");
+  await expect(visibility.getByRole("button", {name: "Public"})).toHaveAttribute("aria-pressed", "false");
+  await expect(page.getByText("Private routes are visible only to you.")).toBeVisible();
+  await visibility.getByRole("button", {name: "Public"}).click();
+  await expect(visibility.getByRole("button", {name: "Public"})).toHaveAttribute("aria-pressed", "true");
+
   // Without a session the API rejects with 401 and the UI surfaces a short
   // friendly message (mapped from the AUTH_REQUIRED error code).
   await saveButton.click();

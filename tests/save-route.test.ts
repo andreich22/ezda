@@ -112,6 +112,9 @@ describe("POST /api/routes", () => {
       [{...validRoute, durationSeconds: -1}, "durationSeconds must be between 0 and 31536000"],
       [{...validRoute, elevationGainMeters: -1}, "elevationGainMeters must be between 0 and 10000000"],
       [{...validRoute, description: 123}, "description must be a string"],
+      [{...validRoute, visibility: "hidden"}, "visibility must be public or private"],
+      [{...validRoute, visibility: "private", isPublic: true}, "visibility and isPublic must agree"],
+      [{...validRoute, isPublic: "private"}, "isPublic must be a boolean"],
       [{...validRoute, title: " ".repeat(121)}, "title is required"],
       [{...validRoute, title: "x".repeat(121)}, "title must be 120 characters or fewer"],
     ] as const;
@@ -237,5 +240,14 @@ describe("POST /api/routes", () => {
       url: "/routes/11111111-1111-1111-1111-111111111111",
     });
     expect(createRoute).toHaveBeenCalledOnce();
+  });
+
+  it("persists a private route when isPublic is false", async () => {
+    vi.mocked(createRoute).mockResolvedValue({id: "11111111-1111-1111-1111-111111111111"});
+
+    const response = await POST(request({...validRoute, isPublic: false}));
+
+    expect(response.status).toBe(201);
+    expect(createRoute).toHaveBeenCalledWith(expect.objectContaining({isPublic: false}), "user-1");
   });
 });

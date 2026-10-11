@@ -53,9 +53,9 @@ export default function MapClient({
   const [actionFeedback, setActionFeedback] = useState("");
   const [saveTitle, setSaveTitle] = useState(initialTitle ?? "");
   const [saveDescription, setSaveDescription] = useState(initialDescription ?? "");
+  const [isPublic, setIsPublic] = useState(initialIsPublic ?? true);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
-  const visibility = initialIsPublic ?? true;
   const historyRef = useRef<Point[][]>([]);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -330,7 +330,7 @@ export default function MapClient({
           durationSeconds: route.durationSeconds,
           elevationGainMeters: route.elevationGainMeters,
           waypoints: points,
-          ...(isEditMode ? {isPublic: visibility} : {}),
+          isPublic,
         }),
       });
       const data = await response.json();
@@ -523,6 +523,34 @@ export default function MapClient({
               disabled={saving}
             />
           </label>
+          <div className="field">
+            <span className="label" id="route-visibility-label">Visibility</span>
+            <div className="visibility-toggle" role="group" aria-labelledby="route-visibility-label">
+              <button
+                type="button"
+                className={"visibility-option" + (isPublic ? " active" : "")}
+                aria-pressed={isPublic}
+                onClick={() => setIsPublic(true)}
+                disabled={saving}
+              >
+                Public
+              </button>
+              <button
+                type="button"
+                className={"visibility-option" + (!isPublic ? " active" : "")}
+                aria-pressed={!isPublic}
+                onClick={() => setIsPublic(false)}
+                disabled={saving}
+              >
+                Private
+              </button>
+            </div>
+            <p className="hint visibility-hint">
+              {isPublic
+                ? "Public routes appear in the catalog and anyone with the link can view them."
+                : "Private routes are visible only to you."}
+            </p>
+          </div>
           <button className="button" type="button" onClick={saveRoute} disabled={saving || !saveTitle.trim()}>
             {saving ? "Saving…" : isEditMode ? "Save changes" : "Save route"}
           </button>
