@@ -5,6 +5,23 @@ import { invalidateRouteCatalogCache } from "../lib/route-catalog-cache";
 import { friendlyRoutingError, friendlySaveError } from "../lib/route-error-messages";
 import { LngLatBounds, Map, Marker, NavigationControl, setWorkerUrl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import {
+  LAYER_CACHE_SIZE,
+  OVERPASS_TIMEOUT_MS,
+  bboxKey,
+  bboxOfCoordinates,
+  describeOverpassFailure,
+  fetchBikeWays,
+  isBboxTooLarge,
+  wayElementsToLayers,
+  type LayerFeature,
+} from "../lib/bike-map-overpass";
+import {
+  createLayerState,
+  layerNeedsNotice,
+  legendFor,
+  type BikeMapLayerState,
+} from "../lib/bike-map-layers";
 
 type Point = [number, number];
 
@@ -37,6 +54,105 @@ const osmStyle = {
   ],
 };
 
+interface BikeLayerDef {
+  id: string;
+  source: "bike-infra" | "bike-surface";
+  filter: (string | string[])[];
+  color: string;
+  width: number;
+  dash?: number[];
+}
+
+const BIKE_LAYER_DEFS: BikeLayerDef[] = [
+  {id: "bike-infra-cycleway", source: "bike-infra", filter: ["==", ["get", "kind"], "cycleway"], color: "#0f766e", width: 5},
+  {id: "bike-infra-lane", source: "bike-infra", filter: ["==", ["get", "kind"], "lane"], color: "#14b8a6", width: 3},
+  {id: "bike-infra-designated", source: "bike-infra", filter: ["==", ["get", "kind"], "designated"], color: "#14b8a6", width: 3, dash: [2, 2]},
+  {id: "bike-surface-asphalt", source: "bike-surface", filter: ["==", ["get", "surface"], "asphalt"], color: "#16a34a", width: 4},
+  {id: "bike-surface-unpaved", source: "bike-surface", filter: ["==", ["get", "surface"], "unpaved"], color: "#d97706", width: 4, dash: [2, 2]},
+  {id: "bike-surface-other", source: "bike-surface", filter: ["==", ["get", "surface"], "paved-other"], color: "#6b7280", width: 4, dash: [4, 2]},
+];
+
+const INFRA_SWATCHES = [
+  "swatch-infra-cycleway",
+  "swatch-infra-lane",
+  "swatch-infra-designated",
+];
+
+const SURFACE_SWATCHES = [
+  "swatch-surface-asphalt",
+  "swatch-surface-unpaved",
+  "swatch-surface-other",
+];
+
+function featureCollection(features: LayerFeature[]) {
+  return {type: "FeatureCollection", features};
+}
+
+function drawBikeLayers(
+  map: Map,
+  infra: LayerFeature[],
+  surface: LayerFeature[],
+  showInfra: boolean,
+  showSurface: boolean,
+) {
+  const syncSource = (id: "bike-infra" | "bike-surface", features: LayerFeature[]) => {
+    const existing = map.getSource(id) as {setData?: (data: unknown) => void} | undefined;
+    if (existing?.setData) existing.setData(featureCollection(features));
+    else map.addSource(id, {type: "geojson", data: featureCollection(features)} as never);
+  };
+  const ensureLayer = (def: BikeLayerDef) => {
+    if (map.getLayer(def.id)) return;
+    const paint: Record<string, unknown> = {
+      "line-color": def.color,
+      "line-width": def.width,
+      "line-opacity": 0.9,
+    };
+    if (def.dash) paint["line-dasharray"] = def.dash;
+    const layer = {
+      id: def.id,
+      type: "line",
+      source: def.source,
+      filter: def.filter,
+      layout: {"line-cap": "round", "line-join": "round"},
+      paint,
+    };
+    // Bike layers stay below the route line so the route remains visible.
+    if (map.getLayer("route-casing")) map.addLayer(layer as never, "route-casing");
+    else map.addLayer(layer as never);
+  };
+  const dropSource = (id: "bike-infra" | "bike-surface") => {
+    for (const def of BIKE_LAYER_DEFS) {
+      if (def.source === id && map.getLayer(def.id)) map.removeLayer(def.id);
+    }
+    if (map.getSource(id)) map.removeSource(id);
+  };
+  if (showInfra) {
+    syncSource("bike-infra", infra);
+    for (const def of BIKE_LAYER_DEFS) {
+      if (def.source === "bike-infra") ensureLayer(def);
+    }
+  } else {
+    dropSource("bike-infra");
+  }
+  if (showSurface) {
+    syncSource("bike-surface", surface);
+    for (const def of BIKE_LAYER_DEFS) {
+      if (def.source === "bike-surface") ensureLayer(def);
+    }
+  } else {
+    dropSource("bike-surface");
+  }
+}
+
+function removeBikeLayers(map: Map | null) {
+  if (!map) return;
+  for (const def of BIKE_LAYER_DEFS) {
+    if (map.getLayer(def.id)) map.removeLayer(def.id);
+  }
+  if (map.getSource("bike-infra")) map.removeSource("bike-infra");
+  if (map.getSource("bike-surface")) map.removeSource("bike-surface");
+}
+
 export default function MapClient({
   initialPoints,
   initialTitle,
@@ -58,6 +174,15 @@ export default function MapClient({
   const [saveError, setSaveError] = useState("");
   const historyRef = useRef<Point[][]>([]);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [infraLayer, setInfraLayer] = useState<BikeMapLayerState>(() =>
+    createLayerState("cycling-infrastructure"),
+  );
+  const [surfaceLayer, setSurfaceLayer] = useState<BikeMapLayerState>(() =>
+    createLayerState("surface"),
+  );
+  const layersCache = useRef(
+    new globalThis.Map<string, {infra: LayerFeature[]; surface: LayerFeature[]}>(),
+  );
 
   useEffect(() => {
     setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
@@ -131,6 +256,100 @@ export default function MapClient({
 
     if (points.length >= 2) buildRoute(points);
   }, [points]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const wantInfra = infraLayer.enabled;
+    const wantSurface = surfaceLayer.enabled;
+    if (!map || (!wantInfra && !wantSurface)) {
+      removeBikeLayers(map);
+      return;
+    }
+    const coordinates = route?.geometry?.geometry?.coordinates as
+      | number[][]
+      | undefined;
+    if (!coordinates || coordinates.length < 2) {
+      removeBikeLayers(map);
+      return;
+    }
+    const bbox = bboxOfCoordinates(coordinates);
+    if (!bbox) return;
+    if (isBboxTooLarge(bbox)) {
+      const notice =
+        "This route covers a large area — bike layers stay off here to respect the shared data source.";
+      if (wantInfra) setInfraLayer((s) => ({...s, data: "disabled", notice}));
+      if (wantSurface) setSurfaceLayer((s) => ({...s, data: "disabled", notice}));
+      removeBikeLayers(map);
+      return;
+    }
+    const key = bboxKey(bbox);
+    const applyFeatures = (infra: LayerFeature[], surface: LayerFeature[]) => {
+      try {
+        drawBikeLayers(map, infra, surface, wantInfra, wantSurface);
+      } catch {
+        const notice = "Couldn't display the bike layers. Try again.";
+        if (wantInfra) setInfraLayer((s) => ({...s, data: "error", notice}));
+        if (wantSurface) setSurfaceLayer((s) => ({...s, data: "error", notice}));
+        return;
+      }
+      if (wantInfra) {
+        setInfraLayer((s) => ({
+          ...s,
+          data: infra.length ? "ready" : "empty",
+          notice: infra.length
+            ? null
+            : "No tagged cycleways, lanes or bicycle sections in this area. Missing data does not mean missing infrastructure.",
+        }));
+      }
+      if (wantSurface) {
+        setSurfaceLayer((s) => ({
+          ...s,
+          data: surface.length ? "ready" : "empty",
+          notice: surface.length
+            ? null
+            : "No tagged surfaces in this area. Missing data only means it is not mapped.",
+        }));
+      }
+    };
+    const cached = layersCache.current.get(key);
+    if (cached) {
+      applyFeatures(cached.infra, cached.surface);
+      return;
+    }
+    if (wantInfra) {
+      setInfraLayer((s) => ({...s, data: "loading", notice: null}));
+    }
+    if (wantSurface) {
+      setSurfaceLayer((s) => ({...s, data: "loading", notice: null}));
+    }
+    let cancelled = false;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), OVERPASS_TIMEOUT_MS);
+    fetchBikeWays(bbox, {signal: controller.signal})
+      .then((elements) => {
+        if (cancelled) return;
+        const {infra, surface} = wayElementsToLayers(elements);
+        layersCache.current.set(key, {infra, surface});
+        while (layersCache.current.size > LAYER_CACHE_SIZE) {
+          const oldest = layersCache.current.keys().next();
+          if (oldest.done) break;
+          layersCache.current.delete(oldest.value);
+        }
+        applyFeatures(infra, surface);
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        const notice = describeOverpassFailure(error);
+        if (wantInfra) setInfraLayer((s) => ({...s, data: "error", notice}));
+        if (wantSurface) setSurfaceLayer((s) => ({...s, data: "error", notice}));
+        removeBikeLayers(map);
+      });
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [route, infraLayer.enabled, surfaceLayer.enabled]);
 
   async function buildRoute(routePoints: Point[]) {
     try {
@@ -234,8 +453,11 @@ export default function MapClient({
     setPoints([]);
     setRoute(null);
     setError("");
+    setInfraLayer((s) => ({...s, data: "idle", notice: null}));
+    setSurfaceLayer((s) => ({...s, data: "idle", notice: null}));
     const map = mapRef.current;
     if (!map) return;
+    removeBikeLayers(map);
     if (map.getLayer("route-line")) map.removeLayer("route-line");
     if (map.getLayer("route-casing")) map.removeLayer("route-casing");
     if (map.getSource("route")) map.removeSource("route");
@@ -267,6 +489,18 @@ export default function MapClient({
     showActionFeedback("Map fitted to route");
   }
 
+  function toggleInfraLayer() {
+    setInfraLayer((s) =>
+      s.enabled ? {...s, enabled: false, data: "idle", notice: null} : {...s, enabled: true},
+    );
+  }
+
+  function toggleSurfaceLayer() {
+    setSurfaceLayer((s) =>
+      s.enabled ? {...s, enabled: false, data: "idle", notice: null} : {...s, enabled: true},
+    );
+  }
+
   function clearRoute() {
     if (!points.length) return;
     historyRef.current = pushHistory(historyRef.current, points);
@@ -284,6 +518,7 @@ export default function MapClient({
     if (next.length < 2) {
       const map = mapRef.current;
       if (map) {
+        removeBikeLayers(map);
         if (map.getLayer("route-line")) map.removeLayer("route-line");
         if (map.getLayer("route-casing")) map.removeLayer("route-casing");
         if (map.getSource("route")) map.removeSource("route");
@@ -436,6 +671,69 @@ export default function MapClient({
             <div className="label">Waypoints</div>
             <div className="value">{points.length || "—"}</div>
           </div>
+        </div>
+      </div>
+
+      <div className="card layers-card">
+        <div className="label">Map layers</div>
+        <div className="visibility-toggle" role="group" aria-label="Map layers">
+          <button
+            type="button"
+            className={"visibility-option" + (infraLayer.enabled ? " active" : "")}
+            aria-pressed={infraLayer.enabled}
+            onClick={toggleInfraLayer}
+          >
+            Bike lanes
+          </button>
+          <button
+            type="button"
+            className={"visibility-option" + (surfaceLayer.enabled ? " active" : "")}
+            aria-pressed={surfaceLayer.enabled}
+            onClick={toggleSurfaceLayer}
+          >
+            Surface
+          </button>
+        </div>
+        {(infraLayer.enabled || surfaceLayer.enabled) && !route && (
+          <div className="hint">Build a route first — layers load for the area around it.</div>
+        )}
+        {route && (infraLayer.data === "loading" || surfaceLayer.data === "loading") && (
+          <div className="hint" role="status">Loading bike data…</div>
+        )}
+        {infraLayer.enabled && layerNeedsNotice(infraLayer) && infraLayer.notice && (
+          <div className="hint">{infraLayer.notice}</div>
+        )}
+        {surfaceLayer.enabled && layerNeedsNotice(surfaceLayer) && surfaceLayer.notice && (
+          <div className="hint">{surfaceLayer.notice}</div>
+        )}
+        {infraLayer.enabled && (
+          <ul className="layer-legend" aria-label="Bike infrastructure legend">
+            {legendFor("cycling-infrastructure").map((line, index) => (
+              <li key={line}>
+                {index < INFRA_SWATCHES.length && (
+                  <span className={"swatch " + INFRA_SWATCHES[index]} aria-hidden="true" />
+                )}
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {surfaceLayer.enabled && (
+          <ul className="layer-legend" aria-label="Surface legend">
+            {legendFor("surface").map((line, index) => (
+              <li key={line}>
+                {index < SURFACE_SWATCHES.length && (
+                  <span className={"swatch " + SURFACE_SWATCHES[index]} aria-hidden="true" />
+                )}
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        <div className="hint">
+          Bike data: © OpenStreetMap contributors via Overpass API. Only mapped
+          objects are shown — missing data does not mean missing infrastructure,
+          and a marked lane says nothing about protection or safety.
         </div>
       </div>
 

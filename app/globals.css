@@ -101,3 +101,15 @@
 .waypoint-remove{margin-left:auto;flex:none;width:32px;height:32px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#555;font-size:16px;line-height:1;cursor:pointer;touch-action:manipulation;display:grid;place-items:center}
 .waypoint-remove:hover{background:#fef2f2;color:#b42318;border-color:#f0c0c0}
 .waypoint-remove:focus-visible{outline:3px solid #2563eb;outline-offset:1px}
+.layers-card{margin:0 0 12px}
+.layers-card .visibility-toggle{margin:10px 0 0}
+.layers-card .hint{margin-top:10px}
+.layer-legend{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px;font-size:12px;color:#333}
+.layer-legend li{display:flex;align-items:center;gap:8px}
+.swatch{flex:none;width:26px;height:0;border-top:5px solid transparent;border-radius:2px}
+.swatch-infra-cycleway{border-top-color:#0f766e}
+.swatch-infra-lane{border-top-color:#14b8a6;border-top-width:3px}
+.swatch-infra-designated{border-top-color:#14b8a6;border-top-width:3px;border-top-style:dotted}
+.swatch-surface-asphalt{border-top-color:#16a34a;border-top-width:4px}
+.swatch-surface-unpaved{border-top-color:#d97706;border-top-width:4px;border-top-style:dashed}
+.swatch-surface-other{border-top-color:#6b7280;border-top-width:4px;border-top-style:dashed}
