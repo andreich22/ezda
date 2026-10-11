@@ -16,6 +16,13 @@
 @media (max-width: 380px){.header span{display:none}.header-title .app-version{display:inline!important}.sidebar{max-height:50dvh}.sidebar-collapsed .sidebar{max-height:50dvh}.sidebar-toggle{bottom:calc(50dvh + 12px)}.sidebar-collapsed .sidebar-toggle{bottom:12px}.stat{grid-template-columns:1fr 1fr}.card{padding:9px}.label{font-size:10px}.value{font-size:15px}}
 @media (prefers-reduced-motion: reduce){.sidebar,.sidebar-toggle{transition:none}}
 .route-page{min-height:100dvh;background:#f7f7f5;color:#171717}.route-page-header{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid #ddd;background:#fff}.route-back{color:#171717;text-decoration:none;font-size:13px;font-weight:700}.route-page-content{max-width:1100px;margin:0 auto;padding:24px;display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:20px}.route-detail{height:max-content}.route-detail h1{font-size:28px;line-height:1.15;margin:8px 0 10px}.route-description{margin:0;color:#555;line-height:1.5}.saved-route-map{height:520px;border:1px solid #ddd;border-radius:12px;overflow:hidden;background:#ddd}.save-route{margin:0 0 12px}.field{display:block;margin:10px 0}.field .label{display:block;margin-bottom:5px}.field input,.field textarea{width:100%;border:1px solid #ccc;border-radius:8px;padding:10px;font:inherit;resize:vertical;background:#fff}.field input:focus-visible,.field textarea:focus-visible{outline:3px solid #2563eb;outline-offset:1px}.field input:disabled,.field textarea:disabled{background:#f3f3f3}.save-route .button{margin-top:4px}
+.visibility-toggle{display:flex;gap:8px;margin-top:6px}
+.visibility-option{flex:1;min-height:44px;padding:10px 12px;border:1px solid #ccc;border-radius:10px;background:#fff;color:#171717;font:inherit;font-weight:700;cursor:pointer;touch-action:manipulation}
+.visibility-option:hover:not(:disabled){background:#f5f5f5}
+.visibility-option.active{background:#171717;color:#fff;border-color:#171717}
+.visibility-option:disabled{opacity:.45;cursor:not-allowed}
+.visibility-option:focus-visible{outline:3px solid #2563eb;outline-offset:1px}
+.visibility-hint{margin:8px 0 0}
 @media (max-width:767px){.route-page-header{height:52px;padding:0 14px}.route-page-content{display:flex;flex-direction:column;padding:12px}.route-detail h1{font-size:23px}.saved-route-map{height:55dvh;min-height:320px;order:-1}.route-page-content .stat{margin-bottom:0}}
 
 .route-catalog-page{min-height:100dvh;background:#f7f7f5;color:#171717}

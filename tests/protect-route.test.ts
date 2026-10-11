@@ -104,6 +104,22 @@ describe("PATCH /api/routes/:id", () => {
     );
   });
 
+  it("persists switching an owned route to private", async () => {
+    getRouteOwnershipMock.mockResolvedValue({id: routeId, authorId: "user-1"});
+    updateRouteMock.mockResolvedValue({id: routeId});
+
+    const response = expectResponse(
+      await PATCH(request({...requestBody, visibility: "private"}), {params: Promise.resolve({id: routeId})}),
+    );
+
+    expect(response.status).toBe(200);
+    expect(updateRouteMock).toHaveBeenCalledWith(
+      routeId,
+      "user-1",
+      expect.objectContaining({isPublic: false}),
+    );
+  });
+
   it("does not let the request body choose the owner", async () => {
     getRouteOwnershipMock.mockResolvedValue({id: routeId, authorId: "user-1"});
     updateRouteMock.mockResolvedValue({id: routeId});
